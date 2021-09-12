@@ -24,6 +24,18 @@ export default {
         console.log(user);
         console.log(user.email);
         console.log(this.$store.getters.isLoggedIn)
+
+        this.$services.administration.getCategories()
+        .then(response => {
+            console.log(response)
+            console.log(response.data)
+        })
+        .catch(exception => {
+            console.log(exception)
+        })
+        .finally(() => {
+            console.log('consulta terminada')
+        })
     }
 }
 </script>

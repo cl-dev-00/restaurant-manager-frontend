@@ -1,8 +1,9 @@
 export default class Waiters {
 
-    constructor(Axios, url) {
+    constructor(Axios, urlBase) {
         this.axios = Axios;
-        this.url = url;
+        this.urlBase = urlBase;
+        this.url = '';
     }
 
 }

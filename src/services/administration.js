@@ -1,8 +1,21 @@
 export default class Administration {
 
-    constructor(Axios, url) {
+    constructor(Axios, urlBase) {
         this.axios = Axios;
-        this.url = url;
+        this.urlBase = urlBase;
+        this.url = urlBase + 'categories';
+    }
+
+    async getCategories() {
+        const categories = await this.axios.get(this.url);
+
+        return categories;
+    }
+    
+    async getCategory(id) {
+        const category = await this.axios.get(`${this.url}/${id}`);
+    
+        return category;
     }
 
 }
