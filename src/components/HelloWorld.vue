@@ -90,6 +90,9 @@
 <script>
 export default {
   name: "HelloWorld",
+  mounted() {
+    console.log(this.$services);
+  },
 
   data: () => ({
     dialog: false,

@@ -3,8 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import Services from './services';
 
 Vue.config.productionTip = false
+
+Vue.use(
+  function install(Vue, opts) {
+    Vue.prototype.$services = Services;
+  }
+);
 
 new Vue({
   router,
