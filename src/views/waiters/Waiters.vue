@@ -31,8 +31,10 @@
               max-width="120"
               class="caption"
               color="rgb(165, 201, 46)"
+              id="boton_categoria"
             >
-              {{ item.nombre }}
+            <span class="boton_a">{{ item.nombre }}</span>
+              
             </v-btn>
           </v-col>
         </v-row>
@@ -127,24 +129,29 @@
         </v-row>
 
         <v-row class="buscar_en_responsivo">
-            <v-text-field class=" ml-3 mr-3" label="Buscar" block outlined clearable prepend-inner-icon="mdi-magnify-plus"></v-text-field>
+          <v-text-field
+            class="ml-3 mr-3"
+            label="Buscar"
+            block
+            outlined
+            clearable
+            prepend-inner-icon="mdi-magnify-plus"
+          ></v-text-field>
         </v-row>
-
-
 
         <!-- INPUT PARA COMENTARIOS -->
         <v-divider class="mt-2"></v-divider>
         <v-row class="mt-3">
-          <h4 class="ml-2 mt-0 mb-2 col-12" >Comentarios o Indicaciones</h4>
+          <h4 class="ml-2 mt-0 mb-2 col-12">Comentarios o Indicaciones</h4>
           <v-textarea
-          class=" ml-3 mr-3"
-          outlined
-          name="input-2-4"
-          label="Opcional"
-          value="Indicaciones de la orden..."
-          prepend-icon="mdi-comment-text-multiple"
-          clearable
-        ></v-textarea>
+            class="ml-3 mr-3"
+            outlined
+            name="input-2-4"
+            label="Opcional"
+            value="Indicaciones de la orden..."
+            prepend-icon="mdi-comment-text-multiple"
+            clearable
+          ></v-textarea>
         </v-row>
         <!-- TOTALES -->
         <v-divider></v-divider>
@@ -165,7 +172,9 @@
         </v-row>
         <!-- BOTON COCINA-->
         <v-row>
-          <v-btn x-large color="success" dark block class=" mb-5"> Enviar a Cocina </v-btn>
+          <v-btn x-large color="success" dark block class="mb-5">
+            Enviar a Cocina
+          </v-btn>
         </v-row>
       </v-col>
     </v-row>
@@ -197,7 +206,6 @@ export default {
         { nombre: "Postres" },
         { nombre: "Bebidas Alcoholicas" },
         { nombre: "Bebidas sin Alcohol" },
-        
       ],
 
       colores: [
@@ -256,14 +264,22 @@ export default {
     padding: 0;
     margin: 0;
   }
- }
-  @media screen and (min-width: 600px) {
-    .buscar_en_responsivo{
-      visibility: hidden;
+}
+@media screen and (min-width: 600px) {
+  .buscar_en_responsivo {
+    visibility: hidden;
     height: 0;
     padding: 0;
     margin: 0;
-    }
- 
+  }
+}
+
+#boton_categoria .boton_a{
+ font-size: 12pt; 
+ white-space: normal;
+ word-wrap: break-word;
+ width: 100px;
+ align-content: center;
+  
 }
 </style>
