@@ -4,7 +4,8 @@
 
             <v-row>
                 <!-- Columnas de Cards, responsivo -->
-                <v-col  v-for="order in orders" :key="order.name" 
+                <v-col 
+                v-for="order in orders" :key="order.state" 
                 xs="12" sm="6" md="4" lg="3" xl="2"
                 class="mb-0">
                     <!-- Configuracion de Card -->
@@ -76,16 +77,18 @@
 </template>
 
 <script>
+
 export default{
     data(){
         return{
             orders:[
-                { name:'Jose Adolfo', product:'Salchipapa' },
-                { name:'Martin Fierro', product:'Papitas' },
-                { name:'Dario Barassi', product:'Milanessa' },
-                { name:'Jose Adolfo', product:'Salchipapa' },
-                { name:'Martin Fierro', product:'Papitas' },
-                { name:'Dario Barassi', product:'Milanessa' }
+                { name:'Jose Adolfo', product:'Salchipapa',state:'true' },
+                { name:'Martin Fierro', product:'Papitas', state:'true' },
+                { name:'Dario Barassi', product:'Milanessa',state:'true' },
+                { name:'Jose Adolfo', product:'Salchipapa',state:'true' },
+                { name:'Martin Fierro', product:'Papitas',state:'true' },
+                { name:'Dario Barassi', product:'Milanessa',state:'true' },
+                { name:'Chele Ibañez', product:'Mesa 2',state:'false'}
             ],
          
             items: [
@@ -111,6 +114,7 @@ export default{
                 },
                 
             ],
+            
         }
     }
 }
