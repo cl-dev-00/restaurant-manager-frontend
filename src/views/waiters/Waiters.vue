@@ -30,11 +30,10 @@
               min-width="120"
               max-width="120"
               class="caption"
-              color="rgb(165, 201, 46)"
+              v-bind:color="item.color"
               id="boton_categoria"
             >
-            <span class="boton_a">{{ item.nombre }}</span>
-              
+              <span class="boton_a">{{ item.nombre }}</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -89,15 +88,17 @@
                 >
                   <v-card
                     :color="active ? undefined : 'grey lighten-1'"
-                    class="ma-1"
+                    class="ma-1 rounded-circle"
                     height="40"
                     width="40"
                     @click="toggle"
+                  
                   >
                     <v-row
-                      class="fill-height mt-1 pt-0"
+                      class="fill-height mt-0 pt-0"
                       align="center"
                       justify="center"
+                      
                     >
                       {{ n.numero }}
                     </v-row>
@@ -188,6 +189,7 @@ export default {
       message4: "Buscar",
       message_comentarios: "Comentarios",
       total_sample: "0.00",
+      c1: "rgb(52, 166, 186)",
 
       items_menu: [
         { name: "Hamburguesa", precio: "6.99" },
@@ -197,26 +199,15 @@ export default {
       ],
 
       items: [
-        { nombre: "Entradas" },
-        { nombre: "Carnes" },
-        { nombre: "Pollo" },
-        { nombre: "Comida Mexicana" },
-        { nombre: "Hamburguesas" },
-        { nombre: "Ensaladas" },
-        { nombre: "Postres" },
-        { nombre: "Bebidas Alcoholicas" },
-        { nombre: "Bebidas sin Alcohol" },
-      ],
-
-      colores: [
-        { color: "rgb(209, 53, 42)" },
-        { color: "rgb(212, 144, 42)" },
-        { color: "rgb(165, 201, 46)" },
-        { color: "rgb(62, 166, 46)" },
-        { color: "rgb(65, 181, 117)" },
-        { color: "rgb(52, 166, 186)" },
-        { color: "rgb(56, 118, 194)" },
-        { color: "rgb(106, 79, 196)" },
+        { id: "0", nombre: "Entradas", color: "rgb(212, 144, 42)" },
+        { id: "1", nombre: "Carnes", color: "rgb(165, 201, 46)" },
+        { id: "2", nombre: "Pollo", color: "rgb(62, 166, 46)" },
+        { id: "3", nombre: "Comida Mexicana", color: "rgb(65, 181, 117)" },
+        { id: "4", nombre: "Hamburguesas", color: "rgb(52, 166, 186)" },
+        { id: "5", nombre: "Ensaladas", color: "rgb(156, 100, 245)" },
+        { id: "6", nombre: "Postres", color: "rgb(56, 118, 194)" },
+        { id: "7", nombre: "Bebidas Alcoholicas", color: "rgb(106, 79, 196)" },
+        { id: "8", nombre: "Bebidas sin Alcohol", color: "rgb(195, 10, 201)" },
       ],
 
       mesas: [
@@ -274,12 +265,12 @@ export default {
   }
 }
 
-#boton_categoria .boton_a{
- font-size: 12pt; 
- white-space: normal;
- word-wrap: break-word;
- width: 100px;
- align-content: center;
-  
+#boton_categoria .boton_a {
+  font-size: 12pt;
+  white-space: normal;
+  word-wrap: break-word;
+  width: 100px;
+  align-content: center;
+  color: white;
 }
 </style>
