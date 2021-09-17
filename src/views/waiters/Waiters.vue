@@ -12,11 +12,12 @@
         <v-row>
           <h4 class="ml-4">Categorías</h4>
         </v-row>
-        <!-- BOTONES DE CATEGORIAS -->
+        <!-- BOTONES DE CATEGORIAS  category in categories.items category.nombreCategoria -->
+        <!--
         <v-row>
           <v-col
-            v-for="category in categories.items"
-            :key="category.nombreCategoria"
+            v-for="item in items"
+            :key="item.nombre"
             xs="12"
             sm="4"
             md="4"
@@ -33,13 +34,118 @@
               color="#222"
               id="boton_categoria"
             >
-              <span class="boton_a">{{ category.nombreCategoria }}</span>
+              <span class="boton_a">{{ item.nombre }}</span>
             </v-btn>
           </v-col>
         </v-row>
+
+        -->
+        <v-row class="col-12 ml-0 mr-0 pl-0 pr-0">
+          <v-card class="mx-auto col-12" color="rgb(247, 247, 247)">
+            <v-card-title
+              class="text-h6 font-weight-regular justify-space-between"
+            >
+              <v-btn
+                :disabled="step === 1"
+                text
+                @click="seleccionarCategoria(1)"
+              >
+                Back
+              </v-btn>
+              <span>{{ cat }}</span>
+              <!--
+              <v-avatar
+                color="primary lighten-2"
+                class="subheading white--text"
+                size="24"
+                v-text="step"
+              ></v-avatar>
+              -->
+            </v-card-title>
+
+            <v-window v-model="step">
+              <v-window-item :value="1">
+                <!--
+        <v-card-text>
+          <v-text-field
+            label="Email"
+            value="john@vuetifyjs.com"
+          ></v-text-field>
+          <span class="text-caption grey--text text--darken-1">
+            This is the email you will use to login to your Vuetify account
+          </span>
+        </v-card-text>
+ -->
+                <v-row class="ml-2">
+                  <v-col
+                    v-for="item in items"
+                    :key="item.nombre"
+                    xs="12"
+                    sm="4"
+                    md="4"
+                    lg="3"
+                    xl="2"
+                    class="mb-4"
+                  >
+                    <v-btn
+                      min-height="120"
+                      max-height="120"
+                      min-width="90%"
+                      max-width="90%"
+                      class="caption mx-auto"
+                      color="#222"
+                      id="boton_categoria"
+                      :disabled="step === 2"
+                      depressed
+                      @click="seleccionarCategoria(item.nombre)"
+                    >
+                      <span class="boton_a">{{ item.nombre }}</span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-window-item>
+
+              <v-window-item :value="2">
+                <!--
+        <v-card-text>
+          <v-text-field
+            label="Password"
+            type="password"
+          ></v-text-field>
+          <v-text-field
+            label="Confirm Password"
+            type="password"
+          ></v-text-field>
+          <span class="text-caption grey--text text--darken-1">
+            Please enter a password for your account
+          </span>
+        </v-card-text>
+        -->
+                <v-row class="ml-2">
+                  <v-col class="col-12 mx-auto">
+                    <v-list-item-group>
+                      <v-list-item v-for="itm in items_menu" :key="itm.name">
+                        <v-list-item-icon>
+                          <v-icon dark color="#7E6990" v-text="icon1"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title
+                          >{{ itm.name }} ........................{{
+                            itm.precio
+                          }}
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-col>
+                </v-row>
+              </v-window-item>
+            </v-window>
+
+            <v-card-actions> </v-card-actions>
+          </v-card>
+        </v-row>
       </v-col>
 
-      <!-- SECCION DE ORDEN -->
+      <!-- SECCION DE ORDEN category.nombreCategoria  -->
       <v-col cols="12" sm="5" class="col-orden">
         <!-- TEXTO DE ORDEN -->
         <v-row>
@@ -189,7 +295,7 @@ export default {
         if (response.data.ok) {
           this.categories = response.data.collection;
         } else {
-          console.log('El servidor revento')
+          console.log("El servidor revento");
         }
 
         console.log(this.data);
@@ -207,10 +313,14 @@ export default {
           total: 0,
         },
       },
+
+      step: 1,
       message4: "Buscar",
       message_comentarios: "Comentarios",
       total_sample: "0.00",
       c1: "rgb(52, 166, 186)",
+      icon1: "mdi-arrow-right-box",
+      cat: "Categoria",
 
       items_menu: [
         { name: "Hamburguesa", precio: "6.99" },
@@ -262,10 +372,38 @@ export default {
     decrement() {
       this.foo = parseInt(this.foo, 10) - 1;
     },
+    
+    seleccionarCategoria(w) {
+      switch (w) {
+          case 1:
+          this.cet = 0;
+          this.step--;
+           this.cat = "Categorías";
+          break;
+        case "Entradas":
+          this.cat = "Entradas";
+          this.step++;
+          break;
+        case "Carnes":
+          this.cat = "Carnes";
+          this.step++;
+          break;
+          case "Pollo":
+          this.cat = "Pollo";
+          this.step++;
+          break;
+        case "Comida Mexicana":
+          this.cat = "Comida Mexicana";
+          this.step++;
+          break;  
+        default:
+          this.cat = "Categorías";
+      }
+    },
+
   },
 };
 </script>
-
 
 
 <style lang="css" scoped>
@@ -287,11 +425,12 @@ export default {
 }
 
 #boton_categoria .boton_a {
-  font-size: 12pt;
+  font-size: 2ch;
   white-space: normal;
   word-wrap: break-word;
   width: 100px;
   align-content: center;
   color: white;
+  padding: 10px;
 }
 </style>
