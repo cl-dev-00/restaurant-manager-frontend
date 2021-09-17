@@ -15,8 +15,8 @@
         <!-- BOTONES DE CATEGORIAS -->
         <v-row>
           <v-col
-            v-for="item in items"
-            :key="item.nombre"
+            v-for="category in categories.items"
+            :key="category.nombreCategoria"
             xs="12"
             sm="4"
             md="4"
@@ -30,10 +30,10 @@
               min-width="120"
               max-width="120"
               class="caption"
-              v-bind:color="item.color"
+              color="#222"
               id="boton_categoria"
             >
-              <span class="boton_a">{{ item.nombre }}</span>
+              <span class="boton_a">{{ category.nombreCategoria }}</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -92,13 +92,11 @@
                     height="40"
                     width="40"
                     @click="toggle"
-                  
                   >
                     <v-row
                       class="fill-height mt-0 pt-0"
                       align="center"
                       justify="center"
-                      
                     >
                       {{ n.numero }}
                     </v-row>
@@ -184,8 +182,31 @@
 
 <script>
 export default {
+  mounted() {
+    this.$services.waiters
+      .getCategories()
+      .then((response) => {
+        if (response.data.ok) {
+          this.categories = response.data.collection;
+        } else {
+          console.log('El servidor revento')
+        }
+
+        console.log(this.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
   data() {
     return {
+      categories: {
+        collection: {
+          hasItems: false,
+          items: [],
+          total: 0,
+        },
+      },
       message4: "Buscar",
       message_comentarios: "Comentarios",
       total_sample: "0.00",

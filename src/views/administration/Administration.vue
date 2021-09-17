@@ -8,34 +8,22 @@ export default {
         
     },
     mounted() {
-        console.log(this.$services)
 
-        console.log(this.$store.getters.user)
-        console.log(this.$store.getters.isLoggedIn)
+        // console.log(this.$store.getters.user)
+        // console.log(this.$store.getters.isLoggedIn)
 
-        this.$store.dispatch('loginSignAction');
-        this.$store.dispatch('setUserAction', {
-            name: 'juan',
-            email: 'example@email.com'
-        });
+        // this.$store.dispatch('loginSignAction');
+        // this.$store.dispatch('setUserAction', {
+        //     name: 'juan',
+        //     email: 'example@email.com'
+        // });
 
-        const user = this.$store.getters.user;
+        // const user = this.$store.getters.user;
 
-        console.log(user);
-        console.log(user.email);
-        console.log(this.$store.getters.isLoggedIn)
+        // console.log(user);
+        // console.log(user.email);
+        // console.log(this.$store.getters.isLoggedIn)
 
-        this.$services.administration.getCategories()
-        .then(response => {
-            console.log(response)
-            console.log(response.data)
-        })
-        .catch(exception => {
-            console.log(exception)
-        })
-        .finally(() => {
-            console.log('consulta terminada')
-        })
     }
 }
 </script>

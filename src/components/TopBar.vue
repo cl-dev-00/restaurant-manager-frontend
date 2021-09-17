@@ -72,7 +72,7 @@
 export default{
     name: "TopBar",
     mounted(){
-        console.log(this.$services);
+      
     },
     data:()=>({ 
       drawer: null,

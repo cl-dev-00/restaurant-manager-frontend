@@ -1,9 +1,12 @@
 export default class Waiters {
 
-    constructor(Axios, urlBase) {
+    constructor(Axios, url) {
         this.axios = Axios;
-        this.urlBase = urlBase;
-        this.url = '';
+        this.url = url;
+    }
+
+    async getCategories() {
+        return await  this.axios.get(`${this.url}categories/`);
     }
 
 }
