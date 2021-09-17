@@ -27,7 +27,7 @@ const routersInfo = {
         component: Cashier
     }, 
     kitchenroom: {
-        path: '/kitchenroom',
+        path: '/kitchen-room',
         name: 'KitchenRoom',
         component: KitchenRoom
     }, 
