@@ -2,11 +2,11 @@
   <v-col cols="12" sm="7" class="col-menu">
     <v-row style="margin-bottom: -40px">
       <v-col>
-        <v-text-field label="Buscar" outlined clearable></v-text-field>
+        <v-text-field label="Buscar" outlined clearable v-model="txt_buscar" ></v-text-field>
       </v-col>
     </v-row>
     <v-row class="col-12 ml-0 mr-0 pl-0 pr-0">
-      <v-card class="mx-auto col-12" color="rgb(47, 177, 247)">
+      <v-card class="mx-auto col-12" color="rgb(247, 247, 247)">
         <v-card-title class="text-h6 font-weight-regular justify-space-between">
           <v-btn :disabled="step === 1" text @click="seleccionarCategoria(1)">
             Back
@@ -43,7 +43,6 @@
               </v-col>
             </v-row>
           </v-window-item>
-
           <v-window-item :value="2">
             <v-row class="ml-2">
               <v-col class="col-12 mx-auto">
@@ -52,9 +51,12 @@
                     <v-list-item-icon>
                       <v-icon dark color="#7E6990" v-text="icon1"></v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title
-                      >{{ itm.name }} ........................{{ itm.precio }}
+                    <v-list-item-title>
+                      {{ itm.name }}
                     </v-list-item-title>
+                    <v-list-item-avatar>
+                      {{ itm.precio }}
+                    </v-list-item-avatar>
                   </v-list-item>
                 </v-list-item-group>
               </v-col>
@@ -77,6 +79,7 @@ export default {
       hasItems: false,
       accounts: [],
       total: 0,
+      txt_buscar:''  ,
 
       step: 1,
       message4: "Buscar",
@@ -84,7 +87,7 @@ export default {
       total_sample: "0.00",
       c1: "rgb(52, 166, 186)",
       icon1: "mdi-arrow-right-box",
-      cat: "Categoria",
+      cat: "Categorias",
 
       items_menu: [
         { name: "Hamburguesa", precio: "6.99" },
@@ -104,38 +107,39 @@ export default {
         { id: "7", nombre: "Bebidas Alcoholicas", color: "rgb(106, 79, 196)" },
         { id: "8", nombre: "Bebidas sin Alcohol", color: "rgb(195, 10, 201)" },
       ],
+      
     };
   },
   methods: {
-    seleccionarCategoria(w) {
-      switch (w) {
-        case 1:
-          this.cet = 0;
-          this.step--;
-          this.cat = "Categorías";
-          break;
-        case "Entradas":
-          this.cat = "Entradas";
-          this.step++;
-          break;
-        case "Carnes":
-          this.cat = "Carnes";
-          this.step++;
-          break;
-        case "Pollo":
-          this.cat = "Pollo";
-          this.step++;
-          break;
-        case "Comida Mexicana":
-          this.cat = "Comida Mexicana";
-          this.step++;
-          break;
-        default:
-          this.cat = "Categorías";
-      }
+
+    seleccionarCategoria(categoria_clickeada) {
+     var nombre_categoria; 
+
+     this.items.forEach(nombre => {       
+       if(nombre = categoria_clickeada){
+        nombre_categoria = categoria_clickeada;
+       }    
+     });
+    
+     switch(categoria_clickeada){
+         case 1:
+             this.cat="Categorías"
+             this.step--
+             break
+         case nombre_categoria:
+             this.cat=categoria_clickeada
+             this.step++
+             break
+         default:
+
+     }
     },
+
+    
   },
+
 };
+
 </script>
 
 <style lang="css" scoped>
