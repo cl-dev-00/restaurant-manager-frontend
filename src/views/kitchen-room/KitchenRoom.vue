@@ -48,38 +48,6 @@ export default {
       hasItems: false,
       accounts: [],
       total: 0,
-      orders: [
-        { name: "Jose Adolfo", product: "Salchipapa", state: "true" },
-        { name: "Martin Fierro", product: "Papitas", state: "true" },
-        { name: "Dario Barassi", product: "Milanessa", state: "true" },
-        { name: "Jose Adolfo", product: "Salchipapa", state: "true" },
-        { name: "Martin Fierro", product: "Papitas", state: "true" },
-        { name: "Dario Barassi", product: "Milanessa", state: "true" },
-        { name: "Chele Ibañez", product: "Mesa 2", state: "false" },
-      ],
-
-      items: [
-        {
-          amount: "1",
-          notes: "No tomate",
-          order: "Hamburguesa de Res",
-        },
-        {
-          amount: "2",
-          notes: "Con pepinillos",
-          order: "Sub de Pavo",
-        },
-        {
-          amount: "6",
-          notes: "Sin azucar",
-          order: "Cafe Americano",
-        },
-        {
-          amount: "6",
-          notes: "",
-          order: "Cafe Americano",
-        },
-      ],
     };
   },
   methods: {

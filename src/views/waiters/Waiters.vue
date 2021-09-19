@@ -1,8 +1,14 @@
 <template>
   <v-container>
     <v-row>
-      <waiter-card-category />
-      <waiters-form-order />
+      <waiter-card-category
+      :itemSelects="itemSelects" 
+      @updateSelectItems="updateSelectItems"
+      />
+      <waiters-form-order 
+      :itemSelects="itemMenuOrder" 
+      @clearitemSelects="clearitemSelects"
+      />
     </v-row>
   </v-container>
 </template>
@@ -15,33 +21,27 @@ export default {
     WaiterCardCategory,
     WaitersFormOrder,
   },
-  mounted() {
-    this.$services.waiters
-      .getCategories()
-      .then((response) => {
-        if (response.data.ok) {
-          this.categories = response.data.collection;
-        } else {
-          console.log("El servidor revento");
-        }
-        console.log(this.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
   data() {
     return {
-      categories: {
-        collection: {
-          hasItems: false,
-          items: [],
-          total: 0,
-        },
-      },
+      itemSelects: [],
+      itemMenuOrder: []
     };
   },
-  methods: {},
+  methods: {
+    updateSelectItems(items) {
+      this.itemSelects = items;
+      this.itemMenuOrder = items.map(item => ({
+        nombre_Item: item.nombre_Item,
+        id_item_name: item.id_item_name,
+        precio: item.precio,
+        cantidad: 1,
+        importe: 0
+      }));
+    },
+    clearitemSelects() {
+      this.itemMenuOrder = [];
+    },
+  },
 };
 </script>
 
