@@ -1,5 +1,6 @@
 <template>
-  <v-card class="mb-0" min-height="400" max-height="400">
+
+  <v-card id="card" min-height="auto" max-height="auto">
     <!-- Header de las Card -->
     <v-list-item three-line class="pink">
       <v-list-item-content class="white--text">
@@ -15,12 +16,12 @@
       </v-list-item-content>
     </v-list-item>
     <!-- Listado de items de la orden -->
-    <v-responsive class="overflow-y-auto" max-height="250">
+    <v-responsive max-height="auto">
       <v-list two-line height="">
         <v-list-item-group active-class="green--text" multiple>
           <template v-for="order in orders">
             <v-list-item :key="order.idPedido">
-              <template v-slot:default="{ active }">
+              <template >
                 <kitchen-card-list-orders :order="order" />
               </template>
             </v-list-item>
@@ -31,7 +32,7 @@
     <!-- Boton para completads -->
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn class="mx-2" fab dark color="success" @click='doneOrderEmit'>
+      <v-btn class=" mb-4" fab dark color="success" @click='doneOrderEmit'>
         <v-icon dark> mdi-check </v-icon>
       </v-btn>
     </v-card-actions>
@@ -60,11 +61,38 @@ export default {
       // required: true
     },
   },
+
   methods: {
     doneOrderEmit() {
       this.$emit('doneOrderEmit');
+      this.toggleClass();
+    },
+
+    toggleClass () {
+        const el = document.getElementById('card')
+        el.classList.toggle('fadeOut')
     }
   }
+
+  
 };
 </script>
 
+<style scoped>
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  }
+  @-webkit-keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+  }
+  @keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+  } 
+</style>
