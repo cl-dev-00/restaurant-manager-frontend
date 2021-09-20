@@ -1,13 +1,27 @@
 <template>
   <v-col cols="12" sm="7" class="col-menu">
     <v-row style="margin-bottom: -40px">
-      <v-col>
+      <v-col class=" col-10  ">
         <v-text-field
           label="Buscar"
           outlined
           clearable
           v-model="txt_buscar"
+        
         ></v-text-field>
+        
+      </v-col>
+      <v-col class=" col-2">
+        <v-btn
+        color="#222"
+        outlined
+        depressed
+        min-height="63%"
+        min-width="100%"
+        class=" mx-auto" 
+        @click="filterMenuByName()">
+          <v-icon size="35">mdi-magnify</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row class="col-12 ml-0 mr-0 pl-0 pr-0">
@@ -164,6 +178,7 @@ export default {
       cat: "Categorias",
 
       items_menu: [],
+      items_menu_for_filter: this.menuItems,
       itemMenuSelects: this.itemSelects
     };
   },
@@ -176,9 +191,13 @@ export default {
       get() {
         return this.itemMenuSelects;
       }
-    }
+    },
+
+ 
+
   },
   methods: {
+
     seleccionarCategoria(idCategory) {
       // var nombre_categoria;
 
@@ -195,19 +214,32 @@ export default {
 
         this.cat = idCategory;
         this.step++;
-      } else {
+      } else if(idCategory === null){
+        this.txt_buscar = ""; 
+        this.step=1;
+      }else{
         this.cat = "Categorías";
         this.step--;
       }
 
-      // switch () {
-      //   case null:
-      //     break;
-      //   case category.nombreCategoria:
-      //     break;
-      //   default:
-      // }
     },
+   filterMenuByName() {
+    
+   if (this.txt_buscar === '' || this.txt_buscar === null || this.txt_buscar.value === 0 || this.txt_buscar.value === "" ){
+   
+     this.step--;
+     return ;
+   }else{
+
+  const search = this.txt_buscar.toLowerCase().trim();
+  this.items_menu = this.menuItems.items.filter(f => f.nombre_Item.toLowerCase().indexOf(search) > -1)
+     this.step = 2;
+    return this.items_menu;
+    
+   
+   } 
+ },
+
   },
 };
 </script>
