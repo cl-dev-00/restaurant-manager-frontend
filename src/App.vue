@@ -2,7 +2,6 @@
   <v-app>
 
     <top-bar/>
-
     <v-main>
       <router-view />
     </v-main>

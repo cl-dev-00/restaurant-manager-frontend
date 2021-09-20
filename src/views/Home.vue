@@ -1,15 +1,139 @@
 <template>
-  <hello-world />
+
+  <v-row align="center" justify="center" >
+    <v-col class="col-12 mt-5 fadeInUpBig" align="center" justify="center">
+      <!-- AQUI PONER EL LOGO -->
+      <v-img
+        max-height="400"
+        max-width="600"
+        src="https://w7.pngwing.com/pngs/376/821/png-transparent-restaurant-menu-delivery-brand-dish-service-in-place-label-service-logo.png"
+      ></v-img>
+    </v-col>
+
+    <!-- BOTONES -->
+    <v-col
+      class="mt-5 zoomInDown"
+      cols="12"
+      sm="6"
+      align="center"
+      justify="center"
+      v-for="item in items"
+      :key="item.title"
+    >
+      <v-btn
+        min-height="120"
+        max-height="120"
+        min-width="90%"
+        max-width="90%"
+        class="mx-auto"
+        color="#222 "
+        :to="item.path"
+      >
+        <v-icon left color="white" size="40"> {{ item.icon }}</v-icon>
+        <span class="white--text ml-5"> {{ item.title }}</span>
+      </v-btn>
+    </v-col>
+    <v-col cols="12" md="6"></v-col>
+  </v-row>
+
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+import routersInfo from "../router/routers-info";
 
-  export default {
-    name: 'Home',
-
-    components: {
-      HelloWorld,
-    },
-  }
+export default {
+  mounted() {},
+  data: () => ({
+    drawer: null,
+    items: [
+      {
+        title: "Módulo Mesero",
+        icon: "mdi-clipboard-list-outline",
+        path: routersInfo.waiters.path,
+      },
+      {
+        title: "Módulo Cocina",
+        icon: "mdi-chef-hat",
+        path: routersInfo.kitchenroom.path,
+      },
+    ],
+  }),
+};
 </script>
+
+<style lang="scss" scoped>
+
+.zoomInDown {
+  -webkit-animation-name: zoomInDown;
+  animation-name: zoomInDown;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  }
+  @-webkit-keyframes zoomInDown {
+  0% {
+  opacity: 0;
+  -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);
+  transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);
+  -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+  animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+  }
+  60% {
+  opacity: 1;
+  -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+  transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+  -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  }
+  }
+  @keyframes zoomInDown {
+  0% {
+  opacity: 0;
+  -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);
+  transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);
+  -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+  animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+  }
+  60% {
+  opacity: 1;
+  -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+  transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+  -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  }
+  } 
+
+   .fadeInUpBig {
+  -webkit-animation-name: fadeInUpBig;
+  animation-name: fadeInUpBig;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  }
+  @-webkit-keyframes fadeInUpBig {
+  0% {
+  opacity: 0;
+  -webkit-transform: translate3d(0, 2000px, 0);
+  transform: translate3d(0, 2000px, 0);
+  }
+  100% {
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+  }
+  }
+  @keyframes fadeInUpBig {
+  0% {
+  opacity: 0;
+  -webkit-transform: translate3d(0, 2000px, 0);
+  transform: translate3d(0, 2000px, 0);
+  }
+  100% {
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+  }
+  } 
+</style>
