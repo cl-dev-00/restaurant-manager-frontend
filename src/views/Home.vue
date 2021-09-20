@@ -1,18 +1,18 @@
 <template>
 
-  <v-row align="center" justify="center" >
+  <v-row align="center" justify="center" class="bg">
     <v-col class="col-12 mt-5 fadeInUpBig" align="center" justify="center">
       <!-- AQUI PONER EL LOGO -->
       <v-img
         max-height="400"
         max-width="600"
-        src="https://w7.pngwing.com/pngs/376/821/png-transparent-restaurant-menu-delivery-brand-dish-service-in-place-label-service-logo.png"
+        src="../assets/logo1.png"
       ></v-img>
     </v-col>
 
     <!-- BOTONES -->
     <v-col
-      class="mt-5 zoomInDown"
+      class="mt-5 zoomInDown btn_home"
       cols="12"
       sm="6"
       align="center"
@@ -26,11 +26,12 @@
         min-width="90%"
         max-width="90%"
         class="mx-auto"
-        color="#222 "
+        color="#fff"
         :to="item.path"
+        outlined
       >
         <v-icon left color="white" size="40"> {{ item.icon }}</v-icon>
-        <span class="white--text ml-5"> {{ item.title }}</span>
+        <span class="white--text ml-5 txt_btn" > {{ item.title }}</span>
       </v-btn>
     </v-col>
     <v-col cols="12" md="6"></v-col>
@@ -56,12 +57,36 @@ export default {
         icon: "mdi-chef-hat",
         path: routersInfo.kitchenroom.path,
       },
+        
     ],
   }),
 };
 </script>
 
 <style lang="scss" scoped>
+
+.bg{
+   background: url("../assets/background2.png") repeat-y center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  min-height: 100%;
+  margin-right: 1px;
+  margin-top: 1px;
+}
+
+.btn_home .v-btn--outlined {
+    
+    border-width: thick;
+  }
+
+.txt_btn{
+  font-size: 17pt;
+  white-space: normal;
+  width: 150px;
+} 
+
 
 .zoomInDown {
   -webkit-animation-name: zoomInDown;

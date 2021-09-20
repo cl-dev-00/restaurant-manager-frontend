@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--Barra de navegacion superior-->
-    <v-app-bar color="black accent-4" dark>
+    <v-app-bar color="black accent-4" dark >
       <!--Icono para menu desplegale-->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
 
