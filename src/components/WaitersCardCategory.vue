@@ -1,6 +1,6 @@
 <template>
-  <v-col cols="12" sm="7" class="col-menu">
-    <v-row style="margin-bottom: -40px">
+  <v-col  class="col-menu col-12">
+    <v-row style="margin-bottom: -40px;">
       <v-col class=" col-10  ">
         <v-text-field
           label="Buscar"
@@ -262,5 +262,7 @@ export default {
   align-content: center;
   color: white;
   padding: 10px;
+  
+  
 }
 </style>

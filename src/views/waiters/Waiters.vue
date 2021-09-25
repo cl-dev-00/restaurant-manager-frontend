@@ -1,14 +1,83 @@
 <template>
   <v-container>
-    <v-row>
-      <waiter-card-category
-      :itemSelects="itemSelects" 
-      @updateSelectItems="updateSelectItems"
-      />
-      <waiters-form-order 
-      :itemSelects="itemMenuOrder" 
-      @clearitemSelects="clearitemSelects"
-      />
+    <v-row class="mt-5 mb-5 align-center justify-center">
+      <v-btn-toggle
+        v-model="toggle_one"
+        shaped
+        borderless
+        mandatory
+        color="green accent-4"
+        id="toggle1"
+        class="justify-center"
+      >
+        <v-btn @click="selectWindow(1)" class="btn1">
+          <v-icon
+            size="28"
+            class="mr-1"
+            :color="active_1 ? undefined : 'green accent-4'"
+            >mdi-hamburger-plus</v-icon
+          >
+          <span class="hidden-xs-only">Nueva Orden</span>
+        </v-btn>
+
+        <v-btn @click="selectWindow(2)" class="btn1">
+          <v-icon
+            size="28"
+            class="mr-1"
+            :color="active_2 ? undefined : 'green accent-4'"
+            >mdi-clock-time-three-outline</v-icon
+          >
+          <span class="hidden-xs-only">Ver Ordenes Pendientes</span>
+        </v-btn>
+      </v-btn-toggle>
+    </v-row>
+
+    <v-row class="align-center justify-center">
+      <v-window v-model="step" class="">
+        <v-window-item :value="1">
+          <v-row>
+            <v-col cols="12" sm="6" md="6">
+              <waiter-card-category
+                :itemSelects="itemSelects"
+                @updateSelectItems="updateSelectItems"
+              />
+            </v-col>
+            <v-col cols="12" sm="6" md="6">
+              <waiters-form-order
+                :itemSelects="itemMenuOrder"
+                @clearitemSelects="clearitemSelects"
+              />
+            </v-col>
+          </v-row>
+        </v-window-item>
+
+        <v-window-item :value="2">
+          <v-row
+            class="pt-8 pl-8 pr-8 pb-8 fill-height align-center justify-center"
+          >
+            <v-col class="col-12">
+              <masonry
+                :cols="{ default: 3, 1000: 3, 700: 2, 400: 1 }"
+                :gutter="{ default: '10px', 700: '10px' }"
+              >
+                <div
+                  v-for="account in accounts"
+                  :key="account.idCuenta"
+                  class="mb-3 zoomInUp"
+                  id="items"
+                >
+                  <kitchen-card-order
+                    :nombreCliente="account.nombreCliente"
+                    :nombreMesero="account.employee.nombre"
+                    :orders="account.orders"
+                    @doneOrderEmit="() => doneOrder(account.idCuenta)"
+                  />
+                </div>
+              </masonry>
+            </v-col>
+          </v-row>
+        </v-window-item>
+      </v-window>
     </v-row>
   </v-container>
 </template>
@@ -16,30 +85,94 @@
 <script>
 import WaiterCardCategory from "../../components/WaitersCardCategory.vue";
 import WaitersFormOrder from "../../components/WaitersFormOrder.vue";
+
+import KitchenCardOrder from "../../components/KitchenCardOrder.vue";
+import Vue from "vue";
+import VueMasonry from "vue-masonry-css";
+
+Vue.use(VueMasonry);
+
 export default {
   components: {
     WaiterCardCategory,
     WaitersFormOrder,
+
+    KitchenCardOrder,
   },
+
+  mounted() {
+    this.$services.kitchenRoom.getAccounts().then((response) => {
+      if (response.data.ok) {
+        this.hasItems = response.data.collection.hasItems;
+        this.total = response.data.collection.total;
+        this.accounts = response.data.collection.items;
+      }
+    });
+  },
+
   data() {
     return {
       itemSelects: [],
-      itemMenuOrder: []
+      itemMenuOrder: [],
+      switch1: true,
+      step: 1,
+      toggle_one: 0,
+      active_1: false,
+      active_2: true,
+
+      hasItems: false,
+      accounts: [],
+      total: 0,
     };
   },
   methods: {
     updateSelectItems(items) {
       this.itemSelects = items;
-      this.itemMenuOrder = items.map(item => ({
+      this.itemMenuOrder = items.map((item) => ({
         nombre_Item: item.nombre_Item,
         id_item_name: item.id_item_name,
         precio: item.precio,
         cantidad: 1,
-        importe: 0
+        importe: 0,
       }));
     },
     clearitemSelects() {
       this.itemMenuOrder = [];
+    },
+
+    selectWindow(op) {
+      if (op === 1) {
+        this.active_1 = false;
+        this.active_2 = true;
+        this.step = 1;
+      } else {
+        this.active_1 = true;
+        this.active_2 = false;
+        this.step = 2;
+      }
+    },
+
+    doneOrder(id) {
+      const account = this.accounts.find((account) => account.idCuenta === id);
+      account.done = true;
+      account.idEmpleado = account.employee.idEmpleado;
+
+      delete account.orders;
+      delete account.employee;
+
+      this.$services.kitchenRoom
+        .updateAccount(id, account)
+        .then((response) => {
+          if (response.data.ok) {
+            this.accounts = this.accounts.filter(
+              (account) => account.done !== true
+            );
+            console.log(this.accounts);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
@@ -47,4 +180,11 @@ export default {
 
 
 <style lang="css" scoped>
+#toggle1 {
+  width: 700px;
+}
+
+.btn1 {
+  width: 40%;
+}
 </style>

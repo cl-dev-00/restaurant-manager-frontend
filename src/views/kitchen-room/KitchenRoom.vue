@@ -72,6 +72,7 @@ export default {
     };
   },
   methods: {
+    
     doneOrder(id) {
       const account = this.accounts.find((account) => account.idCuenta === id);
       account.done = true;

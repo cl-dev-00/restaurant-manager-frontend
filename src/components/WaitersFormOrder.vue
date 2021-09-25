@@ -1,6 +1,6 @@
 <template>
   <!-- SECCION DE ORDEN category.nombreCategoria  -->
-  <v-col cols="12" sm="5" class="col-orden">
+  <v-col class="col-orden col-12">
     <v-form ref="form" class="mx-2" lazy-validation>
       <!-- TEXTO DE ORDEN -->
       <v-row>
