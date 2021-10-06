@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--Barra de navegacion superior-->
-    <v-app-bar color="black accent-4" dark >
+    <v-app-bar color="black accent-4" dark>
       <!--Icono para menu desplegale-->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
 
@@ -9,20 +9,60 @@
 
       <v-spacer></v-spacer>
 
-      <v-menu left bottom
-        ><!--Icono para opciones de barra superior-->
+      <!--Icono para opciones de barra superior   -->
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-width="100"
+        offset-x
+        transition="slide-y-transition"
+       
+        >
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
+            <v-icon size="35">mdi-account-circle-outline</v-icon>
           </v-btn>
         </template>
 
-        <v-list
-          ><!--Lista de elementos opciones, boton barra superior-->
-          <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
+        <v-card dark max-width="300">
+          <v-list>
+            <v-list-item>
+              <v-list-item-avatar>
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPNbOneenDa9mbmD7tjFZgsWnd1BhhAPA5GUwBvtAm9ANMe-_PN1lQL3W2FSPq7J2iXDU&usqp=CAU"
+                  
+                  alt="User"
+                />
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ nombre }}</v-list-item-title>
+                <v-list-item-subtitle>{{ rol }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+         <v-list>
+          <v-list-item v-for="item in items_usuario" :key="item.title" link>
+            <v-list-item-icon >
+              <v-icon size="30">{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                <!-- <router-link :to="item.path">{{ item.title }}</router-link> -->
+                {{ item.title }}
+              </v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="menu = false"> Cerar </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-menu>
     </v-app-bar>
     <!-- SlideBar de navegacion izquierdo -->
@@ -47,7 +87,12 @@
 
       <v-list
         ><!-- Lista de Items del Menu -->
-        <v-list-item :to="item.path" v-for="item in items" :key="item.title" link>
+        <v-list-item
+          :to="item.path"
+          v-for="item in items"
+          :key="item.title"
+          link
+        >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -73,11 +118,42 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { title: "Inicio", icon: "mdi-view-dashboard", path: routersInfo.home.path },
-      { title: "Mesero", icon: "mdi-clipboard-list-outline", path: routersInfo.waiters.path },
-      { title: "Cocina", icon: "mdi-chef-hat", path: routersInfo.kitchenroom.path },
-      { title: "Módulo Cajero", icon: "mdi-cash-register", path: routersInfo.cashier.path},
+      {
+        title: "Inicio",
+        icon: "mdi-view-dashboard",
+        path: routersInfo.home.path,
+      },
+      {
+        title: "Mesero",
+        icon: "mdi-clipboard-list-outline",
+        path: routersInfo.waiters.path,
+      },
+      {
+        title: "Cocina",
+        icon: "mdi-chef-hat",
+        path: routersInfo.kitchenroom.path,
+      },
+      {
+        title: "Módulo Cajero",
+        icon: "mdi-cash-register",
+        path: routersInfo.cashier.path,
+      },
     ],
+
+    items_usuario: [
+      { title: "Mi Cuenta", icon: "mdi-account-details" },
+      { title: "Configuración", icon: "mdi-cog" },
+      { title: "Salir", icon: "mdi-exit-to-app" },
+    ],
+
+   datos_usuario:[
+      {nombre: "Tu papi chulo", rol: "Dueño de tu corazón bb"},
+   ],
+
+    menu: false,
+    nombre: "Nombre: Tu papi chulo", 
+    rol: "Rol: Dueño de tu corazón bb",
+    
   }),
 };
 </script>

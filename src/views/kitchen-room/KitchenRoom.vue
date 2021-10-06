@@ -37,7 +37,7 @@
           <div class="orders">
             <v-container fluid>
               <masonry
-                :cols="{ default: 3, 1000: 3, 700: 2, 550: 1 }"
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div

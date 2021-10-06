@@ -77,9 +77,10 @@
                 </template>
                 <template v-slot:default="dialog">
                   <v-btn
-                    color="blue"
+                    color="primary"
                     block
                     depressed
+                    height="50"
                     @click="dialog.value = false"
                     >Cerrar</v-btn
                   >
@@ -100,7 +101,7 @@
           >
             <v-col class="col-12">
               <masonry
-                :cols="{ default: 3, 1000: 3, 700: 2, 550: 1 }"
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div

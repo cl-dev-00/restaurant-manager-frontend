@@ -49,39 +49,42 @@
                 @clearitemSelects="clearitemSelects"
               />
             </v-col>
-            <v-col class=" hidden-sm-and-up">
- <v-dialog transition="dialog-top-transition" max-width="400">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                fab
-                dark
-                color="success"
-                fixed
-                right
-                top
-                style="margin-top: 410px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon dark size="40">mdi-plus</v-icon>
-              </v-btn>
-            </template>
-            <template v-slot:default="dialog">
-              <v-btn color="blue" block depressed @click="dialog.value = false"
-                >Cerrar</v-btn
-              >
-              <waiter-card-category
-                style="background-color: white"
-                :itemSelects="itemSelects"
-                @updateSelectItems="updateSelectItems"
-              />
-            </template>
-          </v-dialog>
-
+            <v-col class="hidden-sm-and-up">
+              <v-dialog transition="dialog-top-transition" max-width="400">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    fab
+                    dark
+                    color="success"
+                    fixed
+                    right
+                    top
+                    style="margin-top: 410px"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon dark size="40">mdi-plus</v-icon>
+                  </v-btn>
+                </template>
+                <template v-slot:default="dialog">
+                  <v-btn
+                    color="primary"
+                    block
+                    depressed
+                    height="50"
+                    @click="dialog.value = false"
+                  >
+                    Cerrar
+                  </v-btn>
+                  <waiter-card-category
+                    style="background-color: white"
+                    :itemSelects="itemSelects"
+                    @updateSelectItems="updateSelectItems"
+                  />
+                </template>
+              </v-dialog>
             </v-col>
           </v-row>
-
-         
         </v-window-item>
 
         <v-window-item :value="2">
@@ -90,7 +93,7 @@
           >
             <v-col class="col-12">
               <masonry
-                :cols="{ default: 3, 1000: 3, 700: 2, 550: 1 }"
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div
