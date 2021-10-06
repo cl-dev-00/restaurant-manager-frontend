@@ -116,7 +116,7 @@ export default {
   },
   components: {},
   mounted() {
-    this.$services.waiters
+    this.$services.orders
       .getCategories()
       .then((response) => {
         if (response.data.ok) {
@@ -129,7 +129,7 @@ export default {
         console.log(error);
       });
 
-    this.$services.waiters
+    this.$services.orders
       .getMenuItems()
       .then((response) => {
         if (response.data.ok) {

@@ -60,7 +60,7 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="menu = false"> Cerar </v-btn>
+            <v-btn color="primary" text @click="menu = false"> Cerrar </v-btn>
           </v-card-actions>
         </v-card>
       </v-menu>
@@ -124,11 +124,6 @@ export default {
         path: routersInfo.home.path,
       },
       {
-        title: "Mesero",
-        icon: "mdi-clipboard-list-outline",
-        path: routersInfo.waiters.path,
-      },
-      {
         title: "Cocina",
         icon: "mdi-chef-hat",
         path: routersInfo.kitchenroom.path,
@@ -136,7 +131,7 @@ export default {
       {
         title: "Módulo Cajero",
         icon: "mdi-cash-register",
-        path: routersInfo.cashier.path,
+        path: routersInfo.orders.path,
       },
     ],
 

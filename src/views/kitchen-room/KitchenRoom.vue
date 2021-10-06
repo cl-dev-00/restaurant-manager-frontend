@@ -32,7 +32,7 @@
       </v-btn-toggle>
     </v-row>
     <v-row class="align-center justify-center">
-      <v-window v-model="step" class="">
+      <v-window v-model="step" class="col-12">
         <v-window-item :value="1">
           <div class="orders">
             <v-container fluid>
@@ -166,6 +166,7 @@ export default {
 
 
 <style lang="css" scoped>
+
 .zoomInUp {
   -webkit-animation-name: zoomInUp;
   animation-name: zoomInUp;

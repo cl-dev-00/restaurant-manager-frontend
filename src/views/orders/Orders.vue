@@ -8,7 +8,7 @@
         mandatory
         color="green accent-4"
         id="toggle1"
-        class="justify-center"
+        class="justify-center mr-0 pr-0 pl-0 ml-0"
       >
         <v-btn @click="selectWindow(1)" class="btn1">
           <v-icon
@@ -25,15 +25,24 @@
             size="28"
             class="mr-1"
             :color="active_2 ? undefined : 'green accent-4'"
-            >mdi-clock-time-three-outline</v-icon
+            >mdi-format-list-bulleted-square</v-icon
           >
-          <span class="hidden-xs-only">Ver Ordenes Pendientes</span>
+          <span class="hidden-xs-only">Ver Ordenes</span>
+        </v-btn>
+        <v-btn @click="selectWindow(3)" class="btn1">
+          <v-icon
+            size="28"
+            class="mr-1"
+            :color="active_3 ? undefined : 'green accent-4'"
+            >mdi-cash-register</v-icon
+          >
+          <span class="hidden-xs-only">Opciones de Caja</span>
         </v-btn>
       </v-btn-toggle>
     </v-row>
 
     <v-row class="align-center justify-center">
-      <v-window v-model="step" class="">
+      <v-window v-model="step" class="col-12">
         <v-window-item :value="1">
           <v-row>
             <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">
@@ -73,9 +82,8 @@
                     depressed
                     height="50"
                     @click="dialog.value = false"
+                    >Cerrar</v-btn
                   >
-                    Cerrar
-                  </v-btn>
                   <waiter-card-category
                     style="background-color: white"
                     :itemSelects="itemSelects"
@@ -113,6 +121,32 @@
             </v-col>
           </v-row>
         </v-window-item>
+
+        <v-window-item :value="3">
+          <v-card class="mx-auto" max-width="344">
+            <v-img
+              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+              height="200px"
+            ></v-img>
+            <v-card-title> Aqui van las opciones de Caja </v-card-title>
+            <v-card-subtitle> a </v-card-subtitle>
+            <v-card-actions>
+              <v-btn color="orange lighten-2" text> Abrir </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn icon @click="show = !show">
+                <v-icon>{{
+                  show ? "mdi-chevron-up" : "mdi-chevron-down"
+                }}</v-icon>
+              </v-btn>
+            </v-card-actions>
+            <v-expand-transition>
+              <div v-show="show">
+                <v-divider></v-divider>
+                <v-card-text> puto el que lo lea </v-card-text>
+              </div>
+            </v-expand-transition>
+          </v-card>
+        </v-window-item>
       </v-window>
     </v-row>
   </v-container>
@@ -129,6 +163,7 @@ import VueMasonry from "vue-masonry-css";
 Vue.use(VueMasonry);
 
 export default {
+  name: 'Orders',
   components: {
     WaiterCardCategory,
     WaitersFormOrder,
@@ -155,10 +190,13 @@ export default {
       toggle_one: 0,
       active_1: false,
       active_2: true,
+      active_3: true,
 
       hasItems: false,
       accounts: [],
       total: 0,
+
+      show: false,
     };
   },
   methods: {
@@ -180,11 +218,21 @@ export default {
       if (op === 1) {
         this.active_1 = false;
         this.active_2 = true;
+        this.active_3 = true;
+
         this.step = 1;
-      } else {
+      } else if (op === 2) {
         this.active_1 = true;
         this.active_2 = false;
+        this.active_3 = true;
+
         this.step = 2;
+      } else {
+        this.active_1 = true;
+        this.active_2 = true;
+        this.active_3 = false;
+
+        this.step = 3;
       }
     },
 
@@ -229,6 +277,6 @@ export default {
 }
 
 .btn1 {
-  width: 40%;
+  width: 31%;
 }
 </style>

@@ -48,11 +48,6 @@ export default {
     drawer: null,
     items: [
       {
-        title: "Módulo Mesero",
-        icon: "mdi-clipboard-list-outline",
-        path: routersInfo.waiters.path,
-      },
-      {
         title: "Módulo Cocina",
         icon: "mdi-chef-hat",
         path: routersInfo.kitchenroom.path,
@@ -60,7 +55,7 @@ export default {
        {
         title: "Módulo Cajero",
         icon: "mdi-cash-register",
-        path: routersInfo.cashier.path,
+        path: routersInfo.order.path,
       },
         
     ],

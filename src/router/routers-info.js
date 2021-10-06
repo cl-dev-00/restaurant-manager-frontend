@@ -1,9 +1,8 @@
 import Home from '../views/Home.vue'
 import About from '../views/Home.vue'
 import Administration from '../views/administration/Administration.vue'
-import Cashier from '../views/cashier/Cashier.vue'
+import Orders from '../views/orders/Orders.vue'
 import KitchenRoom from '../views/kitchen-room/KitchenRoom.vue'
-import Waiters from '../views/waiters/Waiters.vue'
 
 const routersInfo = {
     home: {
@@ -21,20 +20,15 @@ const routersInfo = {
         name: 'Administration',
         component: Administration
     }, 
-    cashier: {
-        path: '/cashier',
-        name: 'Cashier',
-        component: Cashier
+    order: {
+        path: '/orders',
+        name: 'Orders',
+        component: Orders
     }, 
     kitchenroom: {
         path: '/kitchen-room',
         name: 'KitchenRoom',
         component: KitchenRoom
-    }, 
-    waiters: {
-        path: '/waiters',
-        name: 'Waiters',
-        component: Waiters
     }, 
     
 };
