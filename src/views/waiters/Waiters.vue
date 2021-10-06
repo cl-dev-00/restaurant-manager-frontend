@@ -36,8 +36,9 @@
       <v-window v-model="step" class="">
         <v-window-item :value="1">
           <v-row>
-            <v-col cols="12" sm="6" md="6">
+            <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">
               <waiter-card-category
+                class="col-menu"
                 :itemSelects="itemSelects"
                 @updateSelectItems="updateSelectItems"
               />
@@ -48,7 +49,39 @@
                 @clearitemSelects="clearitemSelects"
               />
             </v-col>
+            <v-col class=" hidden-sm-and-up">
+ <v-dialog transition="dialog-top-transition" max-width="400">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                fab
+                dark
+                color="success"
+                fixed
+                right
+                top
+                style="margin-top: 410px"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon dark size="40">mdi-plus</v-icon>
+              </v-btn>
+            </template>
+            <template v-slot:default="dialog">
+              <v-btn color="blue" block depressed @click="dialog.value = false"
+                >Cerrar</v-btn
+              >
+              <waiter-card-category
+                style="background-color: white"
+                :itemSelects="itemSelects"
+                @updateSelectItems="updateSelectItems"
+              />
+            </template>
+          </v-dialog>
+
+            </v-col>
           </v-row>
+
+         
         </v-window-item>
 
         <v-window-item :value="2">
@@ -57,7 +90,7 @@
           >
             <v-col class="col-12">
               <masonry
-                :cols="{ default: 3, 1000: 3, 700: 2, 400: 1 }"
+                :cols="{ default: 3, 1000: 3, 700: 2, 550: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div
@@ -180,6 +213,14 @@ export default {
 
 
 <style lang="css" scoped>
+@media only screen and (max-width: 600px) {
+  .col-menu {
+    visibility: hidden;
+    height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
 #toggle1 {
   width: 700px;
 }

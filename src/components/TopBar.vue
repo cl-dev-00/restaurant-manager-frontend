@@ -74,8 +74,9 @@ export default {
     drawer: null,
     items: [
       { title: "Inicio", icon: "mdi-view-dashboard", path: routersInfo.home.path },
-      { title: "Mesero", icon: "mdi-forum", path: routersInfo.waiters.path },
-      { title: "Cocina", icon: "mdi-forum", path: routersInfo.kitchenroom.path },
+      { title: "Mesero", icon: "mdi-clipboard-list-outline", path: routersInfo.waiters.path },
+      { title: "Cocina", icon: "mdi-chef-hat", path: routersInfo.kitchenroom.path },
+      { title: "Módulo Cajero", icon: "mdi-cash-register", path: routersInfo.cashier.path},
     ],
   }),
 };

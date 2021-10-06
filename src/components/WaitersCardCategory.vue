@@ -1,32 +1,31 @@
 <template>
-  <v-col  class="col-menu col-12">
-    <v-row style="margin-bottom: -40px;">
-      <v-col class=" col-10  ">
+  <v-col  class="col-12 pl-0 ml-0 mr-0 pr-0 mb-0 pb-0">
+    <v-row style="margin-bottom: -40px;" class="ml-0 mr-0 pl-0 pr-0">
+      <v-col class=" col-8 ml-0 pl-4 pr-0">
         <v-text-field
           label="Buscar"
           outlined
           clearable
-          v-model="txt_buscar"
-        
+          v-model="txt_buscar"       
         ></v-text-field>
         
       </v-col>
-      <v-col class=" col-2">
+      <v-col class="col-1 mr-0 pr-0">
         <v-btn
         color="#222"
         outlined
         depressed
         min-height="63%"
-        min-width="100%"
-        class=" mx-auto" 
+        
         @click="filterMenuByName()">
-          <v-icon size="35">mdi-magnify</v-icon>
+          <v-icon size="30">mdi-magnify</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row class="col-12 ml-0 mr-0 pl-0 pr-0">
-      <v-card class="mx-auto col-12" color="rgb(247, 247, 247)">
-        <v-card-title class="text-h6 font-weight-regular justify-space-between">
+     
+      <v-card class="col-12" color="rgb(247, 247, 247)">
+        <v-card-title class="text-h6 font-weight-regular justify-space-between">     
           <v-btn
             :disabled="step === 1"
             text
@@ -38,7 +37,7 @@
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
-            <v-row class="ml-2">
+            <v-row class="ml-0">
               <v-col
                 v-for="category in categories.items"
                 :key="category.idCategoria"
@@ -47,7 +46,7 @@
                 md="4"
                 lg="3"
                 xl="2"
-                class="mb-4"
+                class="mb-0 pr-0 pl-0 mr-0 ml-0"
               >
                 <v-btn
                   min-height="120"
@@ -245,14 +244,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
-@media only screen and (max-width: 600px) {
-  .col-menu {
-    visibility: hidden;
-    height: 0;
-    padding: 0;
-    margin: 0;
-  }
-}
+
 
 #boton_categoria .boton_a {
   font-size: 2ch;

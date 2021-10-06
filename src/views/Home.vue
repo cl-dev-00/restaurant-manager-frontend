@@ -57,6 +57,11 @@ export default {
         icon: "mdi-chef-hat",
         path: routersInfo.kitchenroom.path,
       },
+       {
+        title: "Módulo Cajero",
+        icon: "mdi-cash-register",
+        path: routersInfo.cashier.path,
+      },
         
     ],
   }),

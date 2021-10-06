@@ -95,36 +95,23 @@
           ></v-text-field>
         </v-col>
         <v-col class="col-3">$ {{ menu.precio }}</v-col>
+        <v-col class="col-12"
+          ><v-textarea
+            class="ml-3 mr-3"
+            outlined
+            name="input-2-4"
+            label="Comentario Opcional"
+            v-model="comentarios"
+            prepend-icon="mdi-comment-text-multiple"
+            clearable
+            rows="1"
+          ></v-textarea>
+        </v-col>
       </v-row>
 
-      <v-row class="buscar_en_responsivo">
-        <v-text-field
-          class="ml-3 mr-3"
-          label="Buscar"
-          block
-          outlined
-          clearable
-          prepend-inner-icon="mdi-magnify-plus"
-        ></v-text-field>
-      </v-row>
-
-      <!-- INPUT PARA COMENTARIOS -->
-      <v-divider class="mt-2"></v-divider>
-      <v-row class="mt-3">
-        <h4 class="ml-2 mt-0 mb-2 col-12">Comentarios o Indicaciones</h4>
-        <v-textarea
-          class="ml-3 mr-3"
-          outlined
-          name="input-2-4"
-          label="Opcional"
-          v-model="comentarios"
-          prepend-icon="mdi-comment-text-multiple"
-          clearable
-        ></v-textarea>
-      </v-row>
       <!-- TOTALES -->
-      <v-divider></v-divider>
-      <v-row style="margin-bottom: -25px">
+      <v-divider class="mt-6 mb-2"></v-divider>
+      <v-row style="margin-bottom: -25px" class="mt-2">
         <!-- Sub Total -->
         <v-col class="col-8"><h4>Sub Total</h4></v-col>
         <v-col class="col-4">$ {{ subTotal }}</v-col>
@@ -141,22 +128,45 @@
       </v-row>
       <!-- BOTON COCINA-->
       <v-row>
-        <v-btn
-          x-large
-          color="success"
-          @click="addOrder"
-          block
-          class="mb-5"
-          :disabled="itemSelects.length < 1"
-        >
-          Enviar a Cocina
-        </v-btn>
+        <v-col cols="col-12">
+          <v-dialog transition="dialog-bottom-transition" max-width="600">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                x-large
+                color="success"
+                @click="addOrder"
+                block
+                class="mb-5"
+                :disabled="itemSelects.length < 1"
+              >
+                Enviar a Cocina</v-btn
+              >
+            </template>
+            <template v-slot:default="dialog">
+              <v-card>
+                <v-toolbar color="success" dark
+                  >Orden Enviada</v-toolbar
+                >
+                <v-card-text>
+                  <div class="text-h6 mt-6">Tu orden ha sido enviada a cocina correctamente.</div>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                  <v-btn text @click="dialog.value = false">Cerrar</v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+        </v-col>
       </v-row>
     </v-form>
   </v-col>
 </template>
 
 <script>
+import WaiterCardCategory from "../components/WaitersCardCategory.vue";
+
 export default {
   name: "WaitersFormOrder",
   props: {
@@ -165,7 +175,9 @@ export default {
       required: true,
     },
   },
-  components: {},
+  components: {
+    WaiterCardCategory,
+  },
 
   data() {
     return {
@@ -292,8 +304,8 @@ export default {
                 if (response.data.ok) {
                   !this.$refs.form.reset();
                   this.$emit("clearitemSelects");
-                  console.log('orders preview', orders)
-                  console.log('response', response.data)
+                  console.log("orders preview", orders);
+                  console.log("response", response.data);
                   console.log("Ah perro se logro xdxd");
                 }
               })
