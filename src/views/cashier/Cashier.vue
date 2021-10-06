@@ -42,7 +42,7 @@
     </v-row>
 
     <v-row class="align-center justify-center">
-      <v-window v-model="step" class="">
+      <v-window v-model="step" class="col-12">
         <v-window-item :value="1">
           <v-row>
             <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">

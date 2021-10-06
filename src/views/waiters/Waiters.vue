@@ -33,7 +33,7 @@
     </v-row>
 
     <v-row class="align-center justify-center">
-      <v-window v-model="step" class="">
+      <v-window v-model="step" class="col-12">
         <v-window-item :value="1">
           <v-row>
             <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">
@@ -87,12 +87,11 @@
           </v-row>
         </v-window-item>
 
-        <v-window-item :value="2">
-          <v-row
-            class="pt-8 pl-8 pr-8 pb-8 fill-height align-center justify-center"
-          >
+        <v-window-item :value="2" >
+          <v-row>
             <v-col class="col-12">
               <masonry
+              class="col-12"
                 :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
