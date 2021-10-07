@@ -163,6 +163,7 @@ import VueMasonry from "vue-masonry-css";
 Vue.use(VueMasonry);
 
 export default {
+  name: 'Orders',
   components: {
     WaiterCardCategory,
     WaitersFormOrder,

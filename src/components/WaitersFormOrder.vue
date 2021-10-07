@@ -284,7 +284,7 @@ export default {
         idEmpleado: this.$store.getters.user.idEmpleado,
       };
 
-      this.$services.waiters
+      this.$services.orders
         .createAccount(account)
         .then((response) => {
           if (response.data.ok) {
@@ -298,7 +298,7 @@ export default {
               })
             );
 
-            this.$services.waiters
+            this.$services.orders
               .createOrders({ orders })
               .then((response) => {
                 if (response.data.ok) {

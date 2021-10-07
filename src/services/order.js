@@ -1,4 +1,4 @@
-export default class Waiters {
+export default class Order {
 
     constructor(Axios, url) {
         this.axios = Axios;

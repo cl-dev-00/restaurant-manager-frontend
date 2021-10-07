@@ -169,6 +169,7 @@ export default {
 
 
 <style lang="css" scoped>
+
 .zoomInUp {
   -webkit-animation-name: zoomInUp;
   animation-name: zoomInUp;
