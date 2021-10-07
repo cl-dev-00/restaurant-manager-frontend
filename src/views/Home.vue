@@ -55,7 +55,7 @@ export default {
        {
         title: "Módulo Cajero",
         icon: "mdi-cash-register",
-        path: routersInfo.order.path,
+        path: routersInfo.orders.path,
       },
         
     ],
