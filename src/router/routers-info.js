@@ -20,7 +20,7 @@ const routersInfo = {
         name: 'Administration',
         component: Administration
     }, 
-    order: {
+    orders: {
         path: '/orders',
         name: 'Orders',
         component: Orders

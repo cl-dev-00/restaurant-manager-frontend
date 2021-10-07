@@ -129,7 +129,7 @@ export default {
         path: routersInfo.kitchenroom.path,
       },
       {
-        title: "Módulo Cajero",
+        title: "Ordenes",
         icon: "mdi-cash-register",
         path: routersInfo.orders.path,
       },
