@@ -160,7 +160,6 @@
           </v-dialog>
         </v-col>
       </v-row>
-      <v-btn @click="clearItemsSelects()">aaa</v-btn>
     </v-form>
   </v-col>
 </template>

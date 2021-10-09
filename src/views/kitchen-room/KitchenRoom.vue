@@ -45,16 +45,17 @@
                 
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
-                  <kitchen-card-order
-                  
+                 <card-order
+                    :tipoCard="tCocina"
                     :nombreCliente="account.nombreCliente"
                     :nombreMesero="account.employee.nombre"
                     :orders="account.orders"
                     @doneOrderEmit="() => doneOrder(account.idCuenta)"
-                  />
+                     />
+
                 </div>
               </masonry>
             </v-container>
@@ -94,16 +95,18 @@
 </template>
 
 <script>
-import KitchenCardOrder from "../../components/KitchenCardOrder.vue";
+
 import Vue from "vue";
 import VueMasonry from "vue-masonry-css";
 
 Vue.use(VueMasonry);
 const el = document.getElementById("items");
 
+import CardOrder from "../../components/CardOrder.vue"
+
 export default {
   components: {
-    KitchenCardOrder,
+   CardOrder,
   },
   mounted() {
     this.$services.kitchenRoom.getAccounts().then((response) => {
@@ -126,6 +129,7 @@ export default {
       active_2: true,
       step: 1,
       toggle_one: 0,
+      tCocina: "Cocina", 
     };
   },
   methods: {

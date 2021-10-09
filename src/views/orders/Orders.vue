@@ -108,7 +108,7 @@
                 <div
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
                    <card-order
@@ -131,7 +131,7 @@
                 <div
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
                  <card-order
@@ -154,7 +154,7 @@
                 <div
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
                  <card-order
@@ -177,7 +177,7 @@
                 <div
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
                  <card-order
@@ -232,7 +232,6 @@
 import WaiterCardCategory from "../../components/WaitersCardCategory.vue";
 import WaitersFormOrder from "../../components/WaitersFormOrder.vue";
 
-import KitchenCardOrder from "../../components/KitchenCardOrder.vue";
 
 //Cards de prueba
 import CardOrder from "../../components/CardOrder.vue"
@@ -250,7 +249,6 @@ export default {
     
     WaiterCardCategory,
     WaitersFormOrder,
-    KitchenCardOrder,
 
     CardOrder,
 

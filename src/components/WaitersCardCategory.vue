@@ -1,23 +1,26 @@
 <template>
-  <v-col class="col-12 pl-0 ml-0 mr-0 pr-0 mb-0 pb-0">
-    <v-row style="margin-bottom: -40px" class="ml-0 mr-0 pl-0 pr-0">
-      <v-col class="col-8 ml-0 pl-4 pr-0">
+  <v-col class="col-12 ml-0 mr-0 pl-0 pr-0">
+    <v-row style="margin-bottom: -40px" class="col-12 ml-0 mr-0 pl-0 pr-0 ">
+      <v-col class="col-12 pl-0 pr-0 d-inline-flex textBuscar">
         <v-text-field
           label="Buscar"
           outlined
           clearable
           v-model="txt_buscar"
+          class="rounded-r-0 rounded-l-lg mr-1 "
+          
+          color="teal darken-2"
+        
         ></v-text-field>
-      </v-col>
-      <v-col class="col-1 mr-0 pr-0">
-        <v-btn
-          color="#222"
-          outlined
+         <v-btn
+          color="teal darken-2"
+          
           depressed
-          min-height="63%"
+          min-height="65%"
+          class="rounded-l-0 rounded-r-lg btnBuscar"
           @click="filterMenuByName()"
         >
-          <v-icon size="30">mdi-magnify</v-icon>
+          <v-icon size="30" color="white">mdi-magnify</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -98,7 +101,6 @@
           </v-window-item>
         </v-window>
         <v-card-actions>
-          <v-btn @click="clearSelect()">aa</v-btn>
         </v-card-actions>
       </v-card>
     </v-row>
@@ -256,6 +258,18 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
+@media  only screen and (max-width: 600px) {
+  
+  .btnBuscar{
+    margin-right: 25px;
+  }
+  .textBuscar{
+    margin-left: 12px;
+  }
+
+}
+
 #boton_categoria .boton_a {
   font-size: 2ch;
   white-space: normal;

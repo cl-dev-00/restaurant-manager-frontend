@@ -1,6 +1,5 @@
 <template>
   <v-card id="card" min-height="auto" max-height="auto">
-   
     <!-- Header de las Card -->
     <v-list-item three-line :class="color">
       <v-list-item-content class="white--text">
@@ -10,12 +9,12 @@
         <v-list-item-subtitle class="white--text"
           >Mesero - Numero de Mesa</v-list-item-subtitle
         >
-        <v-list-item-subtitle class="white--text">{{
-          nombreMesero
-        }} - Nº Mesa</v-list-item-subtitle>
+        <v-list-item-subtitle class="white--text"
+          >{{ nombreMesero }} - Nº Mesa</v-list-item-subtitle
+        >
       </v-list-item-content>
     </v-list-item>
-  
+
     <!-- Listado de items de la orden   <waiter-card-list-orders :order="order" /> -->
     <v-responsive max-height="auto">
       <v-list two-line height="">
@@ -25,8 +24,7 @@
               <template>
                 <v-list-item>
                   <template v-slot:default="{ active }">
-                  
-                     <!-- Cantidad -->
+                    <!-- Cantidad -->
                     <v-list-item-action>
                       <v-list-item-title class="font-weight-bold">
                         {{ order.cantidad }}
@@ -45,20 +43,21 @@
                       >
                         {{ order.menu_item.nombre_Item }}
                       </v-list-item-title>
-                      <v-list-item-subtitle 
-                      class="text--primary"
-                          style=" 
+                      <v-list-item-subtitle
+                        class="text--primary"
+                        style="
                           white-space: normal;
                           word-wrap: break-word;
-                          width: 60px;                          
-                          ">
+                          width: 60px;
+                        "
+                      >
                         Comentario: {{ order.menu_item.detalles_item }}
                       </v-list-item-subtitle>
                     </v-list-item-content>
 
                     <!-- Like o Precio (Sub Total por item) -->
                     <!-- Like para Cocina -->
-                    <v-list-item-action v-if="tipoCard === 'Cocina'" >
+                    <v-list-item-action v-if="tipoCard === 'Cocina'">
                       <v-icon v-if="!active" color="grey lighten-1" small>
                         mdi-thumb-up
                       </v-icon>
@@ -67,8 +66,8 @@
                       </v-icon>
                     </v-list-item-action>
                     <!-- Precio para los demás -->
-                    <v-list-item-action v-if="tipoCard !== 'Cocina'" >
-                      <span>$ {{ order.importe}}</span>  
+                    <v-list-item-action v-if="tipoCard !== 'Cocina'">
+                      <span>$ {{ order.importe }}</span>
                     </v-list-item-action>
                   </template>
                 </v-list-item>
@@ -77,55 +76,118 @@
           </template>
         </v-list-item-group>
       </v-list>
-     <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-     <v-row class="mt-0 mb-1 align-center justify-center d-block" v-if="tipoCard !== 'Cocina'"> 
-     <v-divider></v-divider>
-     <br>
-    <span class="ml-12 font-weight-bold d-block"> Total : Aqui va el total</span>
-    <br>
-    <v-divider></v-divider>
-    </v-row>
-     
+      <v-row
+        class="mt-0 mb-1 align-center justify-center d-block"
+        v-if="tipoCard !== 'Cocina'"
+      >
+        <v-divider></v-divider>
+        <br />
+        <span class="ml-12 font-weight-bold d-block">
+          Total : Aqui va el total</span
+        >
+      </v-row>
     </v-responsive>
 
     <!-- Boton Cards -->
 
     <!-- MESERO -->
-    <v-card-actions  v-if="tipoCard === 'Mesero'">
+    <v-card-actions
+      v-if="tipoCard === 'Mesero'"
+      class="mt-5"
+    >
+      <v-btn
+        class="mb-1"
+        small
+        absolute
+        bottom
+        left
+        fab
+        dark
+        color="orange darken-2"
+      >
+        <v-icon size="20"> mdi-pencil </v-icon>
+      </v-btn>
+
       <v-spacer></v-spacer>
-      <v-btn class="mb-1" fab dark color="success" @click="doneOrderEmit">
+      <v-btn
+        class="mb-1"
+        absolute
+        bottom
+        right
+        fab
+        dark
+        color="success"
+        @click="doneOrderEmit"
+      >
         <v-icon dark> mdi-check </v-icon>
       </v-btn>
     </v-card-actions>
 
     <!-- COCINA -->
-    <v-card-actions  v-if="tipoCard === 'Cocina'">
+    <v-card-actions v-if="tipoCard === 'Cocina'" >
       <v-spacer></v-spacer>
-      <v-btn class="mb-1" fab dark color="success" @click="doneOrderEmit">
+      <v-btn
+        class="mb-1"
+        absolute
+        bottom
+        right
+        fab
+        dark
+        color="success"
+        @click="doneOrderEmit"
+      >
         <v-icon dark> mdi-food </v-icon>
       </v-btn>
     </v-card-actions>
 
     <!-- CAJERO -->
-    <v-card-actions  v-if="tipoCard === 'Cajero'">
+    <v-card-actions v-if="tipoCard === 'Cajero'" class="mt-5">
+      <v-btn
+        class="mb-1"
+        small
+        absolute
+        bottom
+        left
+        fab
+        dark
+        color="orange darken-2"
+      >
+        <v-icon size="20"> mdi-pencil </v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
-      <v-btn class="mb-1" fab dark color="success" @click="doneOrderEmit">
+      <v-btn
+        class="mb-1"
+        absolute
+        bottom
+        right
+        fab
+        dark
+        color="success"
+        @click="doneOrderEmit"
+      >
         <v-icon dark> mdi-hand-okay </v-icon>
       </v-btn>
     </v-card-actions>
 
-     <!-- CAJERO PAGAR-->
+    <!-- CAJERO PAGAR-->
 
-    <v-card-actions  v-if="tipoCard === 'CajeroPay'">
+    <v-card-actions v-if="tipoCard === 'CajeroPay'">
       <v-spacer></v-spacer>
-      <v-btn class="mb-1" fab dark color="success" @click="doneOrderEmit">
+      <v-btn
+        class="mb-1"
+        absolute
+        bottom
+        right
+        fab
+        dark
+        color="success"
+        @click="doneOrderEmit"
+      >
         <v-icon dark> mdi-cash </v-icon>
       </v-btn>
     </v-card-actions>
-
-
-
   </v-card>
 </template>
 
@@ -135,14 +197,12 @@ export default {
   components: {},
   data() {
     return {
-
       color: "black",
-     
     };
   },
 
   props: {
-     tipoCard: {
+    tipoCard: {
       type: String,
       required: true,
     },
@@ -159,7 +219,6 @@ export default {
       type: Array,
       // required: true
     },
-
 
     //PROPIEDADES PARA LOS TIPOS: COCINA, MESERO, CAJERO, CAJERO PARA PAGAR
 
@@ -214,30 +273,26 @@ export default {
   },
 
   mounted() {
+    switch (this.tipoCard) {
+      case "Cocina":
+        this.color = "pink";
+        break;
 
-    
-    switch(this.tipoCard){
-     
-     case "Cocina":
-     this.color = "pink"
-     break;
+      case "Mesero":
+        this.color = "blue darken-2";
+        break;
 
-     case "Mesero":
-     this.color = "blue darken-2"
-     break;
+      case "Cajero":
+        this.color = "indigo";
+        break;
 
-     case "Cajero":
-     this.color = "indigo"
-     break;
+      case "CajeroPay":
+        this.color = "teal darken-2";
+        break;
 
-     case "CajeroPay":
-     this.color = "teal darken-2"
-     break;
-
-    default: 
-    this.color = "black"; 
-    };
-
+      default:
+        this.color = "black";
+    }
   },
 };
 </script>
