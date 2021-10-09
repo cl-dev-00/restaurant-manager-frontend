@@ -30,6 +30,8 @@ const routersInfo = {
         name: 'KitchenRoom',
         component: KitchenRoom
     }, 
+
+
     
 };
 

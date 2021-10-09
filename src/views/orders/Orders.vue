@@ -100,6 +100,7 @@
             class="pt-8 pl-8 pr-8 pb-8 fill-height align-center justify-center"
           >
             <v-col class="col-12">
+              <h2>Cards Cocina, platos cocinados </h2>
               <masonry
                 :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
@@ -110,15 +111,90 @@
                   class="mb-3 zoomInUp"
                   id="items"
                 >
-                  <kitchen-card-order
+                   <card-order
+                    :tipoCard="tCocina"
                     :nombreCliente="account.nombreCliente"
                     :nombreMesero="account.employee.nombre"
                     :orders="account.orders"
                     @doneOrderEmit="() => doneOrder(account.idCuenta)"
-                  />
+                     />
                 </div>
               </masonry>
             </v-col>
+
+             <v-col class="col-12">
+             <h2>Cards Mesero, listas para entregar a mesa</h2>
+              <masonry
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
+                :gutter="{ default: '10px', 700: '10px' }"
+              >
+                <div
+                  v-for="account in accounts"
+                  :key="account.idCuenta"
+                  class="mb-3 zoomInUp"
+                  id="items"
+                >
+                 <card-order
+                    :tipoCard="tMesero"
+                    :nombreCliente="account.nombreCliente"
+                    :nombreMesero="account.employee.nombre"
+                    :orders="account.orders"
+                    @doneOrderEmit="() => doneOrder(account.idCuenta)"
+                     />
+                </div>
+              </masonry>
+            </v-col>
+
+            <v-col class="col-12">
+             <h2>Cards Cajero, ordenes para llevar </h2>
+              <masonry
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
+                :gutter="{ default: '10px', 700: '10px' }"
+              >
+                <div
+                  v-for="account in accounts"
+                  :key="account.idCuenta"
+                  class="mb-3 zoomInUp"
+                  id="items"
+                >
+                 <card-order
+                    :tipoCard="tCajero"
+                    :nombreCliente="account.nombreCliente"
+                    :nombreMesero="account.employee.nombre"
+                    :orders="account.orders"
+                    @doneOrderEmit="() => doneOrder(account.idCuenta)"
+                     />
+                </div>
+              </masonry>
+            </v-col>
+
+            <v-col class="col-12">
+             <h2>Cards Cajero, Listas para Pagar</h2>
+              <masonry
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
+                :gutter="{ default: '10px', 700: '10px' }"
+              >
+                <div
+                  v-for="account in accounts"
+                  :key="account.idCuenta"
+                  class="mb-3 zoomInUp"
+                  id="items"
+                >
+                 <card-order
+                    :tipoCard="tCajeroPay"
+                    :nombreCliente="account.nombreCliente"
+                    :nombreMesero="account.employee.nombre"
+                    :orders="account.orders"
+                    @doneOrderEmit="() => doneOrder(account.idCuenta)"
+                     />
+                </div>
+              </masonry>
+            </v-col>
+
+            
+
+
+
           </v-row>
         </v-window-item>
 
@@ -157,28 +233,43 @@ import WaiterCardCategory from "../../components/WaitersCardCategory.vue";
 import WaitersFormOrder from "../../components/WaitersFormOrder.vue";
 
 import KitchenCardOrder from "../../components/KitchenCardOrder.vue";
+
+//Cards de prueba
+import CardOrder from "../../components/CardOrder.vue"
+//*********************** */
+
 import Vue from "vue";
 import VueMasonry from "vue-masonry-css";
 
 Vue.use(VueMasonry);
 
+
 export default {
   name: 'Orders',
   components: {
+    
     WaiterCardCategory,
     WaitersFormOrder,
-
     KitchenCardOrder,
+
+    CardOrder,
+
   },
 
   mounted() {
+
+
     this.$services.kitchenRoom.getAccounts().then((response) => {
       if (response.data.ok) {
         this.hasItems = response.data.collection.hasItems;
         this.total = response.data.collection.total;
         this.accounts = response.data.collection.items;
+       
       }
     });
+
+
+
   },
 
   data() {
@@ -197,9 +288,17 @@ export default {
       total: 0,
 
       show: false,
+
+      //Tipos
+      tCocina: "Cocina", 
+      tMesero: "Mesero", 
+      tCajero: "Cajero", 
+      tCajeroPay: "CajeroPay",
+
     };
   },
   methods: {
+
     updateSelectItems(items) {
       this.itemSelects = items;
       this.itemMenuOrder = items.map((item) => ({
@@ -210,8 +309,20 @@ export default {
         importe: 0,
       }));
     },
+
     clearitemSelects() {
       this.itemMenuOrder = [];
+    },
+
+    updateOrders(){
+        this.$services.kitchenRoom.getAccounts().then((response) => {
+        if (response.data.ok) {
+        this.hasItems = response.data.collection.hasItems;
+        this.total = response.data.collection.total;
+        this.accounts = response.data.collection.items;
+       
+      }
+    });
     },
 
     selectWindow(op) {
@@ -221,18 +332,23 @@ export default {
         this.active_3 = true;
 
         this.step = 1;
+
       } else if (op === 2) {
         this.active_1 = true;
         this.active_2 = false;
         this.active_3 = true;
 
+        this.updateOrders();
         this.step = 2;
+       
+        
       } else {
         this.active_1 = true;
         this.active_2 = true;
         this.active_3 = false;
-
+ 
         this.step = 3;
+        
       }
     },
 

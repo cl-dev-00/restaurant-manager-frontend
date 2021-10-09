@@ -133,6 +133,7 @@ export default {
         icon: "mdi-cash-register",
         path: routersInfo.orders.path,
       },
+
     ],
 
     items_usuario: [

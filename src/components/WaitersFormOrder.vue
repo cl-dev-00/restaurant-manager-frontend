@@ -139,18 +139,18 @@
                 @click="addOrder"
                 block
                 class="mb-5"
-                :disabled="itemSelects.length < 1"
+                :disabled="!validarEnvio"
               >
                 Enviar a Cocina</v-btn
               >
             </template>
             <template v-slot:default="dialog">
               <v-card>
-                <v-toolbar color="success" dark
-                  >Orden Enviada</v-toolbar
-                >
+                <v-toolbar color="success" dark>Orden Enviada</v-toolbar>
                 <v-card-text>
-                  <div class="text-h6 mt-6">Tu orden ha sido enviada a cocina correctamente.</div>
+                  <div class="text-h6 mt-6">
+                    Tu orden ha sido enviada a cocina correctamente.
+                  </div>
                 </v-card-text>
                 <v-card-actions class="justify-end">
                   <v-btn text @click="dialog.value = false">Cerrar</v-btn>
@@ -160,12 +160,14 @@
           </v-dialog>
         </v-col>
       </v-row>
+      <v-btn @click="clearItemsSelects()">aaa</v-btn>
     </v-form>
   </v-col>
 </template>
 
 <script>
 import WaiterCardCategory from "../components/WaitersCardCategory.vue";
+import EventBus from "../event-bus";
 
 export default {
   name: "WaitersFormOrder",
@@ -214,6 +216,7 @@ export default {
       comentarios: "",
       minLenght: 3,
       minNum: 1,
+      nombre_valido: false,
     };
   },
   computed: {
@@ -246,6 +249,7 @@ export default {
 
       return rules;
     },
+
     rulesCantidad() {
       const rules = [];
 
@@ -261,8 +265,28 @@ export default {
 
       return rules;
     },
+
+    validarEnvio() {
+      if (this.nombreCliente === "" || this.nombreCliente === null) {
+        return false;
+      } else if (this.nombreCliente.length < 3) {
+        return false;
+      } else {
+        if (this.itemSelects.length < 1) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
   },
+
   methods: {
+    clearItemsSelects() {
+      EventBus.$emit("clean", []);
+      EventBus.$emit("clean2", []);
+    },
+
     increment(menu) {
       menu.cantidad = parseInt(menu.cantidad, 10) + 1;
     },
@@ -307,6 +331,7 @@ export default {
                   console.log("orders preview", orders);
                   console.log("response", response.data);
                   console.log("Ah perro se logro xdxd");
+                  this.clearItemsSelects();
                 }
               })
               .catch((error) => {
@@ -322,6 +347,7 @@ export default {
       console.log("click");
       !this.$refs.form.reset();
       this.$emit("clearitemSelects");
+      this.clearItemsSelects();
     },
   },
 };

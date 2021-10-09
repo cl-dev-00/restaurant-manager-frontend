@@ -1,31 +1,29 @@
 <template>
-  <v-col  class="col-12 pl-0 ml-0 mr-0 pr-0 mb-0 pb-0">
-    <v-row style="margin-bottom: -40px;" class="ml-0 mr-0 pl-0 pr-0">
-      <v-col class=" col-8 ml-0 pl-4 pr-0">
+  <v-col class="col-12 pl-0 ml-0 mr-0 pr-0 mb-0 pb-0">
+    <v-row style="margin-bottom: -40px" class="ml-0 mr-0 pl-0 pr-0">
+      <v-col class="col-8 ml-0 pl-4 pr-0">
         <v-text-field
           label="Buscar"
           outlined
           clearable
-          v-model="txt_buscar"       
+          v-model="txt_buscar"
         ></v-text-field>
-        
       </v-col>
       <v-col class="col-1 mr-0 pr-0">
         <v-btn
-        color="#222"
-        outlined
-        depressed
-        min-height="63%"
-        
-        @click="filterMenuByName()">
+          color="#222"
+          outlined
+          depressed
+          min-height="63%"
+          @click="filterMenuByName()"
+        >
           <v-icon size="30">mdi-magnify</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row class="col-12 ml-0 mr-0 pl-0 pr-0">
-     
       <v-card class="col-12" color="rgb(247, 247, 247)">
-        <v-card-title class="text-h6 font-weight-regular justify-space-between">     
+        <v-card-title class="text-h6 font-weight-regular justify-space-between">
           <v-btn
             :disabled="step === 1"
             text
@@ -99,13 +97,17 @@
             </v-row>
           </v-window-item>
         </v-window>
-        <v-card-actions> </v-card-actions>
+        <v-card-actions>
+          <v-btn @click="clearSelect()">aa</v-btn>
+        </v-card-actions>
       </v-card>
     </v-row>
   </v-col>
 </template>
 
 <script>
+import EventBus from "../event-bus";
+
 export default {
   name: "WaitersCardCategory",
   props: {
@@ -142,6 +144,12 @@ export default {
         console.log(error);
       });
 
+    EventBus.$on("clean", (data) => {
+      this.itemMenuSelects = data;
+    });
+    EventBus.$on("clean2", (data) => {
+      this.step = data;
+    });
   },
   // computed: {
   //   itemSelectsLocal: {
@@ -178,24 +186,28 @@ export default {
 
       items_menu: [],
       items_menu_for_filter: this.menuItems,
-      itemMenuSelects: this.itemSelects
+      itemMenuSelects: this.itemSelects,
     };
   },
   computed: {
     ItemSelectsMenu: {
       set(value) {
-        this.$emit('updateSelectItems', value);
+        this.$emit("updateSelectItems", value);
         this.itemMenuSelects = value;
       },
       get() {
         return this.itemMenuSelects;
-      }
+      },
     },
-
- 
-
   },
+
   methods: {
+    clearSelect() {
+      this.itemMenuSelects = [];
+      this.step = 1;
+
+      EventBus.$emit("clearSelect");
+    },
 
     seleccionarCategoria(idCategory) {
       // var nombre_categoria;
@@ -213,39 +225,37 @@ export default {
 
         this.cat = idCategory;
         this.step++;
-      } else if(idCategory === null){
-        this.txt_buscar = ""; 
-        this.step=1;
-      }else{
+      } else if (idCategory === null) {
+        this.txt_buscar = "";
+        this.step = 1;
+      } else {
         this.cat = "Categorías";
         this.step--;
       }
-
     },
-   filterMenuByName() {
-    
-   if (this.txt_buscar === '' || this.txt_buscar === null || this.txt_buscar.value === 0 || this.txt_buscar.value === "" ){
-   
-     this.step--;
-     return ;
-   }else{
-
-  const search = this.txt_buscar.toLowerCase().trim();
-  this.items_menu = this.menuItems.items.filter(f => f.nombre_Item.toLowerCase().indexOf(search) > -1)
-     this.step = 2;
-    return this.items_menu;
-    
-   
-   } 
- },
-
+    filterMenuByName() {
+      if (
+        this.txt_buscar === "" ||
+        this.txt_buscar === null ||
+        this.txt_buscar.value === 0 ||
+        this.txt_buscar.value === ""
+      ) {
+        this.step--;
+        return;
+      } else {
+        const search = this.txt_buscar.toLowerCase().trim();
+        this.items_menu = this.menuItems.items.filter(
+          (f) => f.nombre_Item.toLowerCase().indexOf(search) > -1
+        );
+        this.step = 2;
+        return this.items_menu;
+      }
+    },
   },
 };
 </script>
 
 <style lang="css" scoped>
-
-
 #boton_categoria .boton_a {
   font-size: 2ch;
   white-space: normal;
@@ -254,7 +264,5 @@ export default {
   align-content: center;
   color: white;
   padding: 10px;
-  
-  
 }
 </style>
