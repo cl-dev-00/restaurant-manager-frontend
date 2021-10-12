@@ -38,11 +38,15 @@
       </v-row>
       <!-- TEXTO DE NUMERO DE MESA -->
       <v-row>
-        <h4 class="ml-4 mt-0 mb-0">Numero de mesa</h4>
+        <h4 class="ml-4 mt-0 mb-3 red--text">Orden para llevar</h4>
+      </v-row>
+
+      <v-row >
+        <h4 class="ml-4 mt-0 mb-0" >Numero de mesa</h4>
       </v-row>
       <!-- SELECTOR DE MESA -->
-      <v-row>
-        <v-col sm="12">
+      <v-row >
+        <v-col sm="12" >
           <v-sheet class="mx-auto" elevation="8">
             <v-slide-group
               v-model="model"
@@ -56,8 +60,12 @@
                 v-slot="{ active, toggle }"
               >
                 <v-card
+                
                   :color="active ? undefined : 'grey lighten-1'"
-                  class="ma-1 rounded-circle"
+
+                  class="ma-1 rounded-circle "
+                 
+
                   height="40"
                   width="40"
                   @click="toggle"
@@ -190,24 +198,17 @@ export default {
       icon1: "mdi-arrow-right-box",
 
       itemsOrder: [],
-
+//  :class="n.disp ? undefined: 'grey darken-2'"
       mesas: [
-        { numero: "N/A" },
-        { numero: "1" },
-        { numero: "2" },
-        { numero: "3" },
-        { numero: "4" },
-        { numero: "5" },
-        { numero: "6" },
-        { numero: "7" },
-        { numero: "8" },
-        { numero: "9" },
-        { numero: "10" },
-        { numero: "11" },
-        { numero: "12" },
-        { numero: "13" },
-        { numero: "14" },
-        { numero: "15" },
+        { numero: "1", disp: false },
+        { numero: "2", disp: true  },
+        { numero: "3", disp: true  },
+        { numero: "4", disp: false  },
+        { numero: "5", disp: true  },
+        { numero: "6", disp: false  },
+        { numero: "7", disp: true  },
+        { numero: "8", disp: false  },
+       
       ],
 
       model: null,
@@ -216,6 +217,7 @@ export default {
       minLenght: 3,
       minNum: 1,
       nombre_valido: false,
+      
     };
   },
   computed: {

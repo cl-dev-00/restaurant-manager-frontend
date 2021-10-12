@@ -133,6 +133,11 @@ export default {
         icon: "mdi-cash-register",
         path: routersInfo.orders.path,
       },
+      {
+        title: "Administracion",
+        icon: "mdi-account-cog",
+        path: routersInfo.administration.path,
+      },
 
     ],
 

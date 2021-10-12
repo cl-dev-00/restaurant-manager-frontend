@@ -18,7 +18,7 @@
     <!-- Listado de items de la orden   <waiter-card-list-orders :order="order" /> -->
     <v-responsive max-height="auto">
       <v-list two-line height="">
-        <v-list-item-group active-class="green--text" multiple>
+        <v-list-item-group active-class="green--text" multiple  >
           <template v-for="order in orders">
             <v-list-item :key="order.idPedido">
               <template>
@@ -75,6 +75,11 @@
             </v-list-item>
           </template>
         </v-list-item-group>
+
+
+
+
+
       </v-list>
       <v-spacer></v-spacer>
 
@@ -167,13 +172,14 @@
         color="success"
         @click="doneOrderEmit"
       >
-        <v-icon dark> mdi-hand-okay </v-icon>
+        <v-icon dark> mdi-check </v-icon>
       </v-btn>
     </v-card-actions>
 
     <!-- CAJERO PAGAR-->
 
     <v-card-actions v-if="tipoCard === 'CajeroPay'">
+      
       <v-spacer></v-spacer>
       <v-btn
         class="mb-1"

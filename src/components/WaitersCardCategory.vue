@@ -34,28 +34,33 @@
           >
             Back
           </v-btn>
-          <span>{{ cat }}</span>
+          <span>{{cat}}</span>
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
             <v-row class="ml-0">
               <v-col
-                v-for="category in categories.items"
+                v-for="(category, index) in categories.items "
                 :key="category.idCategoria"
+                
                 xs="12"
-                sm="4"
-                md="4"
+                sm="6"
+                md="3"
                 lg="3"
-                xl="2"
+                xl="3"
                 class="mb-0 pr-0 pl-0 mr-0 ml-0"
               >
+              <span
+               >
+
                 <v-btn
                   min-height="120"
                   max-height="120"
                   min-width="90%"
                   max-width="90%"
                   class="caption mx-auto"
-                  color="#222"
+                  
+                  :color="color[index]"
                   id="boton_categoria"
                   :disabled="step === 2"
                   depressed
@@ -63,6 +68,7 @@
                 >
                   <span class="boton_a">{{ category.nombreCategoria }}</span>
                 </v-btn>
+              </span>
               </v-col>
             </v-row>
           </v-window-item>
@@ -119,12 +125,16 @@ export default {
     },
   },
   components: {},
+
   mounted() {
     this.$services.orders
       .getCategories()
       .then((response) => {
         if (response.data.ok) {
-          this.categories = response.data.collection;
+
+          this.categories = response.data.collection ;
+        
+
         } else {
           console.log("El servidor revento");
         }
@@ -170,6 +180,7 @@ export default {
         hasItems: false,
         items: [],
         total: 0,
+       
       },
       menuItems: {
         hasItems: false,
@@ -189,6 +200,24 @@ export default {
       items_menu: [],
       items_menu_for_filter: this.menuItems,
       itemMenuSelects: this.itemSelects,
+
+      color:[ 
+        "deep-purple accent-2",
+        "light-blue",
+        "green",
+        "orange darken-4",
+        "yellow darken-3",
+        "light-blue darken-4",
+        "amber",
+        "deep-orange",
+        "cyan darken-4",
+        "teal darken-3",
+        "indigo accent-3",
+        "green accent-4",
+        "cyan darken-4",
+        "deep-orange accent-2",
+      ],
+
     };
   },
   computed: {
