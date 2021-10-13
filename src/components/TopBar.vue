@@ -16,8 +16,7 @@
         :nudge-width="100"
         offset-x
         transition="slide-y-transition"
-       
-        >
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
             <v-icon size="35">mdi-account-circle-outline</v-icon>
@@ -30,7 +29,6 @@
               <v-list-item-avatar>
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPNbOneenDa9mbmD7tjFZgsWnd1BhhAPA5GUwBvtAm9ANMe-_PN1lQL3W2FSPq7J2iXDU&usqp=CAU"
-                  
                   alt="User"
                 />
               </v-list-item-avatar>
@@ -44,19 +42,19 @@
 
           <v-divider></v-divider>
 
-         <v-list>
-          <v-list-item v-for="item in items_usuario" :key="item.title" link>
-            <v-list-item-icon >
-              <v-icon size="30">{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <!-- <router-link :to="item.path">{{ item.title }}</router-link> -->
-                {{ item.title }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
+          <v-list>
+            <v-list-item v-for="item in items_usuario" :key="item.title" link>
+              <v-list-item-icon>
+                <v-icon size="30">{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <!-- <router-link :to="item.path">{{ item.title }}</router-link> -->
+                  {{ item.title }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -73,37 +71,67 @@
       absolute
       temporary
     >
-      <v-list-item>
-        <v-list-item-avatar>
-          <v-img src="../assets/logo.png"></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-content>
-          <v-list-item-title>Restaurante</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list
-        ><!-- Lista de Items del Menu -->
-        <v-list-item
-          :to="item.path"
-          v-for="item in items"
-          :key="item.title"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
+      <v-list>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img src="../assets/logo.png"></v-img>
+          </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>
-              <!-- <router-link :to="item.path">{{ item.title }}</router-link> -->
-              {{ item.title }}
-            </v-list-item-title>
+            <v-list-item-title>Restaurante</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-divider></v-divider>
+        <div v-for="(item, i) in items" :key="i">
+          <v-list-item
+            v-if="!item.subLinks"
+            :to="item.path"
+            
+            class="v-list-item"
+          >
+            <v-list-item-icon class="mr-2">
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title v-text="item.title" />
+          </v-list-item>
+
+          <v-list-group
+            v-else
+            :key="item.title"
+            no-action
+            :prepend-icon="item.icon"
+            :value="false"
+            class="mr-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-title style="margin-left: -23px">{{
+                item.title
+              }}</v-list-item-title>
+            </template>
+
+            <v-list-item
+              v-for="sublink in item.subLinks"
+              :to="sublink.path"
+              :key="sublink.tittle"
+              style="margin-left: -40px"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ sublink.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title
+                style="
+                  margin-left: -23px;
+                  white-space: normal;
+                  word-wrap: break-word;
+                  width: 80px;
+                "
+                >{{ sublink.title }}</v-list-item-title
+              >
+            </v-list-item>
+          </v-list-group>
+        </div>
       </v-list>
     </v-navigation-drawer>
   </div>
@@ -134,12 +162,67 @@ export default {
         path: routersInfo.orders.path,
       },
       {
-        title: "Administracion",
-        icon: "mdi-account-cog",
-        path: routersInfo.administration.path,
+        title: "Administración",
+        icon: "mdi-cog",
+        subLinks: [
+          {
+            title: "Configuracion del restaurante",
+            icon: "mdi-cogs",
+            path: routersInfo.administration.path,
+          },
+          {
+            title: "Configuracion de Menu",
+            icon: "mdi-silverware-fork-knife",
+            path: routersInfo.menuconfig.path,
+          },
+        ],
       },
-
     ],
+
+    /*
+     {
+        to     : '/dashboard',
+        icon   : 'mdi-view-dashboard',
+        text   : 'Dashboard',
+    },
+     {
+        to     : '/dashboard',
+        icon   : 'mdi-view-dashboard',
+        text   : 'Dashboard',
+    },
+    {
+        icon     : 'mdi-folder',
+        text     : 'Templates',
+        subLinks : [
+            {
+                text : 'View Templates',
+                to    : '/templates',
+                icon  : 'mdi-view-list'
+            },
+            {
+                text : 'New Template',
+                to    : '/templates/new',
+                icon  : 'mdi-plus'
+            },
+        ]
+    },
+    {
+        icon     : 'mdi-application',
+        text     : 'Applications',
+        subLinks : [
+            {
+                text : 'View Applications',
+                to    : '/apps',
+                icon  : 'mdi-view-list'
+            },
+            {
+                text : 'New Application',
+                to    : '/apps',
+                icon  : 'mdi-plus'
+            },
+        ]
+    },
+    */
 
     items_usuario: [
       { title: "Mi Cuenta", icon: "mdi-account-details" },
@@ -147,14 +230,11 @@ export default {
       { title: "Salir", icon: "mdi-exit-to-app" },
     ],
 
-   datos_usuario:[
-      {nombre: "Tu papi chulo", rol: "Dueño de tu corazón bb"},
-   ],
+    datos_usuario: [{ nombre: "Tu papi chulo", rol: "Dueño de tu corazón bb" }],
 
     menu: false,
-    nombre: "Nombre: Tu papi chulo", 
+    nombre: "Nombre: Tu papi chulo",
     rol: "Rol: Dueño de tu corazón bb",
-    
   }),
 };
 </script>
