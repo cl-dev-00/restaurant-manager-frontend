@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pb-2 ma-5 " elevation="10" height="790">
+  <v-card class="pb-2 ma-3 " elevation="10">
     <v-card-title class="justify-center pt-8">
       Categorias
       <v-spacer></v-spacer>
@@ -232,4 +232,6 @@ export default {
 </script>
 
 <style  scoped>
+
+
 </style>
