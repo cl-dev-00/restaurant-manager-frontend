@@ -39,12 +39,14 @@
 
               <v-card-text>
                 <v-container>
+                  <v-form v-model="isFormValid">
                   <v-row>
                     <v-col cols="12" sm="8" md="8">
                       <v-text-field
                         outlined
                         v-model="editedItem.num"
                         label="Numero de Mesa"
+                        :rules="ruleInteger"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="4" md="4">
@@ -52,6 +54,7 @@
                         outlined
                         v-model="editedItem.capacidad"
                         label="Capacidad"
+                        :rules="ruleInteger"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="12" md="12">
@@ -60,18 +63,20 @@
                         label="Disponibilidad"
                         outlined
                         v-model="editedItem.dispmesa"
+                        :rules="ruleRequired"
                       ></v-select>
                     </v-col>
                   </v-row>
+                  </v-form>
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
+                <v-btn color="red" text @click="close">
+                  Cancelar
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+                <v-btn :disabled="!isFormValid" color="blue darken-1" text @click="save"> Guardar </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -110,9 +115,11 @@
 </template>
 
 <script>
+import {Rules} from "../rules.js"
 export default {
   name: "TableMesas",
   data: () => ({
+    isFormValid: false,
     search: "",
     dialog: false,
     dialogDelete: false,
@@ -141,6 +148,9 @@ export default {
     },
 
     SelectDispMesa: ["Disponible", "No disponible"],
+
+    ruleRequired: Rules.required, 
+    ruleInteger: Rules.integer, 
   }),
   computed: {
     formTitle() {

@@ -39,13 +39,14 @@
 
               <v-card-text>
                 <v-container>
+                  <v-form v-model="isFormValid">
                   <v-row>
-                    
                     <v-col cols="12" sm="7" md="7">
                       <v-text-field
                         outlined
                         v-model="editedItem.name"
                         label="Nombre del Item"
+                        :rules="ruleRequired"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="5" md="5">
@@ -54,22 +55,26 @@
                         label="Categorias"
                         outlined
                         v-model="editedItem.categoria"
+                        :rules="ruleRequired"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" sm="4" md="4">
+                    <v-col cols="12" sm="5" md="5">
                       <v-text-field
                         outlined
                         v-model="editedItem.precio"
                         label="Precio del Item"
+                        :rules="ruleDecimal"
                       ></v-text-field>
                     </v-col>
                     
-                    <v-col cols="12" sm="8" md="8">
-                      <v-text-field
+                    <v-col cols="12" sm="7" md="7">
+                      <v-textarea
                         outlined
                         v-model="editedItem.detalles"
                         label="Detalles del item"
-                      ></v-text-field>
+                        :rules="ruleRequired"
+                        rows="3"
+                      ></v-textarea>
                     </v-col>
 
                     <v-col cols="12" sm="7" md="7">
@@ -78,6 +83,7 @@
                         label="Disponibilidad"
                         outlined
                         v-model="editedItem.disponibilidad"
+                        :rules="ruleRequired"
                       ></v-select>
                     </v-col>
                     <v-col cols="12">
@@ -87,15 +93,16 @@
                       <v-slider v-model="editedItem.descuento" thumb-label></v-slider>
                     </v-col>
                   </v-row>
+                  </v-form>
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
+                <v-btn color="red" text @click="close">
+                  Cancelar
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+                <v-btn :disabled="!isFormValid" color="blue darken-1" text @click="save"> Guardar </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -134,10 +141,11 @@
 </template>
 
 <script>
+import {Rules} from "../rules.js"
 export default {
   name: "TableItemsMenu",
   data: () => ({
-    
+    isFormValid: false,
     slider: 0 ,
     search: "",
     dialog: false,
@@ -153,7 +161,7 @@ export default {
       { text: "Precio", value: "precio", width: "90px" },
       { text: "Detalles", value: "detalles" },
       { text: "Disponibilidad", value: "disponibilidad" },
-      { text: "Descuento", value: "descuento" },
+      { text: "Descuento (%)", value: "descuento" },
 
       { text: "Acciones", value: "actions", sortable: false, width: "100px" },
     ],
@@ -172,7 +180,7 @@ export default {
     editedItem: {
       name: "",
       categoria: "",
-      precio: 0.0,
+      precio: "",
       detalles: "",
       disponibilidad: "",
       descuento: 0.0,
@@ -180,11 +188,14 @@ export default {
     defaultItem: {
       name: "",
       categoria: "",
-      precio: 0.0,
+      precio: "",
       detalles: "",
       disponibilidad: "",
       descuento: 0.0,
     },
+    ruleRequired: Rules.required,
+    ruleDecimal: Rules.decimal,
+    
   }),
   computed: {
     formTitle() {
