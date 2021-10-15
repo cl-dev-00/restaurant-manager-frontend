@@ -11,11 +11,23 @@ export const Rules = {
         v => !!(isNaN(v) ? false : (parseFloat(v) | 0 === parseFloat(v) )) || 'Debe ingresar un numero entero'
     ],
 
-    //Numero Entero
+    //Numero decimal con dos decimales
     decimal: [
         v => !!v || 'Requerido',
         v => /^(\d+(?:[\.]\d{2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales'
     ],
+
+    test: (value = false) => {
+     console.log(value);
+        return[
+           
+            v => !!v || 'Requerido',
+            v => /^(\d+(?:[\.]\d{2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales',
+            v => parseFloat(v) >= parseFloat(value) || 'Monto insuficiente, debe ser mayor a $'+ value,
+           
+        ]
+       
+    },
 
     //Solo Letras y espacio
     alpha: [
@@ -40,6 +52,18 @@ export const Rules = {
     phonesize: [
         v => !!v || 'Requerido',
         v => (v || '').length >= 9 || 'Numero de telefono incompleto',
+    ],
+
+    //numero de tarjeta - tamaño 1234 5678 1234 5678 tamaño con espacios -> 19
+    cardsize: [
+        v => !!v || 'Requerido',
+        v => (v || '').length >= 19 || 'Numero de tarjeta incompleto',
+    ],
+
+    //numero de cvv de tarjeta, tres digitos
+    cvvsize: [
+        v => !!v || 'Requerido',
+        v => (v || '').length >= 3 || 'CVV incompleto',
     ],
    
 

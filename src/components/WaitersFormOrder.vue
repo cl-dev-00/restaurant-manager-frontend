@@ -41,12 +41,12 @@
         <h4 class="ml-4 mt-0 mb-3 red--text">Orden para llevar</h4>
       </v-row>
 
-      <v-row >
-        <h4 class="ml-4 mt-0 mb-0" >Numero de mesa</h4>
+      <v-row>
+        <h4 class="ml-4 mt-0 mb-0">Numero de mesa</h4>
       </v-row>
       <!-- SELECTOR DE MESA -->
-      <v-row >
-        <v-col sm="12" >
+      <v-row>
+        <v-col sm="12">
           <v-sheet class="mx-auto" elevation="8">
             <v-slide-group
               v-model="model"
@@ -60,12 +60,8 @@
                 v-slot="{ active, toggle }"
               >
                 <v-card
-                
                   :color="active ? undefined : 'grey lighten-1'"
-
-                  class="ma-1 rounded-circle "
-                 
-
+                  class="ma-1 rounded-circle"
                   height="40"
                   width="40"
                   @click="toggle"
@@ -137,6 +133,30 @@
       <!-- BOTON COCINA-->
       <v-row>
         <v-col cols="col-12">
+          <v-dialog transition="dialog-top-transition" max-width="90%">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="success" v-bind="attrs" v-on="on" block x-large
+                ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
+              >
+            </template>
+            <template v-slot:default="dialog">
+              <v-row class=" justify-center white" dense>
+                <v-col class="col-12">
+              <v-btn
+                color="primary"
+                block
+                depressed
+                large
+                @click="dialog.value = false"
+                >Cerrar</v-btn
+              >
+              <form-pay/>
+              </v-col>
+              </v-row>
+            </template>
+          </v-dialog>
+        </v-col>
+        <v-col cols="col-12">
           <v-dialog transition="dialog-bottom-transition" max-width="600">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -176,6 +196,8 @@
 import WaiterCardCategory from "../components/WaitersCardCategory.vue";
 import EventBus from "../event-bus";
 
+import FormPay from "../components/FormPay.vue";
+
 export default {
   name: "WaitersFormOrder",
   props: {
@@ -186,6 +208,7 @@ export default {
   },
   components: {
     WaiterCardCategory,
+    FormPay,
   },
 
   data() {
@@ -198,17 +221,16 @@ export default {
       icon1: "mdi-arrow-right-box",
 
       itemsOrder: [],
-//  :class="n.disp ? undefined: 'grey darken-2'"
+      //  :class="n.disp ? undefined: 'grey darken-2'"
       mesas: [
         { numero: "1", disp: false },
-        { numero: "2", disp: true  },
-        { numero: "3", disp: true  },
-        { numero: "4", disp: false  },
-        { numero: "5", disp: true  },
-        { numero: "6", disp: false  },
-        { numero: "7", disp: true  },
-        { numero: "8", disp: false  },
-       
+        { numero: "2", disp: true },
+        { numero: "3", disp: true },
+        { numero: "4", disp: false },
+        { numero: "5", disp: true },
+        { numero: "6", disp: false },
+        { numero: "7", disp: true },
+        { numero: "8", disp: false },
       ],
 
       model: null,
@@ -217,7 +239,6 @@ export default {
       minLenght: 3,
       minNum: 1,
       nombre_valido: false,
-      
     };
   },
   computed: {
