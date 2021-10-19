@@ -3,7 +3,12 @@ import About from '../views/Home.vue'
 import Administration from '../views/administration/Administration.vue'
 import Orders from '../views/orders/Orders.vue'
 import KitchenRoom from '../views/kitchen-room/KitchenRoom.vue'
+<<<<<<< HEAD
 import MenuConfig from '../views/administration/MenuConfig.vue'
+=======
+import Login from '../views/login/Login.vue'
+
+>>>>>>> origin/Adolfo
 const routersInfo = {
     home: {
         path: '/',
@@ -36,11 +41,20 @@ const routersInfo = {
         path: '/kitchen-room',
         name: 'KitchenRoom',
         component: KitchenRoom
+<<<<<<< HEAD
     },
 
 
 
   
+=======
+    }, 
+    Login: { 
+        path: '/login',
+        name: 'Login',
+        component: Login
+    },
+>>>>>>> origin/Adolfo
 };
 
 export default routersInfo;
