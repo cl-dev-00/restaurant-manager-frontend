@@ -37,25 +37,20 @@
           <div class="orders col-12">
             <v-container fluid>
               <masonry
-                
-                :cols="{default: 3, 1266: 2, 700: 1 }"
+                :cols="{ default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div
-                
                   v-for="account in accounts"
                   :key="account.idCuenta"
                   class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
-                 <card-order
+                  <card-order
+                    :order="account"
                     :tipoCard="tCocina"
-                    :nombreCliente="account.nombreCliente"
-                    :nombreMesero="account.employee.nombre"
-                    :orders="account.orders"
-                    @doneOrderEmit="() => doneOrder(account.idCuenta)"
-                     />
-
+                    @doneOrderEmit="() => doneOrder(account.idOrden)"
+                  />
                 </div>
               </masonry>
             </v-container>
@@ -63,31 +58,41 @@
         </v-window-item>
 
         <v-window-item :value="2">
-          <v-card class="mx-auto" max-width="344">
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              height="200px"
-            ></v-img>
-            <v-card-title>
-              Aqui va lo de cambiar el estado de los items
-            </v-card-title>
-            <v-card-subtitle> a </v-card-subtitle>
-            <v-card-actions>
-              <v-btn color="orange lighten-2" text> Abrir </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn icon @click="show = !show">
-                <v-icon>{{
-                  show ? "mdi-chevron-up" : "mdi-chevron-down"
-                }}</v-icon>
-              </v-btn>
-            </v-card-actions>
-            <v-expand-transition>
-              <div v-show="show">
-                <v-divider></v-divider>
-                <v-card-text> puto el que lo lea </v-card-text>
+          <v-row class="justify-center">
+            <v-col cols="12" sm="10" md="8">
+              <div>
+                <div class="text-center mb-4 d-block">
+                  <span class="text-h5 mr-2"
+                    >Establecer el estado de los platillos</span
+                  >
+
+                  <v-btn color="primary" fab x-small>
+                    <v-icon>mdi-help</v-icon>
+                  </v-btn>
+                </div>
+                <v-alert
+                  outlined
+                  type="warning"
+                  prominent
+                  border="left"
+                  transition="scale-transition"
+                >
+                  Puede Cambiar el estado de los platillos del menú, considere
+                  que al establecerlos como No disponibles el mesero no podrá
+                  verlos el menú. <br />
+                  <br />Marca con un check
+                  <v-icon color="orange">mdi-checkbox-outline</v-icon> los items
+                  disponibles <br />
+                  <br />Los items con check vacío
+                  <v-icon color="orange">mdi-checkbox-blank-outline</v-icon> No
+                  estarán disponibles <br />
+                </v-alert>
               </div>
-            </v-expand-transition>
-          </v-card>
+            </v-col>
+            <v-col cols="12" sm="10" md="8">
+              <kitchen-items-state />
+            </v-col>
+          </v-row>
         </v-window-item>
       </v-window>
     </v-row>
@@ -95,26 +100,27 @@
 </template>
 
 <script>
-
-import Vue from "vue";
-import VueMasonry from "vue-masonry-css";
-
-Vue.use(VueMasonry);
-const el = document.getElementById("items");
-
-import CardOrder from "../../components/CardOrder.vue"
+import CardOrder from "../../components/CardOrder.vue";
+import KitchenItemsState from "../../components/KitchenItemsState.vue";
 
 export default {
   components: {
-   CardOrder,
+    CardOrder,
+    KitchenItemsState,
   },
   mounted() {
-    this.$services.kitchenRoom.getAccounts().then((response) => {
-      if (response.data.ok) {
-        this.hasItems = response.data.collection.hasItems;
-        this.total = response.data.collection.total;
-        this.accounts = response.data.collection.items;
-      }
+    this.$services.kitchenRoom
+      .getOrdersUndone(this.$store.getters.user.idComercial)
+      .then((response) => {
+        if (response.data.ok) {
+          this.hasItems = response.data.collection.hasItems;
+          this.total = response.data.collection.total;
+          this.accounts = response.data.collection.items;
+        }
+      });
+
+    this.$services.socketioService.getNewOrder((payload) => {
+      this.accounts = [...this.accounts, payload];
     });
   },
 
@@ -129,26 +135,29 @@ export default {
       active_2: true,
       step: 1,
       toggle_one: 0,
-      tCocina: "Cocina", 
+      tCocina: "Cocina",
     };
   },
   methods: {
     doneOrder(id) {
-      const account = this.accounts.find((account) => account.idCuenta === id);
+      const account = this.accounts.find((account) => account.idOrden === id);
       account.done = true;
+
+      const sendOrder = { ...account };
+
       account.idEmpleado = account.employee.idEmpleado;
 
       delete account.orders;
       delete account.employee;
 
       this.$services.kitchenRoom
-        .updateAccount(id, account)
+        .updateOrder(id, account)
         .then((response) => {
           if (response.data.ok) {
+            this.$services.socketioService.doneOrder(sendOrder);
             this.accounts = this.accounts.filter(
-              (account) => account.done !== true
+              (order) => order.idOrden !== response.data.order.idOrden
             );
-            console.log(this.accounts);
           }
         })
         .catch((error) => {
@@ -173,7 +182,6 @@ export default {
 
 
 <style lang="css" scoped>
-
 .zoomInUp {
   -webkit-animation-name: zoomInUp;
   animation-name: zoomInUp;
@@ -215,7 +223,7 @@ export default {
   }
 }
 
-.orders{
+.orders {
   min-width: 500px;
 }
 </style>

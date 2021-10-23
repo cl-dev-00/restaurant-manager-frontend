@@ -1,14 +1,14 @@
 export const Rules = {
-    
+
     //Requerido
-    required:[
+    required: [
         v => !!v || 'Requerido'
     ],
-   
+
     //Numero Entero
     integer: [
         v => !!v || 'Requerido',
-        v => !!(isNaN(v) ? false : (parseFloat(v) | 0 === parseFloat(v) )) || 'Debe ingresar un numero entero'
+        v => !!(isNaN(v) ? false : (parseFloat(v) | 0 === parseFloat(v))) || 'Debe ingresar un numero entero'
     ],
 
     //Numero decimal con dos decimales
@@ -18,15 +18,15 @@ export const Rules = {
     ],
 
     test: (value = false) => {
-     console.log(value);
-        return[
-           
+        console.log(value);
+        return [
+
             v => !!v || 'Requerido',
             v => /^(\d+(?:[\.]\d{2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales',
-            v => parseFloat(v) >= parseFloat(value) || 'Monto insuficiente, debe ser mayor a $'+ value,
-           
+            v => parseFloat(v) >= parseFloat(value) || 'Monto insuficiente, debe ser mayor a $' + value,
+
         ]
-       
+
     },
 
     //Solo Letras y espacio
@@ -47,7 +47,7 @@ export const Rules = {
         v => !!v || 'Requerido',
         v => (v || '').length >= 8 || 'La contraseña debe tener minimo 8 caracteres',
     ],
-    
+
     //numero de telefono - tamaño 1234-5678 size -> 9
     phonesize: [
         v => !!v || 'Requerido',
@@ -65,10 +65,39 @@ export const Rules = {
         v => !!v || 'Requerido',
         v => (v || '').length >= 3 || 'CVV incompleto',
     ],
-   
 
+};
 
-   
-    
-    
+export const rulesText = () => {
+    const rules = [];
+
+    const minLenght = 3;
+
+    if (minLenght) {
+        const rule = (v) =>
+            (v || "").length >= minLenght ||
+            `Se necesitan al menos ${minLenght} caracteres`;
+
+        rules.push(rule);
+    }
+
+    return rules;
+};
+
+export const rulesCantidad = () => {
+    const rules = [];
+
+    const minNum = 1;
+
+    if (minNum) {
+        const rule = (v) => {
+            if (!isNaN(parseFloat(v)) && v >= minNum) return true;
+
+            return "La cantidad debe ser mayor a cero";
+        };
+
+        rules.push(rule);
+    }
+
+    return rules;
 };

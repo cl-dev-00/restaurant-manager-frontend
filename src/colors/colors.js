@@ -1,0 +1,16 @@
+export const colors = [
+    "deep-purple accent-2",
+    "light-blue",
+    "green",
+    "orange darken-4",
+    "yellow darken-3",
+    "light-blue darken-4",
+    "amber",
+    "deep-orange",
+    "cyan darken-4",
+    "teal darken-3",
+    "indigo accent-3",
+    "green accent-4",
+    "cyan darken-4",
+    "deep-orange accent-2",
+  ];

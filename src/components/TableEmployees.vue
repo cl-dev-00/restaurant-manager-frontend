@@ -174,7 +174,7 @@
 
 <script>
 
-import {Rules} from "../rules.js"
+import {Rules} from "../helpers/rules.js"
 
 export default {
   name: "TableEmployees",

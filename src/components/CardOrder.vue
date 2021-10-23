@@ -1,16 +1,18 @@
 <template>
-  <v-card id="card" min-height="auto" max-height="auto">
+  <v-card :id="order.idOrden" min-height="auto" max-height="auto">
     <!-- Header de las Card -->
     <v-list-item three-line :class="color">
       <v-list-item-content class="white--text">
         <v-list-item-title class="text-h5">{{
-          nombreCliente
+          order.nombreCliente
         }}</v-list-item-title>
         <v-list-item-subtitle class="white--text"
           >Mesero - Numero de Mesa</v-list-item-subtitle
         >
         <v-list-item-subtitle class="white--text"
-          >{{ nombreMesero }} - Nº Mesa</v-list-item-subtitle
+          >{{ order.employee.nombre }} {{ order.employee.apellido }} - 
+          {{ order.table? 'Mesa ' + order.table.numero : 'Para llevar' }}
+          </v-list-item-subtitle
         >
       </v-list-item-content>
     </v-list-item>
@@ -18,68 +20,64 @@
     <!-- Listado de items de la orden   <waiter-card-list-orders :order="order" /> -->
     <v-responsive max-height="auto">
       <v-list two-line height="">
-        <v-list-item-group active-class="green--text" multiple  >
-          <template v-for="order in orders">
-            <v-list-item :key="order.idPedido">
-              <template>
-                <v-list-item>
-                  <template v-slot:default="{ active }">
-                    <!-- Cantidad -->
-                    <v-list-item-action>
-                      <v-list-item-title class="font-weight-bold">
-                        {{ order.cantidad }}
-                      </v-list-item-title>
-                    </v-list-item-action>
+        <v-list-item-group
+          v-model="selected"
+          active-class="green--text"
+          multiple
+        >
+          <template v-for="orderDetail in order.order_details">
+            <v-list-item
+              :key="orderDetail.idOrderDetail"
+              @click="changeDoneOrderDetail(orderDetail.idOrderDetail)"
+            >
+              <template v-slot:default="{ active = true }">
+                <!-- Cantidad -->
+                <v-list-item-action>
+                  <v-list-item-title class="font-weight-bold">
+                    {{ orderDetail.cantidad }}
+                  </v-list-item-title>
+                </v-list-item-action>
 
-                    <!-- Titulo y Subtitulo -->
-                    <v-list-item-content>
-                      <v-list-item-title
-                        style="
-                          white-space: normal;
-                          word-wrap: break-word;
-                          width: 60px;
-                          font-weight: bold;
-                        "
-                      >
-                        {{ order.menu_item.nombre_Item }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        class="text--primary"
-                        style="
-                          white-space: normal;
-                          word-wrap: break-word;
-                          width: 60px;
-                        "
-                      >
-                        Comentario: {{ order.menu_item.detalles_item }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
+                <!-- Titulo y Subtitulo -->
+                <v-list-item-content>
+                  <v-list-item-title
+                    style="
+                      white-space: normal;
+                      word-wrap: break-word;
+                      width: 60px;
+                      font-weight: bold;
+                    "
+                  >
+                    {{ orderDetail.menu_item.nombre_item }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle
+                    class="text--primary"
+                    style="
+                      white-space: normal;
+                      word-wrap: break-word;
+                      width: 60px;
+                    "
+                  >
+                    {{ orderDetail.comentario }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
 
-                    <!-- Like o Precio (Sub Total por item) -->
-                    <!-- Like para Cocina -->
-                    <v-list-item-action v-if="tipoCard === 'Cocina'">
-                      <v-icon v-if="!active" color="grey lighten-1" small>
-                        mdi-thumb-up
-                      </v-icon>
-                      <v-icon v-else color="green darken-3">
-                        mdi-thumb-up
-                      </v-icon>
-                    </v-list-item-action>
-                    <!-- Precio para los demás -->
-                    <v-list-item-action v-if="tipoCard !== 'Cocina'">
-                      <span>$ {{ order.importe }}</span>
-                    </v-list-item-action>
-                  </template>
-                </v-list-item>
+                <!-- Like o Precio (Sub Total por item) -->
+                <!-- Like para Cocina -->
+                <v-list-item-action v-if="tipoCard === 'Cocina'">
+                  <v-icon v-if="!active" color="grey lighten-1" small>
+                    mdi-thumb-up
+                  </v-icon>
+                  <v-icon v-else color="green darken-3"> mdi-thumb-up </v-icon>
+                </v-list-item-action>
+                <!-- Precio para los demás -->
+                <v-list-item-action v-if="tipoCard !== 'Cocina'">
+                  <span>$ {{ orderDetail.importe }}</span>
+                </v-list-item-action>
               </template>
             </v-list-item>
           </template>
         </v-list-item-group>
-
-
-
-
-
       </v-list>
       <v-spacer></v-spacer>
 
@@ -98,10 +96,7 @@
     <!-- Boton Cards -->
 
     <!-- MESERO -->
-    <v-card-actions
-      v-if="tipoCard === 'Mesero'"
-      class="mt-5"
-    >
+    <v-card-actions v-if="tipoCard === 'Mesero'" class="mt-5">
       <v-btn
         class="mb-1"
         small
@@ -131,7 +126,7 @@
     </v-card-actions>
 
     <!-- COCINA -->
-    <v-card-actions v-if="tipoCard === 'Cocina'" >
+    <v-card-actions v-if="tipoCard === 'Cocina'">
       <v-spacer></v-spacer>
       <v-btn
         class="mb-1"
@@ -170,7 +165,7 @@
         fab
         dark
         color="success"
-        @click="doneOrderEmit"
+        @click="deliveryOrderEmit"
       >
         <v-icon dark> mdi-check </v-icon>
       </v-btn>
@@ -179,7 +174,6 @@
     <!-- CAJERO PAGAR-->
 
     <v-card-actions v-if="tipoCard === 'CajeroPay'">
-      
       <v-spacer></v-spacer>
       <v-btn
         class="mb-1"
@@ -189,7 +183,7 @@
         fab
         dark
         color="success"
-        @click="doneOrderEmit"
+        @click="paymentOrderEmit"
       >
         <v-icon dark> mdi-cash </v-icon>
       </v-btn>
@@ -204,26 +198,49 @@ export default {
   data() {
     return {
       color: "black",
+      selected: [],
     };
+  },
+  mounted() {
+     this.order.order_details.forEach((orderDetail, index) => {
+
+      if(orderDetail.done) {
+        this.selected = [...this.selected, index];
+      }
+    });
+
+
+    switch (this.tipoCard) {
+      case "Cocina":
+        this.color = "pink";
+        break;
+
+      case "Mesero":
+        this.color = "blue darken-2";
+        break;
+
+      case "Cajero":
+        this.color = "indigo";
+        break;
+
+      case "CajeroPay":
+        this.color = "teal darken-2";
+        break;
+
+      default:
+        this.color = "black";
+    }
   },
 
   props: {
-    tipoCard: {
-      type: String,
+    order: {
+      type: Object,
       required: true,
     },
 
-    nombreCliente: {
+    tipoCard: {
       type: String,
       required: true,
-    },
-    nombreMesero: {
-      type: String,
-      required: true,
-    },
-    orders: {
-      type: Array,
-      // required: true
     },
 
     //PROPIEDADES PARA LOS TIPOS: COCINA, MESERO, CAJERO, CAJERO PARA PAGAR
@@ -268,37 +285,28 @@ export default {
 
   methods: {
     doneOrderEmit() {
+      // this.toggleClass();
       this.$emit("doneOrderEmit");
-      this.toggleClass();
+    },
+    paymentOrderEmit() {
+      console.log('payment')
+      // this.toggleClass();
+      this.$emit("paymentOrderEmit");
+    },
+    deliveryOrderEmit() {
+      console.log('delivery')
+      // this.toggleClass();
+      this.$emit("deliveryOrderEmit");
     },
 
     toggleClass() {
-      const el = document.getElementById("card");
-      el.classList.toggle("fadeOut");
+      const el = document.getElementById(`${this.order.idOrden}`);
+      el.classList.add("fadeOut");
     },
-  },
 
-  mounted() {
-    switch (this.tipoCard) {
-      case "Cocina":
-        this.color = "pink";
-        break;
-
-      case "Mesero":
-        this.color = "blue darken-2";
-        break;
-
-      case "Cajero":
-        this.color = "indigo";
-        break;
-
-      case "CajeroPay":
-        this.color = "teal darken-2";
-        break;
-
-      default:
-        this.color = "black";
-    }
+    changeDoneOrderDetail(id) {
+      this.$services.socketioService.changeDoneOrderDetail(id);
+    },
   },
 };
 </script>

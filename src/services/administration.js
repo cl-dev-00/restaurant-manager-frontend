@@ -12,7 +12,7 @@ export default class Administration {
     }
     
     async getCategory(id) {
-        const category = await this.axios.get(`${this.url}categories/${id}`);
+        const category = await this.axios.get(`${this.url}/categories/${id}`);
     
         return category;
     }
