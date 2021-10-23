@@ -34,24 +34,28 @@
     <v-row class="align-center justify-center">
       <v-window v-model="step" class="col-12">
         <v-window-item :value="1">
-          <div class="orders">
+          <div class="orders col-12">
             <v-container fluid>
               <masonry
-                :cols="{ default: 3, 1266: 2, 700: 1 }"
+                
+                :cols="{default: 3, 1266: 2, 700: 1 }"
                 :gutter="{ default: '10px', 700: '10px' }"
               >
                 <div
+                
                   v-for="account in accounts"
                   :key="account.idCuenta"
-                  class="mb-3 zoomInUp"
+                  class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
-                  <kitchen-card-order
+                 <card-order
+                    :tipoCard="tCocina"
                     :nombreCliente="account.nombreCliente"
                     :nombreMesero="account.employee.nombre"
                     :orders="account.orders"
                     @doneOrderEmit="() => doneOrder(account.idCuenta)"
-                  />
+                     />
+
                 </div>
               </masonry>
             </v-container>
@@ -91,16 +95,18 @@
 </template>
 
 <script>
-import KitchenCardOrder from "../../components/KitchenCardOrder.vue";
+
 import Vue from "vue";
 import VueMasonry from "vue-masonry-css";
 
 Vue.use(VueMasonry);
 const el = document.getElementById("items");
 
+import CardOrder from "../../components/CardOrder.vue"
+
 export default {
   components: {
-    KitchenCardOrder,
+   CardOrder,
   },
   mounted() {
     this.$services.kitchenRoom.getAccounts().then((response) => {
@@ -123,6 +129,7 @@ export default {
       active_2: true,
       step: 1,
       toggle_one: 0,
+      tCocina: "Cocina", 
     };
   },
   methods: {
@@ -206,5 +213,9 @@ export default {
     -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
     animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
   }
+}
+
+.orders{
+  min-width: 500px;
 }
 </style>

@@ -5,6 +5,10 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import Services from './services';
 
+import {VueMaskDirective} from 'v-mask'
+
+Vue.directive('mask', VueMaskDirective);
+
 Vue.config.productionTip = false
 
 Vue.use(

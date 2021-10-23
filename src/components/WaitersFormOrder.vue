@@ -38,6 +38,10 @@
       </v-row>
       <!-- TEXTO DE NUMERO DE MESA -->
       <v-row>
+        <h4 class="ml-4 mt-0 mb-3 red--text">Orden para llevar</h4>
+      </v-row>
+
+      <v-row>
         <h4 class="ml-4 mt-0 mb-0">Numero de mesa</h4>
       </v-row>
       <!-- SELECTOR DE MESA -->
@@ -129,6 +133,30 @@
       <!-- BOTON COCINA-->
       <v-row>
         <v-col cols="col-12">
+          <v-dialog transition="dialog-top-transition" max-width="90%">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="success" v-bind="attrs" v-on="on" block x-large
+                ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
+              >
+            </template>
+            <template v-slot:default="dialog">
+              <v-row class=" justify-center white" dense>
+                <v-col class="col-12">
+              <v-btn
+                color="primary"
+                block
+                depressed
+                large
+                @click="dialog.value = false"
+                >Cerrar</v-btn
+              >
+              <form-pay/>
+              </v-col>
+              </v-row>
+            </template>
+          </v-dialog>
+        </v-col>
+        <v-col cols="col-12">
           <v-dialog transition="dialog-bottom-transition" max-width="600">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -139,18 +167,18 @@
                 @click="addOrder"
                 block
                 class="mb-5"
-                :disabled="itemSelects.length < 1"
+                :disabled="!validarEnvio"
               >
                 Enviar a Cocina</v-btn
               >
             </template>
             <template v-slot:default="dialog">
               <v-card>
-                <v-toolbar color="success" dark
-                  >Orden Enviada</v-toolbar
-                >
+                <v-toolbar color="success" dark>Orden Enviada</v-toolbar>
                 <v-card-text>
-                  <div class="text-h6 mt-6">Tu orden ha sido enviada a cocina correctamente.</div>
+                  <div class="text-h6 mt-6">
+                    Tu orden ha sido enviada a cocina correctamente.
+                  </div>
                 </v-card-text>
                 <v-card-actions class="justify-end">
                   <v-btn text @click="dialog.value = false">Cerrar</v-btn>
@@ -166,6 +194,9 @@
 
 <script>
 import WaiterCardCategory from "../components/WaitersCardCategory.vue";
+import EventBus from "../event-bus";
+
+import FormPay from "../components/FormPay.vue";
 
 export default {
   name: "WaitersFormOrder",
@@ -177,6 +208,7 @@ export default {
   },
   components: {
     WaiterCardCategory,
+    FormPay,
   },
 
   data() {
@@ -189,24 +221,16 @@ export default {
       icon1: "mdi-arrow-right-box",
 
       itemsOrder: [],
-
+      //  :class="n.disp ? undefined: 'grey darken-2'"
       mesas: [
-        { numero: "N/A" },
-        { numero: "1" },
-        { numero: "2" },
-        { numero: "3" },
-        { numero: "4" },
-        { numero: "5" },
-        { numero: "6" },
-        { numero: "7" },
-        { numero: "8" },
-        { numero: "9" },
-        { numero: "10" },
-        { numero: "11" },
-        { numero: "12" },
-        { numero: "13" },
-        { numero: "14" },
-        { numero: "15" },
+        { numero: "1", disp: false },
+        { numero: "2", disp: true },
+        { numero: "3", disp: true },
+        { numero: "4", disp: false },
+        { numero: "5", disp: true },
+        { numero: "6", disp: false },
+        { numero: "7", disp: true },
+        { numero: "8", disp: false },
       ],
 
       model: null,
@@ -214,6 +238,7 @@ export default {
       comentarios: "",
       minLenght: 3,
       minNum: 1,
+      nombre_valido: false,
     };
   },
   computed: {
@@ -246,6 +271,7 @@ export default {
 
       return rules;
     },
+
     rulesCantidad() {
       const rules = [];
 
@@ -261,8 +287,28 @@ export default {
 
       return rules;
     },
+
+    validarEnvio() {
+      if (this.nombreCliente === "" || this.nombreCliente === null) {
+        return false;
+      } else if (this.nombreCliente.length < 3) {
+        return false;
+      } else {
+        if (this.itemSelects.length < 1) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
   },
+
   methods: {
+    clearItemsSelects() {
+      EventBus.$emit("clean", []);
+      EventBus.$emit("clean2", []);
+    },
+
     increment(menu) {
       menu.cantidad = parseInt(menu.cantidad, 10) + 1;
     },
@@ -307,6 +353,7 @@ export default {
                   console.log("orders preview", orders);
                   console.log("response", response.data);
                   console.log("Ah perro se logro xdxd");
+                  this.clearItemsSelects();
                 }
               })
               .catch((error) => {
@@ -322,6 +369,7 @@ export default {
       console.log("click");
       !this.$refs.form.reset();
       this.$emit("clearitemSelects");
+      this.clearItemsSelects();
     },
   },
 };
