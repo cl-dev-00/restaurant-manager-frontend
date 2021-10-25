@@ -143,7 +143,7 @@ export default {
       });
 
     this.$services.orders
-      .getMenuItemsAvailable(this.$store.getters.user.idComercial)
+      .getMenuItems()
       .then((response) => {
         if (response.data.ok) {
           this.menuItems = response.data.collection;

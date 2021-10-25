@@ -5,16 +5,16 @@ export default class KitchenRoom {
         this.url = url;
     }
 
-    getOrdersUndone(idComercial) {
-        return this.axios.get(`${this.url}/orders/undone/${idComercial}`);    
+    getOrdersUndone() {
+        return this.axios.get(`${this.url}/orders/undone`);    
     }
     
-    getOrdersWithPaying(idComercial) {
-        return this.axios.get(`${this.url}/orders/without-paying/${idComercial}`);    
+    getOrdersWithPaying() {
+        return this.axios.get(`${this.url}/orders/without-paying`);    
     }
 
     getOrder(id) {
-        return this.axios.get(`${this.url}/orders//${id}`);    
+        return this.axios.get(`${this.url}/orders/${id}`);    
     }
     
     updateOrder(id, params) {

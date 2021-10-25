@@ -14,7 +14,6 @@ class SocketioService {
           'idComercial': 1
         }
       });
-
     }
 
     newOrder(order) {

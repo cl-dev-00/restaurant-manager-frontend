@@ -1,6 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
     <v-row class="mt-5 mb-5 align-center justify-center">
+      <orders-edit-order :dialog="dialog" @changeDialogEmit="changeDialog()" />      
+    </v-row>
+    
+    <v-row class="mt-5 mb-5 align-center justify-center">
       <v-btn-toggle
         v-model="step"
         shaped
@@ -111,7 +115,7 @@
                   class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
-                  <card-order :order="account" :tipoCard="tMesero" />
+                  <card-order @editOrderEmit="editOrder" :order="account" :tipoCard="tMesero" />
                 </div>
               </masonry>
             </v-col>
@@ -152,6 +156,7 @@
 <script>
 import OrdersCardCategory from "../../components/OrdersCardCategory.vue";
 import OrdersFormAdd from "../../components/OrdersFormAdd.vue";
+import OrdersEditOrder from "../../components/OrdersEditOrder.vue";
 
 //Cards de prueba
 import CardOrder from "../../components/CardOrder.vue";
@@ -166,11 +171,12 @@ export default {
     OrdersFormAdd,
     CardOrder,
     FormPay,
+    OrdersEditOrder,
   },
 
   mounted() {
     this.$services.kitchenRoom
-      .getOrdersWithPaying(this.$store.getters.user.idComercial)
+      .getOrdersWithPaying()
       .then((response) => {
         if (response.data.ok) {
           this.hasItems = response.data.collection.hasItems;
@@ -200,6 +206,7 @@ export default {
       total: 0,
 
       show: false,
+      dialog: false,
 
       //Tipos
       tCocina: "Cocina",
@@ -321,45 +328,8 @@ export default {
       this.itemMenuOrder = [];
     },
 
-    updateOrders() {
-      this.$services.kitchenRoom.getOrdersWithPayingthis.$store.getters.user
-        .idComercial()
-        .then((response) => {
-          if (response.data.ok) {
-            this.hasItems = response.data.collection.hasItems;
-            this.total = response.data.collection.total;
-            this.accounts = response.data.collection.items;
-          }
-        });
-    },
-    /*
-    selectWindow(op) {
-      if (op === 1) {
-        this.active_1 = false;
-        this.active_2 = true;
-        this.active_3 = true;
-
-        this.step = 1;
-      } else if (op === 2) {
-        this.active_1 = true;
-        this.active_2 = false;
-        this.active_3 = true;
-
-        this.updateOrders();
-        this.step = 2;
-      } else {
-        this.active_1 = true;
-        this.active_2 = true;
-        this.active_3 = false;
-
-        this.step = 3;
-      }
-    },*/
-
     doneOrder(id) {
       this.accounts = this.accounts.filter((account) => !account.done);
-
-      return console.log("aqui");
 
       const account = this.accounts.find((account) => account.idCuenta === id);
       account.done = true;
@@ -382,6 +352,15 @@ export default {
           console.log(error);
         });
     },
+
+    editOrder(id) {
+      console.log(id);
+      this.dialog = true;
+    },
+
+    changeDialog() {
+      this.dialog = false;
+    }
   },
 };
 </script>

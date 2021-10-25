@@ -6,19 +6,19 @@ export default class Order {
     }
 
     async getCategories() {
-        return await  this.axios.get(`${this.url}/categories/`);
+        return await  this.axios.get(`${this.url}/categories`);
     }
 
-    async getMenuItems(idComercial) {
-        return await  this.axios.get(`${this.url}/menu-items/available/commercial/${idComercial}`);
+    async getMenuItemsAvailable() {
+        return await  this.axios.get(`${this.url}/menu-items/available`);
     }
     
-    async getMenuItemsAvailable(idComercial) {
-        return await  this.axios.get(`${this.url}/menu-items/commercial/${idComercial}`);
+    async getMenuItems() {
+        return await  this.axios.get(`${this.url}/menu-items`);
     }
 
-    async getTablesAvailable(idComercial) {
-        return await  this.axios.get(`${this.url}/tables/available/commercial/${idComercial}`);
+    async getTablesAvailable() {
+        return await  this.axios.get(`${this.url}/tables/available`);
     }
 
     async createOrder(params) {

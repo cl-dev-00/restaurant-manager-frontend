@@ -198,7 +198,7 @@ export default {
   },
   mounted() {
     this.$services.orders
-      .getTablesAvailable(this.$store.getters.user.idComercial)
+      .getTablesAvailable()
       .then((response) => {
         if (response.data.ok) {
           this.mesas = response.data.collection;

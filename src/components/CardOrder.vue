@@ -143,7 +143,7 @@
     </v-card-actions>
 
     <!-- CAJERO -->
-    <v-card-actions v-if="tipoCard === 'Cajero'" class="mt-5">
+    <v-card-actions v-if="tipoCard === 'Mesero'" class="mt-5">
       <v-btn
         class="mb-1"
         small
@@ -152,6 +152,7 @@
         left
         fab
         dark
+        @click="editOrder()"
         color="orange darken-2"
       >
         <v-icon size="20"> mdi-pencil </v-icon>
@@ -165,7 +166,7 @@
         fab
         dark
         color="success"
-        @click="deliveryOrderEmit"
+        @click="deliveryOrderEmit()"
       >
         <v-icon dark> mdi-check </v-icon>
       </v-btn>
@@ -183,7 +184,7 @@
         fab
         dark
         color="success"
-        @click="paymentOrderEmit"
+        @click="paymentOrderEmit()"
       >
         <v-icon dark> mdi-cash </v-icon>
       </v-btn>
@@ -297,6 +298,9 @@ export default {
       console.log('delivery')
       // this.toggleClass();
       this.$emit("deliveryOrderEmit");
+    },
+    editOrder() {
+      this.$emit('editOrderEmit', this.order.idOrden);
     },
 
     toggleClass() {

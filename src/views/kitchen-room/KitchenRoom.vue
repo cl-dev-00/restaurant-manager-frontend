@@ -110,7 +110,7 @@ export default {
   },
   mounted() {
     this.$services.kitchenRoom
-      .getOrdersUndone(this.$store.getters.user.idComercial)
+      .getOrdersUndone()
       .then((response) => {
         if (response.data.ok) {
           this.hasItems = response.data.collection.hasItems;
