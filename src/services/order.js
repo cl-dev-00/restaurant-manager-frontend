@@ -21,8 +21,16 @@ export default class Order {
         return await  this.axios.get(`${this.url}/tables/available`);
     }
 
+    async getOrder(id) {
+        return await this.axios.get(`${this.url}/orders/${id}`);
+    }
+
     async createOrder(params) {
         return await this.axios.post(`${this.url}/orders`, params);
+    }
+
+    async updateOrder(params, id) {
+        return await this.axios.put(`${this.url}/orders/${id}`, params);
     }
 
     async createOrderDetails(params) {

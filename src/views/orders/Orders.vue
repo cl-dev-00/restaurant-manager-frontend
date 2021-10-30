@@ -1,10 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
     <v-row class="mt-5 mb-5 align-center justify-center">
-      <orders-edit-order :dialog="dialog" @changeDialogEmit="changeDialog()" />      
-    </v-row>
-    
-    <v-row class="mt-5 mb-5 align-center justify-center">
       <v-btn-toggle
         v-model="step"
         shaped
@@ -48,55 +44,7 @@
     <v-row class="align-center justify-center">
       <v-window v-model="step" class="col-12">
         <v-window-item :value="0">
-          <v-row>
-            <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">
-              <orders-card-category
-                class="col-menu"
-                :itemSelects="itemSelects"
-                @updateSelectItems="updateSelectItems"
-              />
-            </v-col>
-            <v-col cols="12" sm="6" md="6">
-              <orders-form-add
-                :itemSelects="itemMenuOrder"
-                @clearitemSelects="clearitemSelects"
-              />
-            </v-col>
-            <v-col class="hidden-sm-and-up">
-              <v-dialog transition="dialog-top-transition" max-width="400">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    fab
-                    dark
-                    color="success"
-                    fixed
-                    right
-                    top
-                    style="margin-top: 410px"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon dark size="40">mdi-plus</v-icon>
-                  </v-btn>
-                </template>
-                <template v-slot:default="dialog">
-                  <v-btn
-                    color="primary"
-                    block
-                    depressed
-                    height="50"
-                    @click="dialog.value = false"
-                    >Cerrar</v-btn
-                  >
-                  <orders-card-category
-                    style="background-color: white"
-                    :itemSelects="itemSelects"
-                    @updateSelectItems="updateSelectItems"
-                  />
-                </template>
-              </v-dialog>
-            </v-col>
-          </v-row>
+          <orders-create-or-edit />
         </v-window-item>
 
         <v-window-item :value="1">
@@ -115,7 +63,11 @@
                   class="mb-10 mt-1 zoomInUp"
                   id="items"
                 >
-                  <card-order @editOrderEmit="editOrder" :order="account" :tipoCard="tMesero" />
+                  <card-order
+                    @editOrderEmit="editOrder"
+                    :order="account"
+                    :tipoCard="tMesero"
+                  />
                 </div>
               </masonry>
             </v-col>
@@ -154,9 +106,7 @@
 </template>
 
 <script>
-import OrdersCardCategory from "../../components/OrdersCardCategory.vue";
-import OrdersFormAdd from "../../components/OrdersFormAdd.vue";
-import OrdersEditOrder from "../../components/OrdersEditOrder.vue";
+import OrdersCreateOrEdit from "../../components/OrdersCreateOrEdit.vue";
 
 //Cards de prueba
 import CardOrder from "../../components/CardOrder.vue";
@@ -167,23 +117,21 @@ import FormPay from "../../components/FormPay.vue";
 export default {
   name: "Orders",
   components: {
-    OrdersCardCategory,
-    OrdersFormAdd,
+    OrdersCreateOrEdit,
     CardOrder,
     FormPay,
-    OrdersEditOrder,
   },
 
   mounted() {
-    this.$services.kitchenRoom
-      .getOrdersWithPaying()
-      .then((response) => {
-        if (response.data.ok) {
-          this.hasItems = response.data.collection.hasItems;
-          this.total = response.data.collection.total;
-          this.accounts = response.data.collection.items;
-        }
-      });
+    this.$store.dispatch("itemsMenuSelectAction", []);
+
+    this.$services.kitchenRoom.getOrdersWithPaying().then((response) => {
+      if (response.data.ok) {
+        this.hasItems = response.data.collection.hasItems;
+        this.total = response.data.collection.total;
+        this.accounts = response.data.collection.items;
+      }
+    });
 
     this.$services.socketioService.getDoneOrder((payload) => {
       this.accounts = [...this.accounts, payload];
@@ -192,8 +140,6 @@ export default {
 
   data() {
     return {
-      itemSelects: [],
-      itemMenuOrder: [],
       switch1: true,
       step: 0,
       toggle_one: 0,
@@ -206,7 +152,6 @@ export default {
       total: 0,
 
       show: false,
-      dialog: false,
 
       //Tipos
       tCocina: "Cocina",
@@ -312,22 +257,6 @@ export default {
     };
   },
   methods: {
-    updateSelectItems(items) {
-      this.itemSelects = items;
-      this.itemMenuOrder = items.map((item) => ({
-        nombre_item: item.nombre_item,
-        id_menu_item: item.id_menu_item,
-        precio: item.precio,
-        cantidad: 1,
-        importe: 0,
-        comentario: "",
-      }));
-    },
-
-    clearitemSelects() {
-      this.itemMenuOrder = [];
-    },
-
     doneOrder(id) {
       this.accounts = this.accounts.filter((account) => !account.done);
 
@@ -354,13 +283,10 @@ export default {
     },
 
     editOrder(id) {
-      console.log(id);
-      this.dialog = true;
+      if (id) {
+        this.$router.push(`/orders/${id}/edit`);
+      }
     },
-
-    changeDialog() {
-      this.dialog = false;
-    }
   },
 };
 </script>

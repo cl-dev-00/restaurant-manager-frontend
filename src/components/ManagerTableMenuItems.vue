@@ -18,7 +18,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="menuItems.items"
       :search="search"
       :height="500"
       class="justify-center ma-3 elevation-1"
@@ -44,7 +44,7 @@
                     <v-col cols="12" sm="7" md="7">
                       <v-text-field
                         outlined
-                        v-model="editedItem.name"
+                        v-model="editedItem.nombre_item"
                         label="Nombre del Item"
                         :rules="ruleRequired"
                       ></v-text-field>
@@ -54,7 +54,7 @@
                         :items="SelectCategorias"
                         label="Categorias"
                         outlined
-                        v-model="editedItem.categoria"
+                        v-model="editedItem.idCategoria"
                         :rules="ruleRequired"
                       ></v-select>
                     </v-col>
@@ -70,7 +70,7 @@
                     <v-col cols="12" sm="7" md="7">
                       <v-textarea
                         outlined
-                        v-model="editedItem.detalles"
+                        v-model="editedItem.detalles_item"
                         label="Detalles del item"
                         :rules="ruleRequired"
                         rows="3"
@@ -133,9 +133,6 @@
           mdi-delete
         </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -143,7 +140,7 @@
 <script>
 import {Rules} from "../helpers/rules.js"
 export default {
-  name: "TableItemsMenu",
+  name: "ManagerTableMenuItems",
   data: () => ({
     isFormValid: false,
     slider: 0 ,
@@ -155,17 +152,17 @@ export default {
         text: "Nombre",
         align: "start",
         sortable: true,
-        value: "name",
+        value: "nombre_item",
       },
-      { text: "Categoria", value: "categoria" },
+      { text: "Categoria", value: "idCategoria" },
       { text: "Precio", value: "precio", width: "90px" },
-      { text: "Detalles", value: "detalles" },
+      { text: "Detalles", value: "detalles_item" },
       { text: "Disponibilidad", value: "disponibilidad" },
       { text: "Descuento (%)", value: "descuento" },
 
       { text: "Acciones", value: "actions", sortable: false, width: "100px" },
     ],
-    desserts: [],
+    menuItems: [],
     SelectCategorias: [
       "Desayuno",
       "Almuerzo",
@@ -178,18 +175,18 @@ export default {
 
     editedIndex: -1,
     editedItem: {
-      name: "",
-      categoria: "",
+      nombre_item: "",
+      idCategoria: "",
       precio: "",
-      detalles: "",
+      detalles_item: "",
       disponibilidad: "",
       descuento: 0.0,
     },
     defaultItem: {
-      name: "",
-      categoria: "",
+      nombre_item: "",
+      idCategoria: "",
       precio: "",
-      detalles: "",
+      detalles_item: "",
       disponibilidad: "",
       descuento: 0.0,
     },
@@ -197,6 +194,15 @@ export default {
     ruleDecimal: Rules.decimal,
     
   }),
+  mounted() {
+    this.$services.orders.getMenuItemsAvailable()
+    .then(response => {
+      this.menuItems = response.data.collection;
+    })
+    .catch(error => {
+      console.log(error)
+    });
+  },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo Item" : "Editar Item";
@@ -215,88 +221,7 @@ export default {
   },
   methods: {
     initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          categoria: "Postre",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Ice cream sandwich",
-          categoria: "Cena",
-          precio: 2.5,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Eclair",
-          categoria: "Almuerzo",
-          precio: 1.21,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Cupcake",
-          categoria: "Cena",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Gingerbread",
-          categoria: "Bebida",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Jelly bean",
-          categoria: "Bebida",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Lollipop",
-          categoria: "Cena",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Honeycomb",
-          categoria: "Almuerzo",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "Donut",
-          categoria: "Comida Rapida",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-        {
-          name: "KitKat",
-          categoria: "Desayuno",
-          precio: 21.23,
-          detalles: "lorem hsdasdasdibsdhsds dosudbojsdboasd asodisd",
-          disponibilidad: "Disponible",
-          descuento: 0.0,
-        },
-      ];
+      this.desserts = [];
     },
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item);

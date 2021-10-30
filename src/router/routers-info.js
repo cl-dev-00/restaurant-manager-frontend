@@ -1,6 +1,7 @@
 import Home from '../views/Home.vue'
 import About from '../views/Home.vue'
 import Orders from '../views/orders/Orders.vue'
+import OrderEdit from '../views/orders/OrderEdit.vue'
 import KitchenRoom from '../views/kitchen-room/KitchenRoom.vue'
 import Categories from '../views/manager/categories/Categories.vue'
 import CategoryAddOrEdit from '../views/manager/categories/CategoryAddOrEdit.vue'
@@ -39,6 +40,11 @@ const routersInfo = {
         path: '/orders',
         name: 'Orders',
         component: Orders
+    },
+    orderEdit: {
+        path: '/orders/:id/edit',
+        name: 'OrderEdit',
+        component: OrderEdit
     },
     kitchenroom: {
         path: '/kitchen-room',

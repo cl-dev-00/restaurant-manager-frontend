@@ -11,9 +11,19 @@
         <v-col cols="6" sm="6">
           <!-- Input de la orden -->
           <v-text-field
+            v-if="!isEdit"
             color="purple darken-2"
             label="Nombre cliente"
             v-model="nombreCliente"
+            required
+            clearable
+            :rules="rulesText"
+          ></v-text-field>
+          <v-text-field
+            v-else
+            color="purple darken-2"
+            label="Nombre cliente"
+            v-model="NombreCliente"
             required
             clearable
             :rules="rulesText"
@@ -50,6 +60,7 @@
               class="pa-0"
               active-class="success"
               show-arrows
+              v-if="!isEdit"
             >
               <v-slide-item
                 v-for="mesa in mesas.items"
@@ -57,11 +68,48 @@
                 v-model="mesaSelect"
               >
                 <v-card
-                  :color="mesa.idMesa === mesaSelect ? 'green lighten-1' : 'grey lighten-1'"
+                  :color="
+                    mesa.idMesa === mesaSelect
+                      ? 'green lighten-1'
+                      : 'grey lighten-1'
+                  "
                   class="ma-1 rounded-circle"
                   height="40"
                   width="40"
-                  @click="mesaSelect=mesa.idMesa"
+                  @click="mesaSelect = mesa.idMesa"
+                >
+                  <v-row
+                    class="fill-height mt-0 pt-0"
+                    align="center"
+                    justify="center"
+                  >
+                    {{ mesa.numero }}
+                  </v-row>
+                </v-card>
+              </v-slide-item>
+            </v-slide-group>
+            <v-slide-group
+              v-model="model"
+              class="pa-0"
+              active-class="success"
+              show-arrows
+              v-else
+            >
+              <v-slide-item
+                v-for="mesa in mesas.items"
+                :key="mesa.idMesa"
+                v-model="MesaSelect"
+              >
+                <v-card
+                  :color="
+                    mesa.idMesa === MesaSelect
+                      ? 'green lighten-1'
+                      : 'grey lighten-1'
+                  "
+                  class="ma-1 rounded-circle"
+                  height="40"
+                  width="40"
+                  @click="MesaSelect = mesa.idMesa"
                 >
                   <v-row
                     class="fill-height mt-0 pt-0"
@@ -82,7 +130,7 @@
         <h4 class="ml-4 mt-0 mb-0">Items:</h4>
       </v-row>
       <!-- ITEMS SELECCIONADOS -->
-      <v-row v-for="menu in itemSelects" :key="menu.id_menu_item">
+      <v-row v-for="(menu, index) in ItemSelects" :key="menu.id_menu_item">
         <v-col class="col-4">{{ menu.nombre_item }}</v-col>
         <v-col class="col-5 pl-4 pr-4" style="margin-top: -20px">
           <v-text-field
@@ -90,19 +138,49 @@
             :rules="rulesCantidad"
             type="number"
             append-outer-icon="mdi-plus"
-            @click:append-outer="increment(menu)"
+            @click:append-outer="increment(menu.cantidad, index)"
             prepend-icon="mdi-minus"
-            @click:prepend="decrement(menu)"
+            @click:prepend="decrement(menu.cantidad, index)"
+            @input="changeCantidad(menu.cantidad, index)"
           ></v-text-field>
         </v-col>
         <v-col class="col-3">$ {{ menu.precio }}</v-col>
-        <v-col class="col-12"
+        <v-col
+          class="col-3"
+          v-if="
+            isEdit &&
+            ItemSelectsEdit.some(
+              (item) => item.id_menu_item === menu.id_menu_item
+            )
+          "
+        >
+          <v-btn
+            @click="removeItem(menu.id_menu_item, index)"
+            class="mx-2"
+            fab
+            dark
+            small
+            color="pink"
+          >
+            <v-icon dark> mdi-close-thick </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col
+          :class="{
+            'col-9':
+              isEdit &&
+              ItemSelectsEdit.some(
+                (item) => item.id_menu_item === menu.id_menu_item
+              ),
+            'col-12': !isEdit,
+          }"
           ><v-textarea
             class="ml-3 mr-3"
             outlined
             name="input-2-4"
             label="Comentario (Opcional)"
             v-model="menu.comentario"
+            @input="changeComment(menu.comentario, index)"
             prepend-icon="mdi-comment-text-multiple"
             clearable
             rows="1"
@@ -129,8 +207,8 @@
         <v-col class="col-4">$ {{ total }}</v-col>
       </v-row>
       <!-- BOTON COCINA-->
-      <v-row>
-        <v-col cols="col-12">
+      <v-row v-if="!isEdit">
+        <v-col class="col-12">
           <v-dialog transition="dialog-top-transition" max-width="90%">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -160,7 +238,7 @@
             </template>
           </v-dialog>
         </v-col>
-        <v-col cols="col-12">
+        <v-col class="col-12">
           <v-btn
             x-large
             color="success"
@@ -179,30 +257,28 @@
 
 <script>
 import WaiterCardCategory from "./OrdersCardCategory.vue";
-import EventBus from "../event-bus";
 
 import FormPay from "./FormPay.vue";
 import { rulesText, rulesCantidad } from "../helpers/rules";
 
 export default {
-  name: "OrdersFormAdd",
-  props: {
-    itemSelects: {
-      type: Array,
-      required: true,
-    },
-  },
+  name: "OrdersFormData",
   components: {
     WaiterCardCategory,
     FormPay,
   },
   mounted() {
+    this.isEdit = this.$route.params.id ? true : false;
+
     this.$services.orders
       .getTablesAvailable()
       .then((response) => {
         if (response.data.ok) {
           this.mesas = response.data.collection;
-          this.mesas.items = [{ idMesa: null, numero: 'N/A' } , ...this.mesas.items];
+          this.mesas.items = [
+            { idMesa: null, numero: "N/A" },
+            ...this.mesas.items,
+          ];
         }
       })
       .catch((error) => {
@@ -216,18 +292,16 @@ export default {
 
       icon1: "mdi-arrow-right-box",
 
-      itemsOrder: [],
-      //  :class="n.disp ? undefined: 'grey darken-2'"
       mesas: {
         hasItems: false,
         items: [],
-        total: 0,
       },
 
       model: null,
       nombreCliente: "",
-      nombre_valido: false,
       mesaSelect: null,
+      nombre_valido: false,
+      isEdit: false,
     };
   },
   computed: {
@@ -239,22 +313,78 @@ export default {
       );
     },
     subTotal() {
-      return this.itemSelects
-        .reduce((acc, item) => acc + item.precio * item.cantidad, 0)
-        .toFixed(2);
+      return this.ItemSelects.reduce(
+        (acc, item) => acc + item.precio * item.cantidad,
+        0
+      ).toFixed(2);
     },
     impuestos() {
-      return this.itemSelects
-        .reduce((acc, item) => acc + item.cantidad * (item.precio * 0.13), 0)
-        .toFixed(2);
+      return this.ItemSelects.reduce(
+        (acc, item) => acc + item.cantidad * (item.precio * 0.13),
+        0
+      ).toFixed(2);
+    },
+
+    NombreCliente: {
+      set(nombreCliente) {
+        this.$store.dispatch("setOrderSelectAction", {
+          ...this.$store.getters.orderSelect,
+          nombreCliente,
+        });
+      },
+
+      get() {
+        return this.$store.getters.orderSelect.nombreCliente;
+      },
+    },
+
+    MesaSelect: {
+      set(idMesa) {
+        this.$store.dispatch("setOrderSelectAction", {
+          ...this.$store.getters.orderSelect,
+          idMesa,
+        });
+      },
+
+      get() {
+        return this.$store.getters.orderSelect.idMesa;
+      },
+    },
+
+    ItemSelects: {
+      get() {
+        return this.$store.getters.itemsMenuSelect.map((item) => ({
+          nombre_item: item.nombre_item,
+          id_menu_item: item.id_menu_item,
+          precio: item.precio,
+          cantidad: item.cantidad ? item.cantidad : 1,
+          comentario: item.comentario,
+        }));
+      },
+    },
+
+    ItemSelectsEdit: {
+      get() {
+        return this.$store.getters.itemsMenuSelectEdit;
+      },
+    },
+
+    ItemSelectsRemove: {
+      set(items) {
+        this.$store.dispatch("setItemsMenuSelectRemoveAction", [...items]);
+      },
+
+      get() {
+        return this.$store.getters.itemsMenuSelectRemove;
+      },
     },
 
     validarEnvio() {
       if (
-        this.nombreCliente.trim() === "" ||
-        this.nombreCliente === null ||
-        this.nombreCliente.trim().length < 3 ||
-        this.itemSelects.length < 1 ||
+        (this.nombreCliente.trim() === "") ||
+        (this.nombreCliente === null) ||
+        (this.nombreCliente.trim().length < 3) ||
+        this.ItemSelects.length < 1 ||
         !this.$refs.form.validate()
       ) {
         return false;
@@ -265,28 +395,83 @@ export default {
   },
 
   methods: {
-    clearItemsSelects() {
-      EventBus.$emit("clean", []);
-      EventBus.$emit("clean2", []);
-    },
+    increment(cantidad, index) {
+      const payload = {
+        field: "cantidad",
+        value: cantidad + 1,
+      };
 
-    increment(menu) {
-      menu.cantidad = parseInt(menu.cantidad, 10) + 1;
+      this.$store.dispatch("setItemMenuFieldAction", {
+        payload,
+        index,
+      });
     },
-    decrement(menu) {
-      if (menu.cantidad > 1) {
-        menu.cantidad = parseInt(menu.cantidad, 10) - 1;
+    decrement(cantidad, index) {
+      const payload = {
+        field: "cantidad",
+        value: cantidad - 1,
+      };
+      if (cantidad > 1) {
+        this.$store.dispatch("setItemMenuFieldAction", {
+          payload,
+          index,
+        });
       }
     },
 
-    addOrder() {
+    changeCantidad(cantidad, index) {
+      const payload = {
+        field: "cantidad",
+        value: cantidad,
+      };
 
+      this.$store.dispatch("setItemMenuFieldAction", {
+        payload,
+        index,
+      });
+    },
+
+    changeComment(comentario, index) {
+      const payload = {
+        field: "comentario",
+        value: comentario,
+      };
+      this.$store.dispatch("setItemMenuFieldAction", {
+        payload,
+        index,
+      });
+    },
+
+    removeItem(id, index) {
+      if (
+        this.isEdit &&
+        this.ItemSelectsEdit.some((item) => item.id_menu_item === id)
+      ) {
+        const item = this.ItemSelects[index];
+        this.ItemSelectsRemove = [...this.ItemSelectsRemove, item];
+
+        this.$store.dispatch(
+          "setItemsMenuSelectEditAction",
+          this.$store.getters.itemsMenuSelectEdit.filter(
+            (item) => item.id_menu_item !== id
+          )
+        );
+      }
+
+      this.$store.dispatch(
+        "itemsMenuSelectAction",
+        this.$store.getters.itemsMenuSelect.filter(
+          (item) => item.id_menu_item !== id
+        )
+      );
+    },
+
+    addOrder() {
       const { idComercial } = this.$store.getters.user;
 
-      const order_details = this.itemSelects.map(
-        ({ nombre_item, precio, ...item }) => ({
+      const order_details = this.ItemSelects.map(
+        ({  precio, ...item }) => ({
           ...item,
-          nombre_item,
           importe: item.cantidad * precio,
         })
       );
@@ -304,7 +489,7 @@ export default {
         .createOrder(order)
         .then((response) => {
           if (response.data.ok) {
-            this.$services.socketioService.newOrder(response.data.order);
+            this.$services.socketioService.sendOrderKitchroom(response.data.order);
             this.clearFormOrder();
           }
         })
@@ -313,11 +498,11 @@ export default {
         });
     },
     clearFormOrder() {
-      this.nombreCliente = "",
-      this.$emit("clearitemSelects");
-      this.clearItemsSelects();
+      this.nombreCliente = "";
+      this.$store.dispatch("itemsMenuSelectAction", []);
       this.mesaSelect = null;
     },
+
   },
 };
 </script>

@@ -109,17 +109,15 @@ export default {
     KitchenItemsState,
   },
   mounted() {
-    this.$services.kitchenRoom
-      .getOrdersUndone()
-      .then((response) => {
-        if (response.data.ok) {
-          this.hasItems = response.data.collection.hasItems;
-          this.total = response.data.collection.total;
-          this.accounts = response.data.collection.items;
-        }
-      });
+    this.$services.kitchenRoom.getOrdersUndone().then((response) => {
+      if (response.data.ok) {
+        this.hasItems = response.data.collection.hasItems;
+        this.total = response.data.collection.total;
+        this.accounts = response.data.collection.items;
+      }
+    });
 
-    this.$services.socketioService.getNewOrder((payload) => {
+    this.$services.socketioService.getSendOrder((payload) => {
       this.accounts = [...this.accounts, payload];
     });
   },
@@ -151,7 +149,12 @@ export default {
       delete account.employee;
 
       this.$services.kitchenRoom
-        .updateOrder(id, account)
+        .updateOrder(id, {
+          ...account,
+          newMenuItems: [],
+          itemsMenuEdit: [],
+          itemsMenuRemove: [],
+        })
         .then((response) => {
           if (response.data.ok) {
             this.$services.socketioService.doneOrder(sendOrder);
