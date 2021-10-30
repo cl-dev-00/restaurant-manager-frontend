@@ -37,9 +37,6 @@
         </v-col>
       </v-row>
       <!-- TEXTO DE NUMERO DE MESA -->
-      <v-row>
-        <h4 class="ml-4 mt-0 mb-3 red--text">Orden para llevar</h4>
-      </v-row>
 
       <v-row>
         <h4 class="ml-4 mt-0 mb-0">Numero de mesa</h4>
@@ -55,23 +52,23 @@
               show-arrows
             >
               <v-slide-item
-                v-for="n in mesas"
-                :key="n.numero"
-                v-slot="{ active, toggle }"
+                v-for="mesa in mesas.items"
+                :key="mesa.idMesa"
+                v-model="mesaSelect"
               >
                 <v-card
-                  :color="active ? undefined : 'grey lighten-1'"
+                  :color="mesa.idMesa === mesaSelect ? 'green lighten-1' : 'grey lighten-1'"
                   class="ma-1 rounded-circle"
                   height="40"
                   width="40"
-                  @click="toggle"
+                  @click="mesaSelect=mesa.idMesa"
                 >
                   <v-row
                     class="fill-height mt-0 pt-0"
                     align="center"
                     justify="center"
                   >
-                    {{ n.numero }}
+                    {{ mesa.numero }}
                   </v-row>
                 </v-card>
               </v-slide-item>
@@ -85,8 +82,8 @@
         <h4 class="ml-4 mt-0 mb-0">Items:</h4>
       </v-row>
       <!-- ITEMS SELECCIONADOS -->
-      <v-row v-for="menu in itemSelects" :key="menu.id_nombre_item">
-        <v-col class="col-4">{{ menu.nombre_Item }}</v-col>
+      <v-row v-for="menu in itemSelects" :key="menu.id_menu_item">
+        <v-col class="col-4">{{ menu.nombre_item }}</v-col>
         <v-col class="col-5 pl-4 pr-4" style="margin-top: -20px">
           <v-text-field
             v-model.number="menu.cantidad"
@@ -104,17 +101,18 @@
             class="ml-3 mr-3"
             outlined
             name="input-2-4"
-            label="Comentario Opcional"
-            v-model="comentarios"
+            label="Comentario (Opcional)"
+            v-model="menu.comentario"
             prepend-icon="mdi-comment-text-multiple"
             clearable
             rows="1"
+            value=""
           ></v-textarea>
+          <v-divider class="mt-6 mb-1"></v-divider>
         </v-col>
       </v-row>
 
       <!-- TOTALES -->
-      <v-divider class="mt-6 mb-2"></v-divider>
       <v-row style="margin-bottom: -25px" class="mt-2">
         <!-- Sub Total -->
         <v-col class="col-8"><h4>Sub Total</h4></v-col>
@@ -135,57 +133,44 @@
         <v-col cols="col-12">
           <v-dialog transition="dialog-top-transition" max-width="90%">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="success" v-bind="attrs" v-on="on" block x-large
+              <v-btn
+                color="success"
+                v-bind="attrs"
+                v-on="on"
+                block
+                x-large
+                :disabled="!validarEnvio"
                 ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
               >
             </template>
             <template v-slot:default="dialog">
-              <v-row class=" justify-center white" dense>
+              <v-row class="justify-center white" dense>
                 <v-col class="col-12">
-              <v-btn
-                color="primary"
-                block
-                depressed
-                large
-                @click="dialog.value = false"
-                >Cerrar</v-btn
-              >
-              <form-pay/>
-              </v-col>
+                  <v-btn
+                    color="primary"
+                    block
+                    depressed
+                    large
+                    @click="dialog.value = false"
+                    >Cerrar</v-btn
+                  >
+                  <form-pay />
+                </v-col>
               </v-row>
             </template>
           </v-dialog>
         </v-col>
         <v-col cols="col-12">
-          <v-dialog transition="dialog-bottom-transition" max-width="600">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                x-large
-                color="success"
-                @click="addOrder"
-                block
-                class="mb-5"
-                :disabled="!validarEnvio"
-              >
-                Enviar a Cocina</v-btn
-              >
-            </template>
-            <template v-slot:default="dialog">
-              <v-card>
-                <v-toolbar color="success" dark>Orden Enviada</v-toolbar>
-                <v-card-text>
-                  <div class="text-h6 mt-6">
-                    Tu orden ha sido enviada a cocina correctamente.
-                  </div>
-                </v-card-text>
-                <v-card-actions class="justify-end">
-                  <v-btn text @click="dialog.value = false">Cerrar</v-btn>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </v-dialog>
+          <v-btn
+            x-large
+            color="success"
+            @click="addOrder"
+            block
+            class="mb-5"
+            :disabled="!validarEnvio"
+          >
+            Enviar a Cocina</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
@@ -193,13 +178,14 @@
 </template>
 
 <script>
-import WaiterCardCategory from "../components/WaitersCardCategory.vue";
+import WaiterCardCategory from "./OrdersCardCategory.vue";
 import EventBus from "../event-bus";
 
-import FormPay from "../components/FormPay.vue";
+import FormPay from "./FormPay.vue";
+import { rulesText, rulesCantidad } from "../helpers/rules";
 
 export default {
-  name: "WaitersFormOrder",
+  name: "OrdersFormAdd",
   props: {
     itemSelects: {
       type: Array,
@@ -210,38 +196,43 @@ export default {
     WaiterCardCategory,
     FormPay,
   },
-
+  mounted() {
+    this.$services.orders
+      .getTablesAvailable()
+      .then((response) => {
+        if (response.data.ok) {
+          this.mesas = response.data.collection;
+          this.mesas.items = [{ idMesa: null, numero: 'N/A' } , ...this.mesas.items];
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
   data() {
     return {
       hasItems: false,
       accounts: [],
 
-      message4: "Buscar",
-      message_comentarios: "Comentarios",
       icon1: "mdi-arrow-right-box",
 
       itemsOrder: [],
       //  :class="n.disp ? undefined: 'grey darken-2'"
-      mesas: [
-        { numero: "1", disp: false },
-        { numero: "2", disp: true },
-        { numero: "3", disp: true },
-        { numero: "4", disp: false },
-        { numero: "5", disp: true },
-        { numero: "6", disp: false },
-        { numero: "7", disp: true },
-        { numero: "8", disp: false },
-      ],
+      mesas: {
+        hasItems: false,
+        items: [],
+        total: 0,
+      },
 
       model: null,
       nombreCliente: "",
-      comentarios: "",
-      minLenght: 3,
-      minNum: 1,
       nombre_valido: false,
+      mesaSelect: null,
     };
   },
   computed: {
+    rulesText,
+    rulesCantidad,
     total() {
       return (parseFloat(this.subTotal) + parseFloat(this.impuestos)).toFixed(
         2
@@ -258,48 +249,18 @@ export default {
         .toFixed(2);
     },
 
-    rulesText() {
-      const rules = [];
-
-      if (this.minLenght) {
-        const rule = (v) =>
-          (v || "").length >= this.minLenght ||
-          `Se necesitan al menos ${this.minLenght} caracteres`;
-
-        rules.push(rule);
-      }
-
-      return rules;
-    },
-
-    rulesCantidad() {
-      const rules = [];
-
-      if (this.minNum) {
-        const rule = (v) => {
-          if (!isNaN(parseFloat(v)) && v >= this.minNum) return true;
-
-          return "La cantidad debe ser mayor a cero";
-        };
-
-        rules.push(rule);
-      }
-
-      return rules;
-    },
-
     validarEnvio() {
-      if (this.nombreCliente === "" || this.nombreCliente === null) {
+      if (
+        this.nombreCliente.trim() === "" ||
+        this.nombreCliente === null ||
+        this.nombreCliente.trim().length < 3 ||
+        this.itemSelects.length < 1 ||
+        !this.$refs.form.validate()
+      ) {
         return false;
-      } else if (this.nombreCliente.length < 3) {
-        return false;
-      } else {
-        if (this.itemSelects.length < 1) {
-          return false;
-        } else {
-          return true;
-        }
       }
+
+      return true;
     },
   },
 
@@ -319,46 +280,32 @@ export default {
     },
 
     addOrder() {
-      if (!this.$refs.form.validate()) {
-        return;
-      }
 
-      const account = {
+      const { idComercial } = this.$store.getters.user;
+
+      const order_details = this.itemSelects.map(
+        ({ nombre_item, precio, ...item }) => ({
+          ...item,
+          nombre_item,
+          importe: item.cantidad * precio,
+        })
+      );
+
+      const order = {
         nombreCliente: this.nombreCliente,
-        comentarios: this.comentarios,
-        fechaCuenta: new Date().toJSON().slice(0, 10),
+        fechaOrden: new Date().toJSON().slice(0, 19).replace("T", " "),
+        idComercial,
         idEmpleado: this.$store.getters.user.idEmpleado,
+        idMesa: this.mesaSelect,
+        order_details,
       };
 
       this.$services.orders
-        .createAccount(account)
+        .createOrder(order)
         .then((response) => {
           if (response.data.ok) {
-            const idCuenta = response.data.account.idCuenta;
-
-            const orders = this.itemSelects.map(
-              ({ nombre_Item, precio, ...item }) => ({
-                ...item,
-                importe: item.cantidad * precio,
-                idCuenta,
-              })
-            );
-
-            this.$services.orders
-              .createOrders({ orders })
-              .then((response) => {
-                if (response.data.ok) {
-                  !this.$refs.form.reset();
-                  this.$emit("clearitemSelects");
-                  console.log("orders preview", orders);
-                  console.log("response", response.data);
-                  console.log("Ah perro se logro xdxd");
-                  this.clearItemsSelects();
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            this.$services.socketioService.newOrder(response.data.order);
+            this.clearFormOrder();
           }
         })
         .catch((error) => {
@@ -366,10 +313,10 @@ export default {
         });
     },
     clearFormOrder() {
-      console.log("click");
-      !this.$refs.form.reset();
+      this.nombreCliente = "",
       this.$emit("clearitemSelects");
       this.clearItemsSelects();
+      this.mesaSelect = null;
     },
   },
 };

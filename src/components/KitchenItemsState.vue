@@ -1,20 +1,17 @@
 <template>
   <v-col class="col-12 ml-0 mr-0 pl-0 pr-0">
-    <v-row style="margin-bottom: -40px" class="col-12 ml-0 mr-0 pl-0 pr-0 ">
+    <v-row style="margin-bottom: -40px" class="col-12 ml-0 mr-0 pl-0 pr-0">
       <v-col class="col-12 pl-0 pr-0 d-inline-flex textBuscar">
         <v-text-field
           label="Buscar"
           outlined
           clearable
           v-model="txt_buscar"
-          class="rounded-r-0 rounded-l-lg mr-1 "
-          
+          class="rounded-r-0 rounded-l-lg mr-1"
           color="teal darken-2"
-        
         ></v-text-field>
-         <v-btn
+        <v-btn
           color="teal darken-2"
-          
           depressed
           min-height="65%"
           class="rounded-l-0 rounded-r-lg btnBuscar"
@@ -32,17 +29,16 @@
             text
             @click="seleccionarCategoria(null)"
           >
-            Back
+            Volver
           </v-btn>
-          <span>{{cat}}</span>
+          <span>Menú</span>
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
             <v-row class="ml-0">
               <v-col
-                v-for="(category, index) in categories.items "
+                v-for="(category, index) in categories.items"
                 :key="category.idCategoria"
-                
                 xs="12"
                 sm="6"
                 md="3"
@@ -50,25 +46,22 @@
                 xl="3"
                 class="mb-0 pr-0 pl-0 mr-0 ml-0"
               >
-              <span
-               >
-
-                <v-btn
-                  min-height="120"
-                  max-height="120"
-                  min-width="90%"
-                  max-width="90%"
-                  class="caption mx-auto"
-                  
-                  :color="color[index]"
-                  id="boton_categoria"
-                  :disabled="step === 2"
-                  depressed
-                  @click="() => seleccionarCategoria(category.idCategoria)"
-                >
-                  <span class="boton_a">{{ category.nombreCategoria }}</span>
-                </v-btn>
-              </span>
+                <span>
+                  <v-btn
+                    min-height="120"
+                    max-height="120"
+                    min-width="90%"
+                    max-width="90%"
+                    class="caption mx-auto"
+                    :color="colors[index]"
+                    id="boton_categoria"
+                    :disabled="step === 2"
+                    depressed
+                    @click="() => seleccionarCategoria(category.idCategoria)"
+                  >
+                    <span class="boton_a">{{ category.nombreCategoria }}</span>
+                  </v-btn>
+                </span>
               </v-col>
             </v-row>
           </v-window-item>
@@ -78,26 +71,28 @@
                 <v-list subheader two-line flat color="rgb(247, 247, 247)">
                   <v-list-item-group v-model="ItemSelectsMenu" multiple>
                     <template v-for="item in items_menu">
-                      <v-list-item :key="item.id_nombre_item" :value="item">
-                        <template v-slot:default="{ active }">
-                          <v-list-item-action>
-                            <v-checkbox
-                              color="primary"
-                              :input-value="active"
-                            ></v-checkbox>
-                          </v-list-item-action>
-                          <v-list-item-title>
-                            {{ item.nombre_Item }}
-                            <v-list-item-subtitle>
-                              {{ item.detalles_item }}
-                            </v-list-item-subtitle>
-                          </v-list-item-title>
-                          <v-list-item-avatar>
-                            <span class="green--text font-weight-bold">
-                              $ {{ item.precio }}
-                            </span>
-                          </v-list-item-avatar>
-                        </template>
+                      <v-list-item
+                        :key="item.id_menu_item"
+                        :value="item"
+                        @click="item.disponibilidad = !item.disponibilidad"
+                      >
+                        <!-- <template v-slot:default="state" @click="active=item.disponibilidad"> -->
+                        <v-list-item-title>
+                          {{ item.nombre_item }}
+                          <!-- {{ state }} -->
+                          <!-- {{ item.disponibilidad }} -->
+                          <v-list-item-subtitle>
+                            {{ item.detalles_item }}
+                          </v-list-item-subtitle>
+                        </v-list-item-title>
+
+                        <v-list-item-action>
+                          <v-checkbox
+                            color="primary"
+                            :input-value="item.disponibilidad"
+                          ></v-checkbox>
+                        </v-list-item-action>
+                        <!-- </template> -->
                       </v-list-item>
                     </template>
                   </v-list-item-group>
@@ -106,24 +101,31 @@
             </v-row>
           </v-window-item>
         </v-window>
-        <v-card-actions>
-        </v-card-actions>
+        <v-card-actions> </v-card-actions>
       </v-card>
     </v-row>
+
+    <v-col cols="12" xs="10" md="12" class="mt-5 mx-auto">
+      <v-btn
+        x-large
+        block
+        depressed
+        color="primary"
+        @click="changeItemList"
+        :disabled="ItemSelectsMenu.length === 0"
+      >
+        <v-icon>mdi-content-save</v-icon> Guardar Cambios</v-btn
+      >
+    </v-col>
   </v-col>
 </template>
 
 <script>
-import EventBus from "../event-bus";
+import { colors } from "../colors/colors";
 
 export default {
-  name: "WaitersCardCategory",
-  props: {
-    itemSelects: {
-      type: Array,
-      required: true,
-    },
-  },
+  name: "KitchenItemsState",
+
   components: {},
 
   mounted() {
@@ -131,10 +133,7 @@ export default {
       .getCategories()
       .then((response) => {
         if (response.data.ok) {
-
-          this.categories = response.data.collection ;
-        
-
+          this.categories = response.data.collection;
         } else {
           console.log("El servidor revento");
         }
@@ -155,32 +154,13 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-
-    EventBus.$on("clean", (data) => {
-      this.itemMenuSelects = data;
-    });
-    EventBus.$on("clean2", (data) => {
-      this.step = data;
-    });
   },
-  // computed: {
-  //   itemSelectsLocal: {
-  //     set(value) {
-  //       console.log(this.itemSelectsLocal)
-  //       this.$emit('itemSelectsChange', value);
-  //     },
-  //     get() {
-  //       return this.itemSelects;
-  //     },
-  //   },
-  // },
   data() {
     return {
       categories: {
         hasItems: false,
         items: [],
         total: 0,
-       
       },
       menuItems: {
         hasItems: false,
@@ -199,31 +179,14 @@ export default {
 
       items_menu: [],
       items_menu_for_filter: this.menuItems,
-      itemMenuSelects: this.itemSelects,
+      itemMenuSelects: [],
 
-      color:[ 
-        "deep-purple accent-2",
-        "light-blue",
-        "green",
-        "orange darken-4",
-        "yellow darken-3",
-        "light-blue darken-4",
-        "amber",
-        "deep-orange",
-        "cyan darken-4",
-        "teal darken-3",
-        "indigo accent-3",
-        "green accent-4",
-        "cyan darken-4",
-        "deep-orange accent-2",
-      ],
-
+      colors,
     };
   },
   computed: {
     ItemSelectsMenu: {
       set(value) {
-        this.$emit("updateSelectItems", value);
         this.itemMenuSelects = value;
       },
       get() {
@@ -231,13 +194,19 @@ export default {
       },
     },
   },
-
   methods: {
+    changeItemList() {
+      this.itemMenuSelects = this.itemMenuSelects.map(
+        (itemMenuSelect) => itemMenuSelect.id_menu_item
+      );
+      this.$services.socketioService.changeStateMenuItems(this.itemMenuSelects);
+
+      this.clearSelect();
+    },
+
     clearSelect() {
       this.itemMenuSelects = [];
       this.step = 1;
-
-      EventBus.$emit("clearSelect");
     },
 
     seleccionarCategoria(idCategory) {
@@ -274,9 +243,10 @@ export default {
         this.step--;
         return;
       } else {
+        console.log(this.txt_buscar.toLowerCase());
         const search = this.txt_buscar.toLowerCase().trim();
         this.items_menu = this.menuItems.items.filter(
-          (f) => f.nombre_Item.toLowerCase().indexOf(search) > -1
+          (f) => f.nombre_item.toLowerCase().indexOf(search) > -1
         );
         this.step = 2;
         return this.items_menu;
@@ -287,16 +257,13 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
-@media  only screen and (max-width: 600px) {
-  
-  .btnBuscar{
+@media only screen and (max-width: 600px) {
+  .btnBuscar {
     margin-right: 25px;
   }
-  .textBuscar{
+  .textBuscar {
     margin-left: 12px;
   }
-
 }
 
 #boton_categoria .boton_a {
