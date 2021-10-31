@@ -57,7 +57,7 @@
                     id="boton_categoria"
                     :disabled="step === 2"
                     depressed
-                    @click="() => seleccionarCategoria(category.idCategoria)"
+                    @click="() => seleccionarCategoria(category)"
                   >
                     <span class="boton_a">{{ category.nombreCategoria }}</span>
                   </v-btn>
@@ -191,7 +191,7 @@ export default {
       total_sample: "0.00",
       c1: "rgb(52, 166, 186)",
       icon1: "mdi-arrow-right-box",
-      cat: "Categorias",
+      cat: "Menu",
 
       items_menu: [],
       items_menu_for_filter: this.menuItems,
@@ -238,7 +238,7 @@ export default {
       EventBus.$emit("clearSelect");
     },
 
-    seleccionarCategoria(idCategory) {
+    seleccionarCategoria(category) {
       // var nombre_categoria;
 
       // this.categories.items.forEach((nombre) => {
@@ -247,16 +247,17 @@ export default {
       //   }
       // });
 
-      if (idCategory) {
+      if (category) {
         this.items_menu = this.menuItems.items.filter(
-          (menu_item) => menu_item.idCategoria === idCategory
+          (menu_item) => menu_item.idCategoria === category.idCategoria
         );
 
-        this.cat = idCategory;
+        this.cat = category.nombreCategoria;
         this.step++;
-      } else if (idCategory === null) {
+      } else if (!category) {
         this.txt_buscar = "";
         this.step = 1;
+        this.cat = 'Menu';
       } else {
         this.cat = "Categorías";
         this.step--;

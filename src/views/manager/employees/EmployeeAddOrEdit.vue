@@ -10,7 +10,7 @@
           <v-form
             v-model="isFormValid"
             class="mx-auto"
-            style="max-width: 550px"
+            style="max-width: 600px"
           >
             <v-row>
               <v-col cols="12" sm="6" md="6">
@@ -30,7 +30,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   outlined
                   v-model="editedItem.email"
@@ -39,7 +39,16 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field
+                  outlined
+                  v-model="editedItem.username"
+                  label="Nombre de usuario"
+                  :rules="ruleRequired"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   v-if="!$route.params.id"
                   type="password"
@@ -57,7 +66,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   v-if="!$route.params.id"
                   type="password"
@@ -87,16 +96,8 @@
                   single-line
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="7" md="7">
-                <v-text-field
-                  outlined
-                  v-model="editedItem.username"
-                  label="Nombre de usuario"
-                  :rules="ruleRequired"
-                ></v-text-field>
-              </v-col>
 
-              <v-col cols="12" sm="7" md="7">
+              <v-col cols="12" sm="5" md="5">
                 <v-text-field
                   outlined
                   v-model="editedItem.telefono"
@@ -106,7 +107,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="5" md="5">
+              <v-col cols="12" sm="2" md="2">
                 <v-text-field
                   outlined
                   v-model.number="editedItem.edad"
@@ -116,7 +117,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12">
                 <v-textarea
                   rows="2"
                   outlined
@@ -152,6 +153,7 @@
 <script>
 import { Rules } from "../../../helpers/rules";
 import ManagerLayout from "../../../layout/ManagerLayout.vue";
+import { toastMessage } from "../../../helpers/messages";
 
 export default {
   components: { ManagerLayout },
@@ -183,7 +185,6 @@ export default {
   },
   data: () => ({
     isFormValid: false,
-    desserts: [],
     editedItem: {
       nombre: "",
       apellido: "",
@@ -221,34 +222,41 @@ export default {
         this.$services.manager
           .createEmployee(employee)
           .then((response) => {
-            console.log(response.data);
+            if (response.data.ok) {
+              toastMessage("success", "Exito", "Se creo el empleado correctamente");
+
+              this.$router.push("/manager/employees");
+            }
           })
           .catch((error) => {
             console.log(error);
+            toastMessage("error", "Error :(", "No se pudo crear el empleado");
           });
       } else {
-        const { passwordVerify, role,...props } = this.editedItem;
+        const { passwordVerify, role, ...props } = this.editedItem;
 
         const employee = { ...props };
 
         employee.idComercial = this.$store.getters.user.idComercial;
 
-        if(employee.password.trim() === '') {
+        if (employee.password.trim() === "") {
           delete employee.password;
         }
 
         this.$services.manager
           .updateEmployee(this.$route.params.id, employee)
           .then((response) => {
-            console.log(response.data);
+            if (response.data.ok) {
+              toastMessage("success", "Exito", "Se actualizo el empleado correctamente");
+
+              this.$router.push("/manager/employees");
+            }
           })
           .catch((error) => {
             console.log(error);
+            toastMessage("error", "Error :(", "No se pudo actualizar el empleado");
           });
-        
       }
-
-      this.$router.push("/manager/employees");
     },
   },
 };

@@ -30,6 +30,7 @@
 <script>
 import OrdersCreateOrEdit from "../../components/OrdersCreateOrEdit.vue";
 import equalObjet from "../../helpers/equal-objet";
+import { toastMessage } from '../../helpers/messages';
 
 export default {
   name: "OrderEdit",
@@ -164,18 +165,20 @@ export default {
           (item) => item.id_menu_item === itemEdit.id_menu_item
         );
 
-        if (!equalObjet(itemEdit, itemMenu)) {
-          itemsMenuEdit = [...itemsMenuEdit, itemMenu];
-        }
+        if (itemMenu) {
+          if (!equalObjet(itemEdit, itemMenu)) {
+            itemsMenuEdit = [...itemsMenuEdit, itemMenu];
+          }
 
-        if (
-          newMenuItems.some(
-            (itemMenu) => itemMenu.id_menu_item === itemEdit.id_menu_item
-          )
-        ) {
-          newMenuItems = newMenuItems.filter(
-            (itemMenu) => itemMenu.id_menu_item !== itemEdit.id_menu_item
-          );
+          if (
+            newMenuItems.some(
+              (itemMenu) => itemMenu.id_menu_item === itemEdit.id_menu_item
+            )
+          ) {
+            newMenuItems = newMenuItems.filter(
+              (itemMenu) => itemMenu.id_menu_item !== itemEdit.id_menu_item
+            );
+          }
         }
       });
 
@@ -203,8 +206,6 @@ export default {
         itemsMenuRemove,
       };
 
-      // console.log(orderUpdate);
-
       this.$services.orders
         .updateOrder(orderUpdate, orderUpdate.idOrden)
         .then((response) => {
@@ -221,10 +222,13 @@ export default {
               idMesa: null,
             });
 
+            toastMessage('success', 'Exito', 'Se actualizo la orden correctamente');  
+
             this.$router.push("/orders");
           }
         })
         .catch((error) => {
+          toastMessage('error', 'Error :(', 'No se pudo actualizar la orden');
           console.log(error);
         });
     },

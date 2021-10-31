@@ -6,45 +6,76 @@ export default class Manager {
     }
 
     async getEmployees() {
-        const employees = await this.axios.get(`${this.url}/employees`);
-
-        return employees;
+        return await this.axios.get(`${this.url}/employees`);
     }
 
     async getEmployee(id) {
-        const employee = await this.axios.get(`${this.url}/employees/${id}`);
-
-        return employee;
+        return await this.axios.get(`${this.url}/employees/${id}`);
     }
 
     async createEmployee(payload) {
-        const employee = await this.axios.post(`${this.url}/employees`, payload);
-
-        return employee;
+        
+        return await this.axios.post(`${this.url}/employees`, payload);
     }
-
-    async updateEmployee(id, payload) {
-        const employee = await this.axios.put(`${this.url}/employees/${id}`, payload);
-
-        return employee;
-    }
-
-    async deleteEmployee(id) {
-        const response = await this.axios.delete(`${this.url}/employees/${id}`);
-
-        return response;
-    }
-
-    async getRoles() {
-        const roles = await this.axios.get(`${this.url}/roles`);
-
-        return roles;
-    }
-
-    async getCategory(id) {
-        const category = await this.axios.get(`${this.url}/categories/${id}`);
     
-        return category;
+    async updateEmployee(id, payload) {
+        return await this.axios.put(`${this.url}/employees/${id}`, payload);
+    }
+    
+    async deleteEmployee(id) {
+        return await this.axios.delete(`${this.url}/employees/${id}`);
+    }
+    
+    async getRoles() {
+        return await this.axios.get(`${this.url}/roles`);
+    }
+
+    async getMenuItem(id) {
+        return await this.axios.get(`${this.url}/menu-items/${id}`);
+    }
+    
+    async createMenuItem(payload) {
+        return await this.axios.post(`${this.url}/menu-items`, payload);
+    }
+
+    async updateMenuItem(id, payload) {
+        return await this.axios.put(`${this.url}/menu-items/${id}`, payload);
+    }
+
+    async deleteMenuItem(id) {
+        return await this.axios.delete(`${this.url}/menu-items/${id}`);
+    }
+
+    async createCategory(params) {
+        return await  this.axios.post(`${this.url}/categories`, params);
+    }
+
+    async updateCategory(id, params) {
+        return await  this.axios.put(`${this.url}/categories/${id}`, params);
+    }
+
+    async deleteCategory(id) {
+        return await  this.axios.delete(`${this.url}/categories/${id}`);
+    }
+
+    async getTables() {
+        return await  this.axios.get(`${this.url}/tables`);
+    }
+
+    async getTable(id) {
+        return await  this.axios.get(`${this.url}/tables/${id}`);
+    }
+
+    async createTable(params) {
+        return await  this.axios.post(`${this.url}/tables`, params);
+    }
+
+    async updateTable(id, params) {
+        return await  this.axios.put(`${this.url}/tables/${id}`, params);
+    }
+
+    async deleteTable(id) {
+        return await  this.axios.delete(`${this.url}/tables/${id}`);
     }
 
 }

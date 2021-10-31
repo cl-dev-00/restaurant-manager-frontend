@@ -261,6 +261,8 @@ import WaiterCardCategory from "./OrdersCardCategory.vue";
 import FormPay from "./FormPay.vue";
 import { rulesText, rulesCantidad } from "../helpers/rules";
 
+import { toastMessage } from '../helpers/messages';
+
 export default {
   name: "OrdersFormData",
   components: {
@@ -284,6 +286,26 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+    this.$services.socketioService.getChangeMenuItems(
+      (menuItemsChangedState) => {
+        menuItemsChangedState.forEach(({ id_menu_item, disponibilidad }) => {
+          if (
+            !disponibilidad &&
+            this.$store.getters.itemsMenuSelect.some(
+              (item) => item.id_menu_item === id_menu_item
+            )
+          ) {
+            this.$store.dispatch(
+              "itemsMenuSelectAction",
+              this.$store.getters.itemsMenuSelect.filter(
+                (item) => item.id_menu_item !== id_menu_item
+              )
+            );
+          }
+        });
+      }
+    );
   },
   data() {
     return {
@@ -381,9 +403,9 @@ export default {
 
     validarEnvio() {
       if (
-        (this.nombreCliente.trim() === "") ||
-        (this.nombreCliente === null) ||
-        (this.nombreCliente.trim().length < 3) ||
+        this.nombreCliente.trim() === "" ||
+        this.nombreCliente === null ||
+        this.nombreCliente.trim().length < 3 ||
         this.ItemSelects.length < 1 ||
         !this.$refs.form.validate()
       ) {
@@ -469,12 +491,10 @@ export default {
     addOrder() {
       const { idComercial } = this.$store.getters.user;
 
-      const order_details = this.ItemSelects.map(
-        ({  precio, ...item }) => ({
-          ...item,
-          importe: item.cantidad * precio,
-        })
-      );
+      const order_details = this.ItemSelects.map(({ precio, ...item }) => ({
+        ...item,
+        importe: item.cantidad * precio,
+      }));
 
       const order = {
         nombreCliente: this.nombreCliente,
@@ -489,12 +509,17 @@ export default {
         .createOrder(order)
         .then((response) => {
           if (response.data.ok) {
-            this.$services.socketioService.sendOrderKitchroom(response.data.order);
+            this.$services.socketioService.sendOrderKitchroom(
+              response.data.order
+            );
             this.clearFormOrder();
+
+              toastMessage("success", "Exito", "Se creo la orden correctamente");
           }
         })
         .catch((error) => {
           console.log(error);
+          toastMessage("error", "Error :(", "No se pudo crear la orden");
         });
     },
     clearFormOrder() {
@@ -502,7 +527,6 @@ export default {
       this.$store.dispatch("itemsMenuSelectAction", []);
       this.mesaSelect = null;
     },
-
   },
 };
 </script>

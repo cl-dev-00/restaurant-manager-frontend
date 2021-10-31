@@ -103,6 +103,8 @@
 import CardOrder from "../../components/CardOrder.vue";
 import KitchenItemsState from "../../components/KitchenItemsState.vue";
 
+import { toastMessage} from '../../helpers/messages';
+
 export default {
   components: {
     CardOrder,
@@ -138,6 +140,7 @@ export default {
   },
   methods: {
     doneOrder(id) {
+
       const account = this.accounts.find((account) => account.idOrden === id);
       account.done = true;
 
@@ -161,10 +164,14 @@ export default {
             this.accounts = this.accounts.filter(
               (order) => order.idOrden !== response.data.order.idOrden
             );
+
+            toastMessage('success', 'Exito', 'Se realizo la orden correctamente');  
           }
         })
         .catch((error) => {
           console.log(error);
+
+          toastMessage('error', 'Error :(', 'No se pudo realizar la orden');  
         });
     },
 
