@@ -35,7 +35,7 @@
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
-            <v-row class="ml-0">
+            <v-row class="ml-1 mr-1">
               <v-col
                 v-for="(category, index) in categories.items"
                 :key="category.idCategoria"
@@ -44,14 +44,14 @@
                 md="3"
                 lg="3"
                 xl="3"
-                class="mb-0 pr-0 pl-0 mr-0 ml-0"
+                class="mb-0 pr-1 pl-1 mr-0 ml-0"
               >
                 <span>
                   <v-btn
                     min-height="120"
                     max-height="120"
-                    min-width="90%"
-                    max-width="90%"
+                    min-width="100%"
+                    max-width="100%"
                     class="caption mx-auto"
                     :color="colors[index]"
                     id="boton_categoria"
@@ -299,7 +299,8 @@ export default {
   font-size: 2ch;
   white-space: normal;
   word-wrap: break-word;
-  width: 100px;
+  width: 60%;
+  min-width: 100px; 
   align-content: center;
   color: white;
   padding: 10px;

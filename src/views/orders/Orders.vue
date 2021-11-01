@@ -20,15 +20,23 @@
           <span class="hidden-xs-only">Nueva Orden</span>
         </v-btn>
 
-        <v-btn class="btn1">
+        <v-btn class="btn1">  
           <v-icon
             size="28"
             class="mr-1"
             :color="this.step === 1 ? 'green accent-4' : 'black'"
             >mdi-format-list-bulleted-square</v-icon
-          >
-          <span class="hidden-xs-only">Ver Ordenes</span>
+          > 
+           <v-badge
+          color="pink"
+          overlap  
+          offset-y="-0.1"
+          :value="1"
+        >
+        </v-badge>
+          <span class="hidden-xs-only ml-3">Ver Ordenes</span>
         </v-btn>
+       
         <v-btn class="btn1">
           <v-icon
             size="28"

@@ -14,7 +14,7 @@ export const Rules = {
     //Numero decimal con dos decimales
     decimal: [
         v => !!v || 'Requerido',
-        v => /^(\d+(?:[\.]\d{2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales'
+        v => /^(\d+(?:[\.]\d{0,2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales'
     ],
 
     test: (value = false) => {

@@ -116,9 +116,10 @@ export default {
 
           this.editedItem = {
             ...props,
-            descuento: descuento * 1000,
+            descuento: descuento*100,
             disponibilidad: disponibilidad ? 1 : 2,
           };
+          console.log(descuento)
         }
       });
     }

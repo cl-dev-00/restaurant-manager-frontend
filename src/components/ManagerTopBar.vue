@@ -27,7 +27,7 @@
           </v-btn>
         </template>
 
-        <v-card dark max-width="00">
+        <v-card dark max-width="290">
           <v-list>
             <v-list-item>
               <v-list-item-avatar>

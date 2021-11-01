@@ -62,13 +62,9 @@
             <v-col cols="12" sm="10" md="8">
               <div>
                 <div class="text-center mb-4 d-block">
-                  <span class="text-h5 mr-2"
+                  <span class="text-h5"
                     >Establecer el estado de los platillos</span
                   >
-
-                  <v-btn color="primary" fab x-small>
-                    <v-icon>mdi-help</v-icon>
-                  </v-btn>
                 </div>
                 <v-alert
                   outlined
@@ -89,7 +85,7 @@
                 </v-alert>
               </div>
             </v-col>
-            <v-col cols="12" sm="10" md="8">
+            <v-col cols="12" sm="10" md="8" xl="6">
               <kitchen-items-state />
             </v-col>
           </v-row>
