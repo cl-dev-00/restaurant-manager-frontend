@@ -190,18 +190,7 @@ export default {
       {
         title: "Categorias del Menu",
         icon: "mdi-alpha-c-circle",
-        subLinks: [
-          {
-            title: routersInfo.categories.title,
-            icon: "mdi-format-list-bulleted",
-            path: routersInfo.categories.path,
-          },
-          {
-            title: routersInfo.categoryCreate.title,
-            icon: "mdi-plus-circle",
-            path: routersInfo.categoryCreate.path,
-          },
-        ],
+        path: routersInfo.categories.path,
       },
       {
         title: "Mesas de la Sucursal",
@@ -219,22 +208,22 @@ export default {
           },
         ],
       },
-      {
-        title: "Impuestos",
-        icon: "mdi-sack-percent",
-        subLinks: [
-          {
-            title: routersInfo.taxes.title,
-            icon: "mdi-format-list-bulleted",
-            path: routersInfo.taxes.path,
-          },
-          {
-            title: routersInfo.taxeCreate.title,
-            icon: "mdi-plus-circle",
-            path: routersInfo.taxeCreate.path,
-          },
-        ],
-      },
+      // {
+      //   title: "Impuestos",
+      //   icon: "mdi-sack-percent",
+      //   subLinks: [
+      //     {
+      //       title: routersInfo.taxes.title,
+      //       icon: "mdi-format-list-bulleted",
+      //       path: routersInfo.taxes.path,
+      //     },
+      //     {
+      //       title: routersInfo.taxeCreate.title,
+      //       icon: "mdi-plus-circle",
+      //       path: routersInfo.taxeCreate.path,
+      //     },
+      //   ],
+      // },
     ],
 
     // routersKeys: Object.values(this.items),

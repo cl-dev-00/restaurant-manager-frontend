@@ -23,32 +23,18 @@
       :height="500"
       class="justify-center ma-3 elevation-1"
     >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5"
-                >¿Está seguro que quiere eliminar este empleado?</v-card-title
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete"
-                  >Cancelar</v-btn
-                >
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                  >Aceptar</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon class="mr-4" color="indigo accent-3" @click="editItem(item.idEmpleado)">
+        <v-icon
+          class="mr-4"
+          color="indigo accent-3"
+          @click="editItem(item.idEmpleado)"
+        >
           mdi-pencil
         </v-icon>
-        <v-icon @click="deleteItem(item.idEmpleado)" color="deep-orange accent-3">
+        <v-icon
+          @click="deleteItem(item.idEmpleado)"
+          color="deep-orange accent-3"
+        >
           mdi-delete
         </v-icon>
       </template>
@@ -58,28 +44,34 @@
 
 <script>
 import { Rules } from "../helpers/rules.js";
+import { deleteMessage } from "../helpers/messages";
 
 export default {
   name: "TableEmployees",
   mounted() {
-    this.$services.manager.getEmployees()
-    .then(response => {
+    this.$services.manager
+      .getEmployees()
+      .then((response) => {
         this.employees = response.data.collection;
-    })
-    .catch(error => {
-      console.log(error)
-    })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   data: () => ({
     employees: {},
     isFormValid: false,
     search: "",
-    dialog: false,
-    dialogDelete: false,
     headers: [
       { text: "Nombre", align: "start", sortable: true, value: "nombre" },
       { text: "Apellido", align: "start", sortable: true, value: "apellido" },
-      { text: "Rol", align: "start", sortable: true, value: "role.nombreRol", width: "90px" },
+      {
+        text: "Rol",
+        align: "start",
+        sortable: true,
+        value: "role.nombreRol",
+        width: "90px",
+      },
       { text: "Usuario", align: "start", sortable: true, value: "username" },
       { text: "Edad", align: "start", sortable: true, value: "edad" },
       { text: "Telefono", align: "start", sortable: true, value: "telefono" },
@@ -130,48 +122,22 @@ export default {
         : "Editar Info del Empleado";
     },
   },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
   methods: {
     editItem(id) {
       this.$router.push(`/manager/employees/${id}/edit`);
     },
     deleteItem(id) {
-
-      this.$services.manager.deleteEmployee(id)
-      .then(response => {
-        console.log(response.data);
-        this.employees.items.filter(employee => employee.id === id);
-      })
-      .catch(error => {
-        console.log(error)
-      })
-
-      this.dialogDelete = true;
-    },
-    deleteItemConfirm() {
-      this.employees.items.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+      deleteMessage(() => {
+        this.$services.manager
+          .deleteEmployee(id)
+          .then((response) => {
+            this.employees.items.filter((employee) => employee.id === id);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       });
-    },
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+
     },
   },
 };

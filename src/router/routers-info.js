@@ -1,9 +1,9 @@
 import Home from '../views/Home.vue'
 import About from '../views/Home.vue'
 import Orders from '../views/orders/Orders.vue'
+import OrderEdit from '../views/orders/OrderEdit.vue'
 import KitchenRoom from '../views/kitchen-room/KitchenRoom.vue'
-import Categories from '../views/manager/categories/Categories.vue'
-import CategoryAddOrEdit from '../views/manager/categories/CategoryAddOrEdit.vue'
+import Categories from '../views/manager/Categories.vue'
 import Manager from '../views/manager/Manager.vue'
 import Employees from '../views/manager/employees/Employees.vue'
 import EmployeeAddOrEdit from '../views/manager/employees/EmployeeAddOrEdit.vue'
@@ -14,8 +14,6 @@ import TableAddOrEdit from '../views/manager/tables/TableAddOrEdit.vue'
 import Taxes from '../views/manager/taxes/Taxes.vue'
 import TaxeAddOrEdit from '../views/manager/taxes/TaxeAddOrEdit.vue'
 
-
-import MenuConfig from '../views/manager/MenuConfig.vue'
 
 import Login from '../views/login/Login.vue'
 
@@ -30,15 +28,15 @@ const routersInfo = {
         name: 'About',
         component: About
     },
-    menuconfig: {
-        path: '/menu-configuration',
-        name: 'MenuConfig',
-        component: MenuConfig
-    },
     orders: {
         path: '/orders',
         name: 'Orders',
         component: Orders
+    },
+    orderEdit: {
+        path: '/orders/:id/edit',
+        name: 'OrderEdit',
+        component: OrderEdit
     },
     kitchenroom: {
         path: '/kitchen-room',
@@ -61,18 +59,6 @@ const routersInfo = {
         name: 'Categories',
         component: Categories,
         title: "Lista de categorias"
-    },
-    categoryCreate: {
-        path: '/manager/categories/create',
-        name: 'CategoryAdd',
-        component: CategoryAddOrEdit,
-        title: "Agregar nueva categoria"
-    },
-    categoryEdit: {
-        path: '/manager/categories/:id/edit',
-        name: 'CategoryEdit',
-        component: CategoryAddOrEdit,
-        title: "Editar información de la categoria"
     },
     employees: {
         path: '/manager/employees',

@@ -57,7 +57,7 @@
                     id="boton_categoria"
                     :disabled="step === 2"
                     depressed
-                    @click="() => seleccionarCategoria(category.idCategoria)"
+                    @click="() => seleccionarCategoria(category)"
                   >
                     <span class="boton_a">{{ category.nombreCategoria }}</span>
                   </v-btn>
@@ -72,11 +72,17 @@
                   <v-list-item-group v-model="ItemSelectsMenu" multiple>
                     <template v-for="item in items_menu">
                       <v-list-item :key="item.id_menu_item" :value="item">
-                        <template v-slot:default="{ active }">
+                        <template>
                           <v-list-item-action>
                             <v-checkbox
                               color="primary"
-                              :input-value="active"
+                              :input-value="
+                                ItemSelectsMenu.some(
+                                  (itemSelect) =>
+                                    itemSelect.id_menu_item ===
+                                    item.id_menu_item
+                                )
+                              "
                             ></v-checkbox>
                           </v-list-item-action>
                           <v-list-item-title>
@@ -111,14 +117,6 @@ import { colors } from "../colors/colors";
 
 export default {
   name: "OrdersCardCategory",
-  props: {
-    itemSelects: {
-      type: Array,
-      required: true,
-    },
-  },
-  components: {},
-
   mounted() {
     this.$services.orders
       .getCategories()
@@ -149,20 +147,20 @@ export default {
     this.$services.socketioService.getChangeMenuItems(
       (menuItemsChangedState) => {
         menuItemsChangedState.forEach((menuItemChangedState) => {
-
-          if(menuItemChangedState.disponibilidad) {
-              this.menuItems.items = [...this.menuItems.items, menuItemChangedState]
-            } else {
+          if (menuItemChangedState.disponibilidad) {
+            this.menuItems.items = [
+              ...this.menuItems.items,
+              menuItemChangedState,
+            ];
+          } else {
             this.menuItems.items = this.menuItems.items.filter(
-              (menuItem) => menuItem.id_menu_item !== menuItemChangedState.id_menu_item
+              (menuItem) =>
+                menuItem.id_menu_item !== menuItemChangedState.id_menu_item
             );
           }
-
-
         });
 
         this.step = 1;
-
       }
     );
 
@@ -193,23 +191,41 @@ export default {
       total_sample: "0.00",
       c1: "rgb(52, 166, 186)",
       icon1: "mdi-arrow-right-box",
-      cat: "Categorias",
+      cat: "Menu",
 
       items_menu: [],
       items_menu_for_filter: this.menuItems,
-      itemMenuSelects: this.itemSelects,
+      // itemMenuSelects: [],
 
-      colors
+      colors,
     };
   },
   computed: {
     ItemSelectsMenu: {
-      set(value) {
-        this.$emit("updateSelectItems", value);
-        this.itemMenuSelects = value;
+      set(values) {
+
+        const lastIdItem = values[values.length-1].id_menu_item;
+
+        if(this.$store.getters.itemsMenuSelect.some(item => item.id_menu_item === lastIdItem) ) {
+          
+          values = values.filter(item => item.id_menu_item !== lastIdItem);
+
+          this.$store.dispatch("itemsMenuSelectAction", [...values]);
+
+          return;
+        }
+
+        values = values.map(({ cantidad, comentario, ...itemMenu }) => ({
+          ...itemMenu,
+          cantidad: cantidad ? cantidad : 1,
+          comentario: comentario ? comentario : "",
+        }));
+
+        this.$store.dispatch("itemsMenuSelectAction", [...values]);
+
       },
       get() {
-        return this.itemMenuSelects;
+        return this.$store.getters.itemsMenuSelect;
       },
     },
   },
@@ -222,7 +238,7 @@ export default {
       EventBus.$emit("clearSelect");
     },
 
-    seleccionarCategoria(idCategory) {
+    seleccionarCategoria(category) {
       // var nombre_categoria;
 
       // this.categories.items.forEach((nombre) => {
@@ -231,16 +247,17 @@ export default {
       //   }
       // });
 
-      if (idCategory) {
+      if (category) {
         this.items_menu = this.menuItems.items.filter(
-          (menu_item) => menu_item.idCategoria === idCategory
+          (menu_item) => menu_item.idCategoria === category.idCategoria
         );
 
-        this.cat = idCategory;
+        this.cat = category.nombreCategoria;
         this.step++;
-      } else if (idCategory === null) {
+      } else if (!category) {
         this.txt_buscar = "";
         this.step = 1;
+        this.cat = 'Menu';
       } else {
         this.cat = "Categorías";
         this.step--;

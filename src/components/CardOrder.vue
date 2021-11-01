@@ -10,10 +10,9 @@
           >Mesero - Numero de Mesa</v-list-item-subtitle
         >
         <v-list-item-subtitle class="white--text"
-          >{{ order.employee.nombre }} {{ order.employee.apellido }} - 
-          {{ order.table? 'Mesa ' + order.table.numero : 'Para llevar' }}
-          </v-list-item-subtitle
-        >
+          >{{ order.employee.nombre }} {{ order.employee.apellido }} -
+          {{ order.table ? "Mesa " + order.table.numero : "Para llevar" }}
+        </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
 
@@ -30,7 +29,7 @@
               :key="orderDetail.idOrderDetail"
               @click="changeDoneOrderDetail(orderDetail.idOrderDetail)"
             >
-              <template v-slot:default="{ active = true }">
+              <template v-slot:default="{ active }">
                 <!-- Cantidad -->
                 <v-list-item-action>
                   <v-list-item-title class="font-weight-bold">
@@ -203,17 +202,15 @@ export default {
     };
   },
   mounted() {
-     this.order.order_details.forEach((orderDetail, index) => {
-
-      if(orderDetail.done) {
-        this.selected = [...this.selected, index];
-      }
-    });
-
-
     switch (this.tipoCard) {
       case "Cocina":
         this.color = "pink";
+        this.order.order_details.forEach((orderDetail, index) => {
+          if (orderDetail.done) {
+            this.selected = [...this.selected, index];
+          }
+        });
+
         break;
 
       case "Mesero":
@@ -231,6 +228,13 @@ export default {
       default:
         this.color = "black";
     }
+
+    // if (this.tipoCard !== "Cocina") {
+    //   this.selected = Object.freeze([]);
+    //   this.selected = this.selected.map((item) => {
+    //     return Object.freeze(item);
+    //   });
+    // }
   },
 
   props: {
@@ -243,45 +247,24 @@ export default {
       type: String,
       required: true,
     },
+  },
 
-    //PROPIEDADES PARA LOS TIPOS: COCINA, MESERO, CAJERO, CAJERO PARA PAGAR
-
-    /*  
-
-    COCINA
-    
-    Color: pink
-    
-    Elementos de la lista de items para Cocina
-    Estructura: 
-    ----------------------------------------------
-    | Cantidad  |  Titulo / Subtitulo  |  Like   |
-    ----------------------------------------------
-    |    1      | Cipitio              |  Like   |
-    |           | Comentario de pedido |         |
-    ----------------------------------------------
-    
-    Boton: Check para marcar como lista
-
-    */
-    /*  
-    
-    MESERO, 
-    
-    Color: indigo
-    
-    Elementos de la lista de items para los que no son cocina
-    Estructura: 
-    ----------------------------------------------
-    | Cantidad  |  Titulo / Subtitulo  |  Precio |
-    ----------------------------------------------
-    |    1      | Cipitio              |  $ 2.5  |
-    |           | Comentario de pedido |         |
-    ----------------------------------------------
-    
-    Boton: Check para marcar como entregado
-
-    */
+  computed: {
+    total() {
+      return (parseFloat(this.subTotal) + parseFloat(this.impuestos)).toFixed(
+        2
+      );
+    },
+    subTotal() {
+      return this.order.order_details
+        .reduce((acc, item) => acc + item.precio * item.cantidad, 0)
+        .toFixed(2);
+    },
+    impuestos() {
+      return this.order.order_details
+        .reduce((acc, item) => acc + item.cantidad * (item.precio * 0.13), 0)
+        .toFixed(2);
+    },
   },
 
   methods: {
@@ -290,17 +273,17 @@ export default {
       this.$emit("doneOrderEmit");
     },
     paymentOrderEmit() {
-      console.log('payment')
+      console.log("payment");
       // this.toggleClass();
       this.$emit("paymentOrderEmit");
     },
     deliveryOrderEmit() {
-      console.log('delivery')
+      console.log("delivery");
       // this.toggleClass();
       this.$emit("deliveryOrderEmit");
     },
     editOrder() {
-      this.$emit('editOrderEmit', this.order.idOrden);
+      this.$emit("editOrderEmit", this.order.idOrden);
     },
 
     toggleClass() {
@@ -309,7 +292,9 @@ export default {
     },
 
     changeDoneOrderDetail(id) {
-      this.$services.socketioService.changeDoneOrderDetail(id);
+      if (this.tipoCard === "Cocina") {
+        this.$services.socketioService.changeDoneOrderDetail(id);
+      }
     },
   },
 };

@@ -16,15 +16,15 @@ class SocketioService {
       });
     }
 
-    newOrder(order) {
-      this.socket.emit('/sockets/orders/newOrder', order);
+    sendOrderKitchroom(order) {
+      this.socket.emit('/sockets/orders/sendOrderKitchroom', order);
     }
 
     doneOrder(order) {
       this.socket.emit('/sockets/orders/doneOrder', order);
     }
 
-    getNewOrder(callback) {
+    getSendOrder(callback) {
       this.socket.on('/sockets/orders/sendNewOrder', (payload) => {
         callback(payload);
       });

@@ -103,23 +103,23 @@
 import CardOrder from "../../components/CardOrder.vue";
 import KitchenItemsState from "../../components/KitchenItemsState.vue";
 
+import { toastMessage} from '../../helpers/messages';
+
 export default {
   components: {
     CardOrder,
     KitchenItemsState,
   },
   mounted() {
-    this.$services.kitchenRoom
-      .getOrdersUndone()
-      .then((response) => {
-        if (response.data.ok) {
-          this.hasItems = response.data.collection.hasItems;
-          this.total = response.data.collection.total;
-          this.accounts = response.data.collection.items;
-        }
-      });
+    this.$services.kitchenRoom.getOrdersUndone().then((response) => {
+      if (response.data.ok) {
+        this.hasItems = response.data.collection.hasItems;
+        this.total = response.data.collection.total;
+        this.accounts = response.data.collection.items;
+      }
+    });
 
-    this.$services.socketioService.getNewOrder((payload) => {
+    this.$services.socketioService.getSendOrder((payload) => {
       this.accounts = [...this.accounts, payload];
     });
   },
@@ -140,6 +140,7 @@ export default {
   },
   methods: {
     doneOrder(id) {
+
       const account = this.accounts.find((account) => account.idOrden === id);
       account.done = true;
 
@@ -151,17 +152,26 @@ export default {
       delete account.employee;
 
       this.$services.kitchenRoom
-        .updateOrder(id, account)
+        .updateOrder(id, {
+          ...account,
+          newMenuItems: [],
+          itemsMenuEdit: [],
+          itemsMenuRemove: [],
+        })
         .then((response) => {
           if (response.data.ok) {
             this.$services.socketioService.doneOrder(sendOrder);
             this.accounts = this.accounts.filter(
               (order) => order.idOrden !== response.data.order.idOrden
             );
+
+            toastMessage('success', 'Exito', 'Se realizo la orden correctamente');  
           }
         })
         .catch((error) => {
           console.log(error);
+
+          toastMessage('error', 'Error :(', 'No se pudo realizar la orden');  
         });
     },
 
