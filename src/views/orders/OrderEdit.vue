@@ -45,6 +45,7 @@ export default {
     }
 
     this.dialog = true;
+    this.$store.dispatch('setIsValidEditFormAction', false);
 
     this.$store.dispatch("itemsMenuSelectAction", []);
     this.$store.dispatch("setItemsMenuSelectEditAction", []);
@@ -138,7 +139,8 @@ export default {
         this.$store.getters.orderSelect.nombreCliente.trim() === "" ||
         this.$store.getters.orderSelect.nombreCliente === null ||
         this.$store.getters.orderSelect.nombreCliente.trim().length < 3 ||
-        this.$store.getters.itemsMenuSelect.length < 1
+        this.$store.getters.itemsMenuSelect.length < 1 ||
+        !this.$store.getters.isValidEditForm
       ) {
         return true;
       }

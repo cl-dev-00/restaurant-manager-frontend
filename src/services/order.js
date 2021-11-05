@@ -5,18 +5,10 @@ export default class Order {
         this.url = url;
     }
 
-    async getCategories() {
-        return await  this.axios.get(`${this.url}/categories`);
-    }
-
     async getMenuItemsAvailable() {
         return await  this.axios.get(`${this.url}/menu-items/available`);
     }
     
-    async getMenuItems() {
-        return await  this.axios.get(`${this.url}/menu-items`);
-    }
-
     async getTablesAvailable() {
         return await  this.axios.get(`${this.url}/tables/available`);
     }
@@ -31,10 +23,6 @@ export default class Order {
 
     async updateOrder(params, id) {
         return await this.axios.put(`${this.url}/orders/${id}`, params);
-    }
-
-    async createOrderDetails(params) {
-        return await this.axios.post(`${this.url}/order-details`, params);
     }
 
 }

@@ -114,7 +114,7 @@ export default {
     ruleRequired: Rules.required,
   }),
   mounted() {
-    this.$services.orders
+    this.$services.shareds
       .getCategories()
       .then((response) => {
         this.categories = response.data.collection;

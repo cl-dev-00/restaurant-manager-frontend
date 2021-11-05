@@ -87,7 +87,7 @@
         <v-divider></v-divider>
         <br />
         <span class="ml-12 font-weight-bold d-block">
-          Total : Aqui va el total</span
+          Total : $ {{total()}}</span
         >
       </v-row>
     </v-responsive>
@@ -193,7 +193,7 @@
 
 <script>
 export default {
-  name: "CardOrder",
+  name: "AppCardOrder",
   components: {},
   data() {
     return {
@@ -228,13 +228,6 @@ export default {
       default:
         this.color = "black";
     }
-
-    // if (this.tipoCard !== "Cocina") {
-    //   this.selected = Object.freeze([]);
-    //   this.selected = this.selected.map((item) => {
-    //     return Object.freeze(item);
-    //   });
-    // }
   },
 
   props: {
@@ -249,41 +242,21 @@ export default {
     },
   },
 
-  computed: {
-    total() {
-      return (parseFloat(this.subTotal) + parseFloat(this.impuestos)).toFixed(
-        2
-      );
-    },
-    subTotal() {
-      return this.order.order_details
-        .reduce((acc, item) => acc + item.precio * item.cantidad, 0)
-        .toFixed(2);
-    },
-    impuestos() {
-      return this.order.order_details
-        .reduce((acc, item) => acc + item.cantidad * (item.precio * 0.13), 0)
-        .toFixed(2);
-    },
-  },
-
   methods: {
     doneOrderEmit() {
       // this.toggleClass();
-      this.$emit("doneOrderEmit");
+      this.$emit("doneOrderEmit", this.order.idOrden);
     },
     paymentOrderEmit() {
-      console.log("payment");
       // this.toggleClass();
-      this.$emit("paymentOrderEmit");
+      this.$emit("paymentOrderEmit", this.order.idOrden);
     },
     deliveryOrderEmit() {
-      console.log("delivery");
       // this.toggleClass();
-      this.$emit("deliveryOrderEmit");
+      this.$emit("deliveryOrderEmit", this.order.idOrden);
     },
     editOrder() {
-      this.$emit("editOrderEmit", this.order.idOrden);
+      this.$router.push(`/orders/${this.order.idOrden}/edit`);
     },
 
     toggleClass() {
@@ -295,6 +268,18 @@ export default {
       if (this.tipoCard === "Cocina") {
         this.$services.socketioService.changeDoneOrderDetail(id);
       }
+    },
+
+    total() {
+      const subTotal = this.order.order_details
+        .reduce((acc, item) => acc + item.menu_item.precio * item.cantidad, 0)
+        .toFixed(2);
+
+      const impuestos = this.order.order_details
+        .reduce((acc, item) => acc + item.cantidad * (item.menu_item.precio * 0.13), 0)
+        .toFixed(2);
+
+      return (parseFloat(subTotal) + parseFloat(impuestos)).toFixed(2);
     },
   },
 };
