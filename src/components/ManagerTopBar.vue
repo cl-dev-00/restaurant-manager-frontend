@@ -47,7 +47,7 @@
           <v-divider></v-divider>
 
           <v-list>
-            <v-list-item v-for="item in items_usuario" :key="item.title" link>
+            <v-list-item v-for="item in items_usuario" :key="item.title" link :to="item.path">
               <v-list-item-icon>
                 <v-icon size="30">{{ item.icon }}</v-icon>
               </v-list-item-icon>
@@ -59,11 +59,6 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary"> Cerrar </v-btn>
-          </v-card-actions>
         </v-card>
       </v-menu>
     </v-app-bar>
@@ -229,12 +224,9 @@ export default {
     // routersKeys: Object.values(this.items),
 
     items_usuario: [
-      { title: "Configuración", icon: "mdi-cog" },
-      { title: "Mi Cuenta", icon: "mdi-account-details" },
+      { title: "Mi Cuenta", icon: "mdi-account-details", path: routersInfo.account.path },
       { title: "Salir", icon: "mdi-exit-to-app" },
     ],
-
-    datos_usuario: [{ nombre: "Tu papi chulo", rol: "Dueño de tu corazón bb" }],
 
     nombre: "Nombre: Tu papi chulo",
     rol: "Rol: Dueño de tu corazón bb",
