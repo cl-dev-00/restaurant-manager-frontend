@@ -1,163 +1,127 @@
 <template>
-  <v-container style="max-width: 1200px">
-    <v-row class="mt-5 mb-5 align-center justify-center">
-      <v-btn-toggle
-        v-model="step"
-        shaped
-        borderless
-        mandatory
-        color="green accent-4"
-        id="toggle1"
-        class="justify-center mr-0 pr-0 pl-0 ml-0 green--text"
-      >
-        <v-btn class="btn1">
-          <v-icon
-            size="28"
-            class="mr-1"
-            :color="this.step === 0 ? 'green accent-4' : 'black'"
-            >mdi-hamburger-plus</v-icon
-          >
-          <span class="hidden-xs-only">Nueva Orden</span>
-        </v-btn>
-
-        <v-btn class="btn1">  
-          <v-icon
-            size="28"
-            class="mr-1"
-            :color="this.step === 1 ? 'green accent-4' : 'black'"
-            >mdi-format-list-bulleted-square</v-icon
-          > 
-           <v-badge
-          color="pink"
-          overlap  
-          offset-y="-0.1"
-          :value="1"
+  <app-layout>
+    <v-container style="max-width: 1200px">
+      <v-row class="mt-5 mb-5 align-center justify-center">
+        <v-btn-toggle
+          v-model="step"
+          shaped
+          borderless
+          mandatory
+          color="green accent-4"
+          id="toggle1"
+          class="justify-center mr-0 pr-0 pl-0 ml-0 green--text"
         >
-        </v-badge>
-          <span class="hidden-xs-only ml-3">Ver Ordenes</span>
-        </v-btn>
-       
-        <v-btn class="btn1">
-          <v-icon
-            size="28"
-            class="mr-1"
-            :color="this.step === 2 ? 'green accent-4' : 'black'"
-            >mdi-cash-register</v-icon
-          >
-          <span class="hidden-xs-only">Opciones de Caja</span>
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
+          <v-btn class="btn1">
+            <v-icon
+              size="28"
+              class="mr-1"
+              :color="step === 0 ? 'green accent-4' : 'black'"
+              >mdi-hamburger-plus</v-icon
+            >
+            <span class="hidden-xs-only">Nueva Orden</span>
+          </v-btn>
 
-    <v-row class="align-center justify-center">
-      <v-window v-model="step" class="col-12">
-        <v-window-item :value="0">
-          <orders-create-or-edit />
-        </v-window-item>
+          <v-btn class="btn1">
+            <v-icon
+              size="28"
+              class="mr-1"
+              :color="step === 1 ? 'green accent-4' : 'black'"
+              >mdi-format-list-bulleted-square</v-icon
+            >
+            <span class="hidden-xs-only">Ver Ordenes</span>
+          </v-btn>
+          <v-btn v-if="isCashier" class="btn1">
+            <v-icon
+              size="28"
+              class="mr-1"
+              :color="step === 2 ? 'green accent-4' : 'black'"
+              >mdi-cash-register</v-icon
+            >
+            <span class="hidden-xs-only">Opciones de Caja</span>
+          </v-btn>
+        </v-btn-toggle>
+      </v-row>
 
-        <v-window-item :value="1">
-          <v-row
-            class="pt-8 pl-8 pr-8 pb-8 fill-height align-center justify-center"
-          >
-            <v-col class="col-12">
-              <h2>Cards Mesero, listas para entregar a mesa</h2>
-              <masonry
-                :cols="{ default: 3, 1266: 2, 700: 1 }"
-                :gutter="{ default: '10px', 700: '10px' }"
-              >
-                <div
-                  v-for="account in accounts"
-                  :key="account.idOrden"
-                  class="mb-10 mt-1 zoomInUp"
-                  id="items"
-                >
-                  <card-order
-                    @editOrderEmit="editOrder"
-                    :order="account"
-                    :tipoCard="tMesero"
-                  />
-                </div>
-              </masonry>
-            </v-col>
+      <v-row class="align-center justify-center">
+        <v-window v-model="step" class="col-12">
+          <v-window-item :value="0">
+            <orders-create-or-edit />
+          </v-window-item>
 
-            <v-col class="col-12">
-              <h2>Cards Cajero, Listas para Pagar</h2>
-              <masonry
-                :cols="{ default: 3, 1266: 2, 700: 1 }"
-                :gutter="{ default: '10px', 700: '10px' }"
-              >
-                <div
-                  v-for="account in accounts"
-                  :key="account.idOrden"
-                  class="mb-10 mt-1 zoomInUp"
-                  id="items"
-                >
-                  <card-order :order="account" :tipoCard="tCajeroPay" />
-                </div>
-              </masonry>
-            </v-col>
-          </v-row>
-        </v-window-item>
+          <v-window-item :value="1">
+            <v-row
+              class="
+                pt-8
+                pl-8
+                pr-8
+                pb-8
+                fill-height
+                align-center
+                justify-center
+              "
+            >
+              <v-col v-if="isCashier" class="col-12">
+                <app-container-cards-orders :tipoCard="'CajeroPay'" />
+              </v-col>
+              <v-col v-else class="col-12">
+                <app-container-cards-orders
+                  :orders="orders.items"
+                  :tipoCard="'Mesero'"
+                />
+              </v-col>
+            </v-row>
+          </v-window-item>
 
-        <v-window-item :value="2">
-          <h4 class="ml-16">Estadisticas</h4>
-          <v-data-table
-            :headers="headers"
-            :items="desserts"
-            :items-per-page="5"
-            class="elevation-1 ma-16 mt-5"
-          ></v-data-table>
-        </v-window-item>
-      </v-window>
-    </v-row>
-  </v-container>
+          <v-window-item v-if="isCashier" :value="2">
+            <h4 class="ml-16">Estadisticas</h4>
+            <v-data-table
+              :headers="headers"
+              :items="desserts"
+              :items-per-page="5"
+              class="elevation-1 ma-16 mt-5"
+            ></v-data-table>
+          </v-window-item>
+        </v-window>
+      </v-row>
+    </v-container>
+  </app-layout>
 </template>
 
 <script>
+import AppLayout from "../../layout/AppLayout.vue";
 import OrdersCreateOrEdit from "../../components/OrdersCreateOrEdit.vue";
 
-//Cards de prueba
-import CardOrder from "../../components/CardOrder.vue";
-//*********************** */
+import AppContainerCardsOrders from "../../components/AppContainerCardsOrders.vue";
 
 import FormPay from "../../components/FormPay.vue";
 
 export default {
   name: "Orders",
   components: {
+    AppLayout,
     OrdersCreateOrEdit,
-    CardOrder,
+    AppContainerCardsOrders,
     FormPay,
   },
 
   mounted() {
+    this.isCashier =
+      this.$store.getters.user.role.user_level.nivel_usuario === 3;
     this.$store.dispatch("itemsMenuSelectAction", []);
 
-    this.$services.kitchenRoom.getOrdersWithPaying().then((response) => {
-      if (response.data.ok) {
-        this.hasItems = response.data.collection.hasItems;
-        this.total = response.data.collection.total;
-        this.accounts = response.data.collection.items;
-      }
-    });
-
-    this.$services.socketioService.getDoneOrder((payload) => {
-      this.accounts = [...this.accounts, payload];
-    });
+    this.step = parseInt(localStorage.getItem(this.$route.name)) || 0;
   },
 
   data() {
     return {
+      isCashier: false,
       switch1: true,
       step: 0,
-      toggle_one: 0,
-      active_1: false,
-      active_2: true,
-      active_3: true,
 
-      hasItems: false,
-      accounts: [],
-      total: 0,
+      orders: {
+        items: [],
+        hasItems: false,
+      },
 
       show: false,
 
@@ -264,36 +228,9 @@ export default {
       ],
     };
   },
-  methods: {
-    doneOrder(id) {
-      this.accounts = this.accounts.filter((account) => !account.done);
-
-      const account = this.accounts.find((account) => account.idCuenta === id);
-      account.done = true;
-      account.idEmpleado = account.employee.idEmpleado;
-
-      delete account.orders;
-      delete account.employee;
-
-      this.$services.kitchenRoom
-        .updateOrder(id, account)
-        .then((response) => {
-          if (response.data.ok) {
-            this.accounts = this.accounts.filter(
-              (account) => account.done !== true
-            );
-            console.log(this.accounts);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    editOrder(id) {
-      if (id) {
-        this.$router.push(`/orders/${id}/edit`);
-      }
+  watch: {
+    step: function () {
+      localStorage.setItem(this.$route.name, this.step);
     },
   },
 };

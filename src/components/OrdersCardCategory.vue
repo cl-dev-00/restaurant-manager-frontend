@@ -118,7 +118,7 @@ import { colors } from "../colors/colors";
 export default {
   name: "OrdersCardCategory",
   mounted() {
-    this.$services.orders
+    this.$services.shareds
       .getCategories()
       .then((response) => {
         if (response.data.ok) {

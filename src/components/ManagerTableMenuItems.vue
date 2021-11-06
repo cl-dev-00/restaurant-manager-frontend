@@ -70,7 +70,7 @@ export default {
     },
   }),
   mounted() {
-    this.$services.orders
+    this.$services.shareds
       .getMenuItems()
       .then((response) => {
         this.menuItems = response.data.collection;

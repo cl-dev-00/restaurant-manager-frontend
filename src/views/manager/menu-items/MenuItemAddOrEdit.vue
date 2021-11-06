@@ -97,7 +97,7 @@ export default {
   name: "MenuItemAddOrEdit",
   components: { ManagerLayout },
   mounted() {
-    this.$services.orders
+    this.$services.shareds
       .getCategories()
       .then((response) => {
         this.SelectCategorias = response.data.collection;

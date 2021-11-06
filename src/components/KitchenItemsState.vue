@@ -129,7 +129,7 @@ export default {
   components: {},
 
   mounted() {
-    this.$services.orders
+    this.$services.shareds
       .getCategories()
       .then((response) => {
         if (response.data.ok) {
@@ -142,7 +142,7 @@ export default {
         console.log(error);
       });
 
-    this.$services.orders
+    this.$services.shareds
       .getMenuItems()
       .then((response) => {
         if (response.data.ok) {

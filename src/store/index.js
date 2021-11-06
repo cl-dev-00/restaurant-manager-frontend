@@ -5,15 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {
-      idEmpleado: 1,
-      idComercial: 1,
-      rol: 'Mesero',
-      nombre: 'Pedro',
-      apellido: 'Ramirezs',
-    },
+    user: null,
     isLoggedIn: false,
-
+    
     orderSelect: {
       nombreCliente: '',
       idMesa: null
@@ -21,11 +15,16 @@ export default new Vuex.Store({
     itemsMenuSelect: [],
     itemsMenuSelectEdit: [],
     itemsMenuSelectRemove: [],
+    isValidEditForm: false,
   },
   mutations: {
 
     loginSign(state) {
-      state.isLoggedIn = true;
+      state.isLoggedIn = !state.isLoggedIn;
+    },
+
+    setIsValidFormEdit(state, value) {
+      state.isValidEditForm = value;
     },
 
     setUser(state, userData) {
@@ -61,6 +60,10 @@ export default new Vuex.Store({
     setLoginSignAction(context) {
       context.commit('loginSign');
     },
+
+    setIsValidEditFormAction(context, value) {
+      context.commit('setIsValidFormEdit', value);
+    },
     itemsMenuSelectAction(context, items) {
       context.commit('setItemsMenuSelect', items);
     },
@@ -85,6 +88,9 @@ export default new Vuex.Store({
     },
     isLoggedIn(state) {
       return state.isLoggedIn;
+    },
+    isValidEditForm(state) {
+      return state.isValidEditForm;
     },
 
     itemsMenuSelect(state) {

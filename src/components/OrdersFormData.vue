@@ -1,7 +1,7 @@
 <template>
   <!-- SECCION DE ORDEN category.nombreCategoria  -->
   <v-col class="col-orden col-12">
-    <v-form ref="form" class="mx-2" lazy-validation>
+    <v-form v-model="isFormValid" class="mx-2">
       <!-- TEXTO DE ORDEN -->
       <v-row>
         <h3 class="ml-4 mt-4 mb-0 display-1">Orden</h3>
@@ -208,7 +208,7 @@
       </v-row>
       <!-- BOTON COCINA-->
       <v-row v-if="!isEdit">
-        <v-col class="col-12">
+        <v-col v-if="isCashier" class="col-12">
           <v-dialog transition="dialog-top-transition" max-width="90%">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -238,7 +238,7 @@
             </template>
           </v-dialog>
         </v-col>
-        <v-col class="col-12">
+        <v-col v-else class="col-12">
           <v-btn
             x-large
             color="success"
@@ -270,6 +270,8 @@ export default {
     FormPay,
   },
   mounted() {
+
+    this.isCashier = this.$store.getters.user.role.user_level.nivel_usuario === 3;
     this.isEdit = this.$route.params.id ? true : false;
 
     this.$services.orders
@@ -311,6 +313,8 @@ export default {
     return {
       hasItems: false,
       accounts: [],
+      isCashier: false, 
+      isFormValid: false,
 
       icon1: "mdi-arrow-right-box",
 
@@ -325,6 +329,13 @@ export default {
       nombre_valido: false,
       isEdit: false,
     };
+  },
+  watch: {
+    isFormValid: function() {
+      if(this.isEdit) {
+        this.$store.dispatch('setIsValidEditFormAction', this.isFormValid);
+      }
+    }
   },
   computed: {
     rulesText,
@@ -407,7 +418,7 @@ export default {
         this.nombreCliente === null ||
         this.nombreCliente.trim().length < 3 ||
         this.ItemSelects.length < 1 ||
-        !this.$refs.form.validate()
+        !this.isFormValid
       ) {
         return false;
       }
