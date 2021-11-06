@@ -14,7 +14,14 @@ import TableAddOrEdit from '../views/manager/tables/TableAddOrEdit.vue'
 import Taxes from '../views/manager/taxes/Taxes.vue'
 import TaxeAddOrEdit from '../views/manager/taxes/TaxeAddOrEdit.vue'
 
+
 import { authorization, loggedIn } from '../middlewares/authorization'
+
+
+import Account from '../views/account/Account.vue'
+
+import Login from '../views/login/Login.vue'
+//import { component } from 'vue/types/umd'
 
 
 const routersInfo = {
@@ -163,6 +170,12 @@ const routersInfo = {
         title: "Editar información del impuestos",
 
     },
+    account: {
+        path: '/account',
+        name: 'Account',
+        component: Account,
+        title: 'Cuenta'
+    }, 
 
 };
 

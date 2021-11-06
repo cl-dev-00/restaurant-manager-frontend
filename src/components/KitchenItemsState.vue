@@ -35,28 +35,28 @@
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
-            <v-row class="ml-0">
+            <v-row class="ml-0 ">
               <v-col
                 v-for="(category, index) in categories.items"
                 :key="category.idCategoria"
                 xs="12"
-                sm="6"
-                md="3"
+                sm="4"
                 lg="3"
                 xl="3"
-                class="mb-0 pr-0 pl-0 mr-0 ml-0"
+                class="mb-0 pr-2 pl-2 mr-0 ml-0"
               >
                 <span>
                   <v-btn
                     min-height="120"
                     max-height="120"
-                    min-width="90%"
-                    max-width="90%"
+                    min-width="100%"
+                    max-width="100%"
                     class="caption mx-auto"
                     :color="colors[index]"
                     id="boton_categoria"
                     :disabled="step === 2"
                     depressed
+                  
                     @click="() => seleccionarCategoria(category.idCategoria)"
                   >
                     <span class="boton_a">{{ category.nombreCategoria }}</span>
@@ -270,7 +270,8 @@ export default {
   font-size: 2ch;
   white-space: normal;
   word-wrap: break-word;
-  width: 100px;
+  width: 60%;
+  min-width: 100px;
   align-content: center;
   color: white;
   padding: 10px;
