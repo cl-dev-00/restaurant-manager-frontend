@@ -56,6 +56,7 @@
                   v-model="editedItem.password"
                   label="Contraseña"
                   :rules="rulePass"
+                  @change="setRule()"
                 ></v-text-field>
                 <v-text-field
                   v-else
@@ -73,7 +74,7 @@
                   outlined
                   v-model="editedItem.passwordVerify"
                   label="Verificar Contraseña"
-                  :rules="rulePass"
+                  :rules="ruleVePass"
                 ></v-text-field>
                 <v-text-field
                   v-else
@@ -209,8 +210,16 @@ export default {
     rulePass: Rules.password,
     ruleEmail: Rules.email,
     rulePhoneS: Rules.phonesize,
+    ruleVePass: [],
   }),
   methods: {
+
+    //regla para verificar la contraseña
+    setRule() {
+      this.ruleVePass = Rules.verificarpass(this.editedItem.password);
+      // console.log(this.editedItem.password);
+    },
+
     save() {
       if (!this.$route.params.id) {
         const { passwordVerify, ...props } = this.editedItem;

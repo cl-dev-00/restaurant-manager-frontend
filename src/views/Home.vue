@@ -9,7 +9,7 @@
     <v-col
       class="mx-auto zoomInDown btn_home"
       cols="12"
-      sm="6"
+      
       align="center"
       justify="center"
     >
@@ -24,7 +24,7 @@
         outlined
       >
         <v-icon left color="white" size="35"> mdi-login</v-icon>
-        <span class="white--text ml-5 txt_btn">Iniciar Sesión</span>
+        <span class="white--text ml-2 txt_btn">Iniciar Sesión</span>
       </v-btn>
     </v-col>
     <v-col cols="12" md="6"></v-col>
@@ -56,7 +56,7 @@ export default {
 .txt_btn {
   font-size: 13pt;
   white-space: normal;
-  width: 150px;
+  width: 50px;
 }
 
 .zoomInDown {

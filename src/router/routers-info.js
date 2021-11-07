@@ -20,7 +20,6 @@ import { authorization, loggedIn } from '../middlewares/authorization'
 
 import Account from '../views/account/Account.vue'
 
-import Login from '../views/login/Login.vue'
 //import { component } from 'vue/types/umd'
 
 

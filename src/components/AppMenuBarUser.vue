@@ -37,6 +37,8 @@
           v-for="item in items_usuario"
           :key="item.title"
           link
+          :to="item.path"
+         
         >
           <v-list-item-icon>
             <v-icon size="30">{{ item.icon }}</v-icon>
@@ -54,8 +56,11 @@
 </template>
 
 <script>
+import routersInfo from "../router/routers-info";
+
 export default {
   name: "AppMenuBarUser",
+  
   mounted() {
     this.nombre =
       this.$store.getters.user.nombre + " " + this.$store.getters.user.apellido;
@@ -66,8 +71,12 @@ export default {
       nombre: "",
       rol: "",
       items_usuario: [
-        { title: "Configuración", icon: "mdi-cog", click: () => {} },
-        { title: "Mi Cuenta", icon: "mdi-account-details", click: () => {} },
+        
+        { title: "Mi Cuenta", 
+          icon: "mdi-account-details",
+          path: routersInfo.account.path, 
+           click: () => {},
+        },
         {
           title: "Salir",
           icon: "mdi-exit-to-app",

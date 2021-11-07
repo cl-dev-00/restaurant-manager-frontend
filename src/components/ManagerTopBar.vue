@@ -6,6 +6,7 @@
       dark
       shrink-on-scroll
       src="../assets/background2.png"
+      
     >
       <!--Icono para menu desplegale-->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>

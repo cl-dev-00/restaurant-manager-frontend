@@ -47,6 +47,16 @@ export const Rules = {
         v => !!v || 'Requerido',
         v => (v || '').length >= 8 || 'La contraseña debe tener minimo 8 caracteres',
     ],
+    //verificar contraseña
+    verificarpass: (value = false) => {
+        console.log(value);
+        return [
+        v => !!v || 'Requerido',
+       // v => (v || '').length >= 8 || 'La contraseña debe tener minimo 8 caracteres',
+        v => v === value || 'Las contaseñas no coinciden',
+        ]
+
+    },
 
     //numero de telefono - tamaño 1234-5678 size -> 9
     phonesize: [
