@@ -1,15 +1,14 @@
 <template>
   <v-row align="center" justify="center" class="bg">
-    <v-col class="col-12 mt-5 fadeInUpBig" align="center" justify="center">
-      <!-- AQUI PONER EL LOGO -->
-      <v-img max-height="400" max-width="600" src="../assets/logo1.png"></v-img>
+    <v-col class="col-12 mt-5 " align="center" justify="center">
+     <!--  AQUI PONER EL LOGO -->
+      <v-img max-height="400" max-width="600" src="../assets/logopng2.png"></v-img>
     </v-col>
 
-    <!-- BOTONES -->
+   <!-- BOTONES--> 
     <v-col
       class="mx-auto zoomInDown btn_home"
       cols="12"
-      
       align="center"
       justify="center"
     >
@@ -24,16 +23,23 @@
         outlined
       >
         <v-icon left color="white" size="35"> mdi-login</v-icon>
-        <span class="white--text ml-2 txt_btn">Iniciar Sesión</span>
+        <span class="white--text ml-2 txt_btn">{{txtBtn}}</span>
       </v-btn>
     </v-col>
     <v-col cols="12" md="6"></v-col>
+    
   </v-row>
 </template>
 
 <script>
 export default {
   name: "Home",
+
+  data() {
+    return {
+      txtBtn: "Iniciar Sesion",
+    };
+  },
 };
 </script>
 
@@ -100,36 +106,4 @@ export default {
   }
 }
 
-.fadeInUpBig {
-  -webkit-animation-name: fadeInUpBig;
-  animation-name: fadeInUpBig;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-@-webkit-keyframes fadeInUpBig {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, 2000px, 0);
-    transform: translate3d(0, 2000px, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-@keyframes fadeInUpBig {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, 2000px, 0);
-    transform: translate3d(0, 2000px, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
 </style>

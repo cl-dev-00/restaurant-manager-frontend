@@ -1,29 +1,44 @@
 <template>
-  <v-container>
+  <v-container fluid class="bg">
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="10">
-        <v-card class="elevation-6 mt-10">
+ 
+      <v-col cols="12" sm="11" md="10" xl="6">
+        <v-card class="elevation-6 mt-10 ">
           <v-form v-model="isFormValid">
-            <v-row>
-              <!-- Left div section -->
+            <v-row justify="center" >
+             
+              <v-col cols="11" sm="6" class="back rounded-bl-xl">
+               
+               
+                    <v-img
+                    min-height="100px"
+                    max-height="100%"
+                    max-width="290px"
+                    src="../../assets/logopng2.png"
+                    class=" mt-sm-10 "
+                  ></v-img>
+                
+               
+              </v-col>
+
+        
               <v-col cols="12" sm="6">
-                <v-card-text class="mt-12">
+                <v-card-text class="mt-5">
                   <h2 class="text-center">Bienvenido</h2>
                   <h4 class="text-center grey--text">
                     Ingresa tus credenciales
                   </h4>
 
                   <v-row align="center" justify="center">
-                    <v-col cols="8" sm="8">
+                    <v-col cols="12" sm="11">
                       <v-text-field
                         v-model="user.username"
                         :rules="userRules"
                         label="Nombre de Usuario"
                         outlined
-                        dense
                         color="blue"
                         aria-autocomplete="false"
-                        class="mt-16"
+                        class="mt-12"
                         required
                       ></v-text-field>
 
@@ -32,7 +47,6 @@
                         :rules="passwordRules"
                         label="Clave"
                         outlined
-                        dense
                         color="blue"
                         aria-autocomplete="false"
                         type="password"
@@ -40,38 +54,23 @@
                       ></v-text-field>
                       <v-btn
                         :disabled="!isFormValid"
-                        class="white--text"
+                        class="white--text mb-5"
                         color="blue"
                         @click="login"
                         block
+                        x-large
                       >
                         Ingresar
                       </v-btn>
-                      <div
-                        class="
-                          d-flex
-                          justify-space-between
-                          align
-                          center
-                          mx-10
-                          mb-16
-                        "
-                      ></div>
                     </v-col>
                   </v-row>
                 </v-card-text>
-              </v-col>
-
-              <!-- Rigth div section -->
-              <v-col cols="12" sm="6" class="blue rounded-bl-xl">
-                <div class="centerIcon">
-                  <v-btn class="text-center">POS RESAURANT</v-btn>
-                </div>
               </v-col>
             </v-row>
           </v-form>
         </v-card>
       </v-col>
+    
     </v-row>
   </v-container>
 </template>
@@ -101,7 +100,7 @@ export default {
 
             this.$store.dispatch("setUserAction", employee);
             this.$store.dispatch("setLoginSignAction", true);
-            console.log()
+            console.log();
             switch (this.$store.getters.user.role.user_level.nivel_usuario) {
               case 2:
                 this.$router.push("/manager");
@@ -130,13 +129,33 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .v-application .rounded-bl-xl {
-  border-bottom-left-radius: 300px !important;
+  border-bottom-right-radius: 50% !important;
+  border-bottom-left-radius: 10px !important;
+  border-top-left-radius: 10px !important;
+  /*max-height: 320px;*/
 }
 
-.centerIcon {
-  text-align: center;
-  padding: 180px 0;
+.back {
+  background: rgb(22, 22, 21);
+  background: linear-gradient(
+    29deg,
+    rgba(22, 22, 21, 1) 0%,
+    rgba(81, 59, 37, 1) 100%
+  );
+}
+.bg {
+  background: url("../../assets/background2.png") repeat-y center center fixed ;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  min-height: 100vh;
+ 
+ #app{
+  background: url('../../assets/background2.png') no-repeat center center fixed !important;
+  background-size: cover;
+}
 }
 </style>

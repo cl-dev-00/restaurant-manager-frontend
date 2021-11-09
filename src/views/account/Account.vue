@@ -69,7 +69,7 @@
                       v-model="editedItem.username"
                       label="Nombre de usuario"
                       :rules="ruleRequired"
-                                            
+                       :disabled="notvalid"                                            
                     ></v-text-field>
                   </v-col>
 
@@ -131,7 +131,7 @@
                       label="Telefono"
                       v-mask="'####-####'"
                       :rules="rulePhoneS"
-                      :disabled="notvalid"
+                      
                     ></v-text-field>
                   </v-col>
 
@@ -142,7 +142,7 @@
                       label="Edad"
                       :rules="ruleAge"
                       v-mask="'##'"
-                      :disabled="notvalid"
+                      
                     ></v-text-field>
                   </v-col>
 
@@ -153,7 +153,7 @@
                       v-model="editedItem.direccion"
                       label="Dirección"
                       :rules="ruleRequired"
-                      :disabled="notvalid"
+                      
                     ></v-textarea>
                   </v-col>
 
@@ -248,7 +248,9 @@ export default {
     //imagen ****************************************
     trigger: false,
     message: "",
+
     notvalid: true,
+
     avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPNbOneenDa9mbmD7tjFZgsWnd1BhhAPA5GUwBvtAm9ANMe-_PN1lQL3W2FSPq7J2iXDU&usqp=CAU",
     
   }),

@@ -2,7 +2,7 @@
   <div>
     <app-top-bar />
     <v-container>
-      <v-row class="pb-xs-2 ma-sm-10 justify-center fill-height justify-center align-center">
+      <v-row class="pb-xs-2 ma-sm-5 justify-center fill-height align-center">
         <slot></slot>
       </v-row>
     </v-container>

@@ -35,33 +35,35 @@
         </v-card-title>
         <v-window v-model="step">
           <v-window-item :value="1">
-            <v-row class="ml-1 mr-1">
-              <v-col
-                v-for="(category, index) in categories.items"
-                :key="category.idCategoria"
-                xs="12"
-                sm="6"
-                md="3"
-                lg="3"
-                xl="3"
-                class="mb-0 pr-1 pl-1 mr-0 ml-0"
-              >
-                <span>
-                  <v-btn
-                    min-height="120"
-                    max-height="120"
-                    min-width="100%"
-                    max-width="100%"
-                    class="caption mx-auto"
-                    :color="colors[index]"
-                    id="boton_categoria"
-                    :disabled="step === 2"
-                    depressed
-                    @click="() => seleccionarCategoria(category)"
+            <v-row class="ml-1 mr-1 pt-5">
+              <v-col cols="12">
+                <masonry
+                  :cols="{ default: 3, 1266: 2, 700: 1, 600: 2 }"
+                  :gutter="{ default: '10px', 700: '10px' }"
+                >
+                  <div
+                    v-for="(category, index) in categories.items"
+                    :key="category.idCategoria"
+                    class="mb-4 mt-1 zoomInUp"
+                    id="items"
                   >
-                    <span class="boton_a">{{ category.nombreCategoria }}</span>
-                  </v-btn>
-                </span>
+                    <v-btn
+                      min-height="120"
+                      min-width="100%"
+                      max-width="100%"
+                      class="caption mx-auto"
+                      :color="colors[index]"
+                      id="boton_categoria"
+                      :disabled="step === 2"
+                      depressed
+                      @click="() => seleccionarCategoria(category)"
+                    >
+                      <span class="boton_a">{{
+                        category.nombreCategoria
+                      }}</span>
+                    </v-btn>
+                  </div>
+                </masonry>
               </v-col>
             </v-row>
           </v-window-item>
@@ -203,12 +205,14 @@ export default {
   computed: {
     ItemSelectsMenu: {
       set(values) {
+        const lastIdItem = values[values.length - 1].id_menu_item;
 
-        const lastIdItem = values[values.length-1].id_menu_item;
-
-        if(this.$store.getters.itemsMenuSelect.some(item => item.id_menu_item === lastIdItem) ) {
-          
-          values = values.filter(item => item.id_menu_item !== lastIdItem);
+        if (
+          this.$store.getters.itemsMenuSelect.some(
+            (item) => item.id_menu_item === lastIdItem
+          )
+        ) {
+          values = values.filter((item) => item.id_menu_item !== lastIdItem);
 
           this.$store.dispatch("itemsMenuSelectAction", [...values]);
 
@@ -222,7 +226,6 @@ export default {
         }));
 
         this.$store.dispatch("itemsMenuSelectAction", [...values]);
-
       },
       get() {
         return this.$store.getters.itemsMenuSelect;
@@ -257,7 +260,7 @@ export default {
       } else if (!category) {
         this.txt_buscar = "";
         this.step = 1;
-        this.cat = 'Menu';
+        this.cat = "Menu";
       } else {
         this.cat = "Categorías";
         this.step--;
@@ -300,7 +303,7 @@ export default {
   white-space: normal;
   word-wrap: break-word;
   width: 60%;
-  min-width: 100px; 
+  min-width: 100px;
   align-content: center;
   color: white;
   padding: 10px;

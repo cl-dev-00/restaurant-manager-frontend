@@ -36,19 +36,19 @@
         <v-window v-model="step">
           <v-window-item :value="1">
             <v-row class="ml-0 ">
-              <v-col
-                v-for="(category, index) in categories.items"
-                :key="category.idCategoria"
-                xs="12"
-                sm="4"
-                lg="3"
-                xl="3"
-                class="mb-0 pr-2 pl-2 mr-0 ml-0"
-              >
-                <span>
-                  <v-btn
+               <v-col cols="12">
+                <masonry
+                  :cols="{ default: 4, 1266: 3, 700: 2, 600: 2 }"
+                  :gutter="{ default: '10px', 700: '10px' }"
+                >
+                  <div
+                    v-for="(category, index) in categories.items"
+                    :key="category.idCategoria"
+                    class="mb-4 mt-1 zoomInUp"
+                    id="items"
+                  >
+                     <v-btn
                     min-height="120"
-                    max-height="120"
                     min-width="100%"
                     max-width="100%"
                     class="caption mx-auto"
@@ -61,7 +61,8 @@
                   >
                     <span class="boton_a">{{ category.nombreCategoria }}</span>
                   </v-btn>
-                </span>
+                  </div>
+                </masonry>
               </v-col>
             </v-row>
           </v-window-item>

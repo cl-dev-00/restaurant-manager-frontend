@@ -1,7 +1,7 @@
 <template>
   <app-layout>
-    <v-container style="max-width: 1200px">
-      <v-row class="mt-5 mb-5 align-center justify-center">
+    <v-container fluid style="max-width: 1300px">
+      <v-row class="mt-3 align-center justify-center">
         <v-btn-toggle
           v-model="step"
           shaped

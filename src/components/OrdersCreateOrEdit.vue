@@ -1,7 +1,7 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="6" md="6" class="pr-0 pl-3">
-      <orders-card-category class="col-menu" />
+    <v-col cols="12" sm="6" md="6" class="pr-1 pl-1 ">
+      <orders-card-category class="" />
     </v-col>
     <v-col cols="12" sm="6" md="6">
       <orders-form-data />
