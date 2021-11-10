@@ -38,7 +38,7 @@
             <v-row class="ml-1 mr-1 pt-5">
               <v-col cols="12">
                 <masonry
-                  :cols="{ default: 3, 1266: 2, 700: 1, 600: 2 }"
+                  :cols="{ default: 3, 1266: 3, 850: 2, 600: 3, 425: 2 }"
                   :gutter="{ default: '10px', 700: '10px' }"
                 >
                   <div
@@ -68,12 +68,12 @@
             </v-row>
           </v-window-item>
           <v-window-item :value="2">
-            <v-row class="ml-2">
+            <v-row class="ml-n4">
               <v-col class="col-12 mx-auto">
                 <v-list subheader two-line flat color="rgb(247, 247, 247)">
                   <v-list-item-group v-model="ItemSelectsMenu" multiple>
                     <template v-for="item in items_menu">
-                      <v-list-item :key="item.id_menu_item" :value="item">
+                      <v-list-item :key="item.id_menu_item" :value="item" class="mb-1 mr-n3">
                         <template>
                           <v-list-item-action>
                             <v-checkbox
@@ -87,17 +87,17 @@
                               "
                             ></v-checkbox>
                           </v-list-item-action>
-                          <v-list-item-title>
+                          <v-list-item-title class=" ml-n5 text-wrap">
                             {{ item.nombre_item }}
-                            <v-list-item-subtitle>
+                            <v-list-item-subtitle class=" text-wrap" >
                               {{ item.detalles_item }}
                             </v-list-item-subtitle>
                           </v-list-item-title>
-                          <v-list-item-avatar>
-                            <span class="green--text font-weight-bold">
+                          <v-list-item-action-text>
+                            <span class=" green--text text-body-2 font-weight-bold text-no-wrap">
                               $ {{ item.precio }}
                             </span>
-                          </v-list-item-avatar>
+                          </v-list-item-action-text>
                         </template>
                       </v-list-item>
                     </template>

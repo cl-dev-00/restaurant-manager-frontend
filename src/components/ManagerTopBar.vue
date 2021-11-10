@@ -30,7 +30,7 @@
       <v-list>
         <v-list-item>
           <v-list-item-avatar>
-            <v-img src="../assets/logopng1.png"></v-img>
+            <v-img src="../assets/posrelogopng.png"></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>

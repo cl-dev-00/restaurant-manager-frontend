@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <v-container fluid style="max-width: 1300px">
+    <v-container fluid style="max-width: 1400px">
       <v-row class="mt-3 align-center justify-center">
         <v-btn-toggle
           v-model="step"
@@ -51,10 +51,7 @@
           <v-window-item :value="1">
             <v-row
               class="
-                pt-8
-                pl-8
-                pr-8
-                pb-8
+                pa-8
                 fill-height
                 align-center
                 justify-center

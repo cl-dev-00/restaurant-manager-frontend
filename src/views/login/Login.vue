@@ -5,23 +5,16 @@
       <v-col cols="12" sm="11" md="10" xl="6">
         <v-card class="elevation-6 mt-10 ">
           <v-form v-model="isFormValid">
-            <v-row justify="center" >
-             
-              <v-col cols="11" sm="6" class="back rounded-bl-xl">
-               
-               
-                    <v-img
+            <v-row justify="center" >    
+              <v-col cols="11" sm="6" class="back rounded-bl-xl pa-5">
+                   <v-img
                     min-height="100px"
                     max-height="100%"
                     max-width="290px"
-                    src="../../assets/logopng2.png"
+                    src="../../assets/posrelogopng.png"
                     class=" mt-sm-10 "
                   ></v-img>
-                
-               
               </v-col>
-
-        
               <v-col cols="12" sm="6">
                 <v-card-text class="mt-5">
                   <h2 class="text-center">Bienvenido</h2>
@@ -134,6 +127,7 @@ export default {
   border-bottom-right-radius: 50% !important;
   border-bottom-left-radius: 10px !important;
   border-top-left-radius: 10px !important;
+ 
   /*max-height: 320px;*/
 }
 

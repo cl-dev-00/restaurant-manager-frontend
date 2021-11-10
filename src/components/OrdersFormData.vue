@@ -1,14 +1,14 @@
 <template>
   <!-- SECCION DE ORDEN category.nombreCategoria  -->
-  <v-col class="col-orden col-12">
+  <v-col class="col-12">
     <v-form v-model="isFormValid" class="mx-2">
       <!-- TEXTO DE ORDEN -->
       <v-row>
         <h3 class="ml-4 mt-4 mb-0 display-1">Orden</h3>
       </v-row>
       <!-- Orden -->
-      <v-row class="mt-0">
-        <v-col cols="6" sm="6">
+      <v-row no-gutters class="mt-5">
+        <v-col cols="8">
           <!-- Input de la orden -->
           <v-text-field
             v-if="!isEdit"
@@ -29,11 +29,11 @@
             :rules="rulesText"
           ></v-text-field>
         </v-col>
-        <v-col cols="3" sm="3" class="mt-5 h4 align-center">
+        <!--<v-col cols="7" md="7" class="mt-5 h4 align-center">
           <label>#000000</label>
-          <!-- LABEL -->
-        </v-col>
-        <v-col cols="3" sm="3" class="mt-3">
+          LABEL
+        </v-col> -->
+        <v-col cols="2" class="ml-5 mt-3">
           <v-btn
             @click="clearFormOrder"
             fab
@@ -127,85 +127,140 @@
       <!-- TEXTO DE ITEMS -->
       <v-divider class="mt-5"></v-divider>
       <v-row class="mt-4">
-        <h4 class="ml-4 mt-0 mb-0">Items:</h4>
+        <h4 class="mt-0 mb-3">Items:</h4>
       </v-row>
       <!-- ITEMS SELECCIONADOS -->
-      <v-row v-for="(menu, index) in ItemSelects" :key="menu.id_menu_item">
-        <v-col class="col-4">{{ menu.nombre_item }}</v-col>
-        <v-col class="col-5 pl-4 pr-4" style="margin-top: -20px">
-          <v-text-field
-            v-model.number="menu.cantidad"
-            :rules="rulesCantidad"
-            type="number"
-            append-outer-icon="mdi-plus"
-            @click:append-outer="increment(menu.cantidad, index)"
-            prepend-icon="mdi-minus"
-            @click:prepend="decrement(menu.cantidad, index)"
-            @input="changeCantidad(menu.cantidad, index)"
-          ></v-text-field>
-        </v-col>
-        <v-col class="col-3">$ {{ menu.precio }}</v-col>
-        <v-col
-          class="col-3"
-          v-if="
-            isEdit &&
-            ItemSelectsEdit.some(
-              (item) => item.id_menu_item === menu.id_menu_item
-            )
-          "
-        >
-          <v-btn
-            @click="removeItem(menu.id_menu_item, index)"
-            class="mx-2"
-            fab
-            dark
-            small
-            color="pink"
-          >
-            <v-icon dark> mdi-close-thick </v-icon>
-          </v-btn>
-        </v-col>
-        <v-col
-          :class="{
-            'col-9':
-              isEdit &&
-              ItemSelectsEdit.some(
-                (item) => item.id_menu_item === menu.id_menu_item
-              ),
-            'col-12': !isEdit,
-          }"
-          ><v-textarea
-            class="ml-3 mr-3"
-            outlined
-            name="input-2-4"
-            label="Comentario (Opcional)"
-            v-model="menu.comentario"
-            @input="changeComment(menu.comentario, index)"
-            prepend-icon="mdi-comment-text-multiple"
-            clearable
-            rows="1"
-            value=""
-          ></v-textarea>
-          <v-divider class="mt-6 mb-1"></v-divider>
-        </v-col>
+      <v-row
+        v-for="(menu, index) in ItemSelects"
+        :key="menu.id_menu_item"
+        no-gutters
+        align="center"
+        justify="center"
+      >
+        <v-card class="mb-2" elevation="6" max-width="470px" min-width="200px">
+          <v-card-text>
+            <v-row no-gutters align="center" justify="center">
+              <v-col cols="11" sm="11" class="mt-n3 text-h6 font-weight-bold">
+                {{ menu.nombre_item }}</v-col
+              >
+              <v-col
+                cols="12"
+                sm="12"
+                class="mt-0 pl-1 pr-1 d-flex justify-center"
+              >
+                <v-text-field
+                  dense
+                  filled
+                  rounded
+                  v-model.number="menu.cantidad"
+                  :rules="rulesCantidad"
+                  type="number"
+                  append-outer-icon="mdi-plus"
+                  @click:append-outer="increment(menu.cantidad, index)"
+                  prepend-icon="mdi-minus"
+                  @click:prepend="decrement(menu.cantidad, index)"
+                  @input="changeCantidad(menu.cantidad, index)"
+                  :suffix="'* $' + menu.precio.toString()"
+                  style="max-width: 220px"
+                ></v-text-field>
+              </v-col>
+              <!--
+              <v-col
+                cols="12"
+                md="2"
+                class="d-flex justify-center mt-2 text-body-1 font-weight-bold"
+              >
+                <span class="">Precio: &nbsp; </span>
+                ${{ menu.precio }}</v-col
+              >
+              -->
+              <v-col
+                class="col-12"
+                v-if="
+                  isEdit &&
+                  ItemSelectsEdit.some(
+                    (item) => item.id_menu_item === menu.id_menu_item
+                  )
+                "
+              >
+                <v-btn
+                  @click="removeItem(menu.id_menu_item, index)"
+                  style="margin-right: -12px; margin-top: 20px"
+                  fab
+                  dark
+                  x-small
+                  color="pink"
+                  absolute
+                  top
+                  right
+                >
+                  <v-icon dark> mdi-close-thick </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col
+                :class="{
+                  'col-12':
+                    isEdit &&
+                    ItemSelectsEdit.some(
+                      (item) => item.id_menu_item === menu.id_menu_item
+                    ),
+                  'col-12': !isEdit,
+                }"
+              >
+                <v-divider class="mt-n1 mb-2"></v-divider>
+                <v-textarea
+                  dense
+                  class="ml-3 mr-3 mb-n8"
+                  outlined
+                  name="input-2-4"
+                  label="Comentario (Opcional)"
+                  v-model="menu.comentario"
+                  @input="changeComment(menu.comentario, index)"
+                  prepend-icon="mdi-comment-text-multiple"
+                  clearable
+                  rows="1"
+                  value=""
+                ></v-textarea>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-row>
 
       <!-- TOTALES -->
-      <v-row style="margin-bottom: -25px" class="mt-2">
-        <!-- Sub Total -->
-        <v-col class="col-8"><h4>Sub Total</h4></v-col>
-        <v-col class="col-4">$ {{ subTotal }}</v-col>
-      </v-row>
-      <v-row style="margin-bottom: -25px">
-        <!-- Impuestos -->
-        <v-col class="col-8"><h4>Impuestos</h4></v-col>
-        <v-col class="col-4">$ {{ impuestos }}</v-col>
-      </v-row>
-      <v-row>
-        <!-- Total-->
-        <v-col class="col-8"><h4>Total</h4></v-col>
-        <v-col class="col-4">$ {{ total }}</v-col>
-      </v-row>
+      <v-divider class="mt-5"></v-divider>
+      <v-list>
+        <v-list-item class=" mr-n3">
+          <v-list-item-title class="ml-n5 text-h6">
+            Sub Total
+          </v-list-item-title>
+          <v-list-item-action-text>
+            <span class="green--text text-h6 font-weight-bold text-no-wrap">
+              $ {{ subTotal }}
+            </span>
+          </v-list-item-action-text>
+        </v-list-item>
+        <v-list-item class="mt-n5 mr-n3">
+          <v-list-item-title class="ml-n5 text-h6">
+            Impuestos
+          </v-list-item-title>
+          <v-list-item-action-text>
+            <span class="green--text text-h6 font-weight-bold text-no-wrap">
+              $ {{ impuestos }}
+            </span>
+          </v-list-item-action-text>
+        </v-list-item>
+        <v-list-item class="mt-n5 mr-n3">
+          <v-list-item-title class="ml-n5 text-h6">
+            Total
+          </v-list-item-title>
+          <v-list-item-action-text>
+            <span class="green--text text-h6 font-weight-bold text-no-wrap">
+              $ {{ total }}
+            </span>
+          </v-list-item-action-text>
+        </v-list-item>
+      </v-list>
       <!-- BOTON COCINA-->
       <v-row v-if="!isEdit">
         <v-col v-if="isCashier" class="col-12">
@@ -261,7 +316,7 @@ import WaiterCardCategory from "./OrdersCardCategory.vue";
 import FormPay from "./FormPay.vue";
 import { rulesText, rulesCantidad } from "../helpers/rules";
 
-import { toastMessage } from '../helpers/messages';
+import { toastMessage } from "../helpers/messages";
 
 export default {
   name: "OrdersFormData",
@@ -270,8 +325,8 @@ export default {
     FormPay,
   },
   mounted() {
-
-    this.isCashier = this.$store.getters.user.role.user_level.nivel_usuario === 3;
+    this.isCashier =
+      this.$store.getters.user.role.user_level.nivel_usuario === 3;
     this.isEdit = this.$route.params.id ? true : false;
 
     this.$services.orders
@@ -313,7 +368,7 @@ export default {
     return {
       hasItems: false,
       accounts: [],
-      isCashier: false, 
+      isCashier: false,
       isFormValid: false,
 
       icon1: "mdi-arrow-right-box",
@@ -331,11 +386,11 @@ export default {
     };
   },
   watch: {
-    isFormValid: function() {
-      if(this.isEdit) {
-        this.$store.dispatch('setIsValidEditFormAction', this.isFormValid);
+    isFormValid: function () {
+      if (this.isEdit) {
+        this.$store.dispatch("setIsValidEditFormAction", this.isFormValid);
       }
-    }
+    },
   },
   computed: {
     rulesText,
@@ -525,7 +580,7 @@ export default {
             );
             this.clearFormOrder();
 
-              toastMessage("success", "Exito", "Se creo la orden correctamente");
+            toastMessage("success", "Exito", "Se creo la orden correctamente");
           }
         })
         .catch((error) => {

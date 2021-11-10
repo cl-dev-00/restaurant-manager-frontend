@@ -39,7 +39,7 @@
 
               <v-card-text>
                 <v-container>
-                  <v-form v-model="isFormValid">
+                  <v-form v-model="isFormValid" ref="form">
                     <v-row>
                       <v-col cols="12" sm="8" md="8">
                         <v-text-field
@@ -53,7 +53,7 @@
                   </v-form>
                 </v-container>
               </v-card-text>
-              d
+              
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="red" text @click="close"> Cancelar </v-btn>

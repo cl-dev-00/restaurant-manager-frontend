@@ -1,11 +1,13 @@
 <template>
-  <v-row>
-    <v-col cols="12" sm="6" md="6" class="pr-1 pl-1 ">
-      <orders-card-category class="" />
+  <v-row no-gutters style="max-width:1300px;">
+    <v-col cols="12" sm="6" >
+      <orders-card-category />
     </v-col>
-    <v-col cols="12" sm="6" md="6">
+   
+    <v-col cols="12" sm="6" >
       <orders-form-data />
     </v-col>
+    <!--
     <v-col class="hidden-sm-and-up">
       <v-dialog transition="dialog-top-transition" max-width="400">
         <template v-slot:activator="{ on, attrs }">
@@ -25,6 +27,7 @@
         </template>
       </v-dialog>
     </v-col>
+    -->
   </v-row>
 </template>
 

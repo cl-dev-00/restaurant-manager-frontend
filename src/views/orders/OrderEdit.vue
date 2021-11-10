@@ -19,7 +19,7 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-list three-line subheader class="pa-10">
+        <v-list three-line subheader class="pa-10 col-12">
           <orders-create-or-edit />
         </v-list>
       </v-card>
