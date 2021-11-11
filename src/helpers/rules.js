@@ -17,6 +17,11 @@ export const Rules = {
         v => /^(\d+(?:[\.]\d{0,2})?)$/.test(v) || 'Debe ingresar un numero con dos decimales'
     ],
 
+     //Numero decimal con dos decimales
+     decimal2: [
+        v => /^(\d+(?:[\.]\d{0,2})?)$/.test(v) || 'Debe ingresar una cantidad con maximo 2 decimales'
+    ],
+
     test: (value = false) => {
         console.log(value);
         return [
