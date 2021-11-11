@@ -50,10 +50,6 @@
                     <span class="text-h5 mr-2"
                       >Establecer el estado de los platillos</span
                     >
-
-                    <v-btn color="primary" fab x-small>
-                      <v-icon>mdi-help</v-icon>
-                    </v-btn>
                   </div>
                   <v-alert
                     outlined

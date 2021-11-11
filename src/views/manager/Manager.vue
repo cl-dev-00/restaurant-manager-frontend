@@ -1,12 +1,7 @@
 <template>
   <manager-layout>
     <v-row class="fill-height justify-center align-center">
-      <h2 class="black--text">
-        Configuracion del Restaurante: Información General, Empleados
-      </h2>
-    </v-row>
-    <v-row class="justify-center">
-      <v-col cols="12" sm="12" md="10">
+        <v-col cols="12" sm="12" md="10">
         <info-restaurant />
       </v-col>
     </v-row>
