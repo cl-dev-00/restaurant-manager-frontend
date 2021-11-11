@@ -43,7 +43,7 @@
                 <v-btn
                   color="primary"
                   dark
-                  class="mb-2 ml-2 mt-10"
+                  class="mb-2 ml-2 mt-2"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -107,7 +107,7 @@
                 <v-btn
                   color="red lighten-1"
                   dark
-                  class="mb-2 ml-6 mt-10"
+                  class="mb-2 ml-6 mt-2"
                   v-bind="attrs"
                   v-on="on"
                 >
