@@ -1,6 +1,27 @@
 <template>
   <v-container>
     <v-row class="mt-6" justify="center" align="center">
+      <v-col cols="12" class="mb-5">
+        <v-btn
+          color="grey darken-4"
+          large
+          class="white--text"
+          @click="historial()"
+          ><v-icon>mdi-history</v-icon> &nbsp; Ver Historial</v-btn
+        >
+        <v-row
+          :class="verhistorial === false ? 'd-none' : ''"
+          justify="center"
+          class="mt-5 grey lighten-3"
+        >
+          <h2 class="pa-5">
+            <span><v-icon color="black" size="32">mdi-history</v-icon></span>
+            Historial de Arqueo de Caja
+          </h2>
+          <cash-history />
+        </v-row>
+      </v-col>
+
       <v-col cols="12" class="elevation-3">
         <v-row class="mb-1 grey lighten-3 pb-5 pt-2">
           <v-col cols="12">
@@ -237,11 +258,14 @@
 import { Rules } from "../helpers/rules.js";
 import TableCashOrders from "../components/TableCashOrders.vue";
 import TableCashActions from "../components/TableCashActions.vue";
+import CashHistory from "../components/CashHistory.vue";
+
 export default {
   name: "CashRegister",
   components: {
     TableCashOrders,
     TableCashActions,
+    CashHistory,
   },
   data: () => ({
     estado: "Cerrada", //Abierta, Cerrada
@@ -260,12 +284,28 @@ export default {
     saldodelsistema: "00.00",
     dialogCaja: false,
     cerrarEnable: false,
+
+    verhistorial: false,
   }),
 
   computed: {},
-  watch: {},
+  watch: {
+     dialog(val) {
+      val || this.close();
+    },
+    dialogCaja(val) {
+      val || this.close();
+    },
+  },
 
   methods: {
+    historial() {
+      if (this.verhistorial === false) {
+        this.verhistorial = true;
+      } else {
+        this.verhistorial = false;
+      }
+    },
     close() {
       this.dialog = false;
     },
@@ -280,13 +320,15 @@ export default {
       }
       */
       this.estado = "Abierta";
-      this.close(); 
+      this.dialogCaja = false;
+      this.close();
     },
 
     closeCierre() {
       this.dialogCaja = false;
     },
     cerrarCaja() {
+      this.dialog = false;
       this.estado = "Cerrada";
       this.close();
     },
