@@ -16,125 +16,105 @@
               ></span
             >
           </v-col>
+        </v-row>
 
+        <v-row :class="estado === 'Cerrada' ? 'd-none' : ''">
           <v-col cols="4">
             Efectivo: <br />
-            <span class="font-weight-bold text-body-1">$00.00</span>
+            <span class="font-weight-bold text-body-1">${{ efectivo }}</span>
           </v-col>
           <v-col cols="4">
             Tarjetas de Crédito: <br />
-            <span class="font-weight-bold text-body-1">$00.00</span>
+            <span class="font-weight-bold text-body-1">${{ credito }}</span>
           </v-col>
           <v-col cols="4">
             Retiros: <br />
-            <span class="font-weight-bold text-body-1 red--text">$00.00</span>
+            <span class="font-weight-bold text-body-1 red--text"
+              >${{ retiros }}</span
+            >
+          </v-col>
+
+          <v-col cols="12" class="d-flex justify-center">
+            <v-btn-toggle
+              v-model="step"
+              group
+              mandatory
+              color="light-blue darken-3"
+              class="justify-center mr-0 pr-0 pl-0 ml-0"
+            >
+              <v-btn text class="btn1">
+                <v-icon
+                  size="28"
+                  class="mr-1"
+                  :color="step === 0 ? 'light-blue darken-3' : 'black'"
+                  >mdi-clipboard-list</v-icon
+                >
+                <span class="hidden-xs-only">Registro de Ordenes</span>
+              </v-btn>
+
+              <v-btn class="btn1">
+                <v-icon
+                  size="28"
+                  class="mr-1"
+                  :color="step === 1 ? 'light-blue darken-3' : 'black'"
+                  >mdi-hand-coin</v-icon
+                >
+                <span class="hidden-xs-only">Registros Manuales</span>
+              </v-btn>
+            </v-btn-toggle>
+          </v-col>
+
+          <v-col cols="12">
+            <v-window v-model="step">
+              <v-window-item :value="0">
+                <table-cash-orders />
+              </v-window-item>
+              <v-window-item :value="1">
+                <table-cash-actions />
+              </v-window-item>
+            </v-window>
           </v-col>
         </v-row>
-        <v-data-table
-          :headers="headers"
-          :items="desserts"
-          sort-by="fecha"
-          :sort-desc="true"
-        >
-          <template v-slot:top>
-            <!-- REGISTRAR ACCION -->
-            <v-dialog v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2 ml-2 mt-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  Registrar Accion
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
-                </v-card-title>
+        <v-row class="align-center justify-center my-10">
+          <!-- CERRAR CAJA -->
+          <v-dialog
+            v-model="dialogCaja"
+            max-width="500px"
+            v-if="estado === 'Abierta'"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                x-large
+                class="white--text text-h6"
+                color="red"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Cerrar Caja
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="black">
+                <span class="text-h5 white--text">Cierre de Caja</span>
+              </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                       <v-form v-model="accionEnable"> 
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.descripcion"
-                          label="Descripcion"
-                          :rules="ruleRequired"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.entrada"
-                          label="Entrada"
-                          prepend-inner-icon="mdi-currency-usd"
-                          single-line
-                          type="number"
-                         :rules="rulesCash"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.salida"
-                          label="Salida"
-                          prepend-inner-icon="mdi-currency-usd"
-                          single-line
-                          type="number"
-                          :rules="rulesCash"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    </v-form>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="orange darken-1" @click="close" class=" white--text">
-                    Cancelar
-                  </v-btn>
-                  <v-btn :disabled="!accionEnable" color="blue darken-1" class=" white--text" @click="save">
-                    Guardar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- CERRAR CAJA -->
-            <v-dialog v-model="dialogCaja" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="red lighten-1"
-                  dark
-                  class="mb-2 ml-6 mt-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  Cerrar Caja
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="black">
-                  <span class="text-h5 white--text">Cierre de Caja</span>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                      <v-form v-model="cerrarEnable">
+              <v-card-text>
+                <v-container>
+                  <v-form v-model="cerrarEnable" ref="form2">
                     <v-row no-gutters>
                       <v-col cols="12" class="mb-2">
                         <span class="text-h6"
                           >Fecha de caja Actual:
                           <span class="font-weight-black"
-                            >{{ getFecha() }} </span
-                          ></span>
+                            >{{ getFecha() }}
+                          </span></span
+                        >
                       </v-col>
                       <v-col cols="12">
                         <h3>Informe de saldo final en caja</h3>
                         <v-text-field
                           prepend-inner-icon="mdi-currency-usd"
-                          v-model="formCaja.saldofinal"
+                          v-model="dinerofisico"
                           outlined
                           dense
                           type="number"
@@ -143,225 +123,172 @@
                       </v-col>
                       <v-col cols="12">
                         <h3>Saldo totalizado en el sistema</h3>
-                        <v-text-field
-                          prepend-inner-icon="mdi-currency-usd"
-                          v-model="formCaja.saldodelsistema"
-                          outlined
-                          dense
-                          type="number"
-                          :rules="rulesCash"
-                        ></v-text-field>
+                        <h4 class="font-weight-bold">
+                          $ {{ saldodelsistema }}
+                        </h4>
                       </v-col>
                       <v-col cols="12">
                         <h3>Diferencia de saldo (faltante)</h3>
-                        <v-text-field
-                          prepend-inner-icon="mdi-currency-usd"
-                          v-model="formCaja.diferencia"
-                          outlined
-                          dense
-                          type="number"
-                          :rules="rulesCash"
-                        ></v-text-field>
+                        <h4 class="font-weight-bold">$ {{ diferencia }}</h4>
                       </v-col>
                       <v-col cols="12">
                         <h3>Detalles y Obsevaciones</h3>
                         <v-textarea
-                          v-model="formCaja.descripcion"
+                          v-model="descripcion"
                           outlined
                           dense
                           rows="3"
                         ></v-textarea>
                       </v-col>
                     </v-row>
-                    </v-form>
-                  </v-container>
-                </v-card-text>
+                  </v-form>
+                </v-container>
+              </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="orange darken-1" class=" white--text" @click="closeCierre">
-                    Cancelar
-                  </v-btn>
-                  <v-btn :disabled="!cerrarEnable" color="green darken-1" class=" white--text" @click="cerrarCaja">
-                    Cerrar Caja
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </template>
-          <template v-slot:[getitemcontrols()]="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-              color="indigo accent-3"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(item)"
-              color="deep-orange accent-3"
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-          <template v-slot:no-data>
-            <v-btn color="primary" @click="initialize"> Resetear </v-btn>
-          </template>
-        </v-data-table>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="orange darken-1"
+                  class="white--text"
+                  @click="closeCierre"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  :disabled="!cerrarEnable"
+                  color="red darken-1"
+                  class="white--text"
+                  @click="cerrarCaja"
+                >
+                  Cerrar Caja
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- ABRIR CAJA -->
+          <v-dialog
+            v-model="dialog"
+            max-width="500px"
+            v-if="estado === 'Cerrada'"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="green"
+                x-large
+                class="mb-2 ml-2 mt-2 white--text text-h6"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Abrir Caja
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Abrir Caja</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-form v-model="accionEnable" ref="form">
+                    <v-row>
+                      <v-col cols="12" sm="8" md="8">
+                        <v-text-field
+                          v-model="monto"
+                          label="Monto"
+                          prepend-inner-icon="mdi-currency-usd"
+                          single-line
+                          outlined
+                          type="number"
+                          :rules="rulesCash"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="orange darken-1"
+                  @click="close"
+                  class="white--text"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  :disabled="!accionEnable"
+                  color="blue darken-1"
+                  class="white--text"
+                  @click="save"
+                >
+                  Guardar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
-
+<script >
 import { Rules } from "../helpers/rules.js";
-
+import TableCashOrders from "../components/TableCashOrders.vue";
+import TableCashActions from "../components/TableCashActions.vue";
 export default {
   name: "CashRegister",
+  components: {
+    TableCashOrders,
+    TableCashActions,
+  },
   data: () => ({
-
-    accionEnable: false, 
-    cerrarEnable:false,   
-    estado: "Abierta", //Abierta, Cerrada
-
+    estado: "Cerrada", //Abierta, Cerrada
+    efectivo: "200.00",
+    credito: "70.25",
+    retiros: "80.00",
+    step: 0,
     dialog: false,
-    dialogCaja: false,
-    headers: [
-      {
-        text: "Descripcion",
-        align: "start",
-        sortable: false,
-        value: "descripcion",
-      },
-      { text: "Entrada", value: "entrada" },
-      { text: "Salida", value: "salida" },
-      { text: "Fecha", value: "fecha" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      descripcion: "",
-      entrada: "",
-      salida: "",
-      fecha: "",
-    },
-    defaultItem: {
-      descripcion: "",
-      entrada: "",
-      salida: "",
-      fecha: "",
-    },
-
-    formCaja: {
-      saldofinal: "",
-      saldodelsistema: "",
-      diferencia: "",
-      detalles: "",
-    },
-
+    accionEnable: false,
+    monto: "",
     rulesCash: Rules.decimal2,
-    ruleRequired: Rules.required, 
+    cerrar: false,
+    dinerofisico: "",
+    descripcion: "",
+    diferencia: "00.00",
+    saldodelsistema: "00.00",
+    dialogCaja: false,
+    cerrarEnable: false,
   }),
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Nueva Accion" : "Editar Accion";
-    },
-  },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-  created() {
-    this.initialize();
-  },
+
+  computed: {},
+  watch: {},
+
   methods: {
-    getitemcontrols() {
-      return `item.actions`;
-    },
-
-    initialize() {
-      this.desserts = [
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 30,
-          salida: 20,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 45,
-          salida: 33,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 546,
-          salida: 23,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 65,
-          salida: 75,
-          fecha: "11/11/2021 12:55:36 ",
-        },
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 743,
-          salida: 76,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Orden: (Nombre del cliente)",
-          entrada: 87,
-          salida: 33,
-          fecha: "11/11/2021 12:55:36",
-        },
-      ];
-    },
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.desserts.splice(this.editedIndex, 1);
-    },
-
     close() {
       this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
     },
     save() {
-      if (this.editedIndex > -1) {
+      /*
+     if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
       } else {
         var currentDate = new Date();
         this.editedItem.fecha = this.getFechaHora();
         this.desserts.push(this.editedItem);
       }
-      this.close();
+      */
+      this.estado = "Abierta";
+      this.close(); 
     },
 
     closeCierre() {
       this.dialogCaja = false;
     },
     cerrarCaja() {
-      this.desserts = [];
-      this.dialogCaja = false;
+      this.estado = "Cerrada";
+      this.close();
     },
     getFechaHora() {
       var currentDate = new Date();
