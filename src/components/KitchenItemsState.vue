@@ -244,7 +244,6 @@ export default {
         this.step--;
         return;
       } else {
-        console.log(this.txt_buscar.toLowerCase());
         const search = this.txt_buscar.toLowerCase().trim();
         this.items_menu = this.menuItems.items.filter(
           (f) => f.nombre_item.toLowerCase().indexOf(search) > -1

@@ -23,7 +23,6 @@ export const Rules = {
     ],
 
     test: (value = false) => {
-        console.log(value);
         return [
 
             v => !!v || 'Requerido',
@@ -54,7 +53,6 @@ export const Rules = {
     ],
     //verificar contraseña
     verificarpass: (value = false) => {
-        console.log(value);
         return [
         v => !!v || 'Requerido',
        // v => (v || '').length >= 8 || 'La contraseña debe tener minimo 8 caracteres',

@@ -119,7 +119,7 @@ export default {
             descuento: descuento*100,
             disponibilidad: disponibilidad ? 1 : 2,
           };
-          console.log(descuento)
+          (descuento)
         }
       });
     }

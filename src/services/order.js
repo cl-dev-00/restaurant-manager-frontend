@@ -32,9 +32,6 @@ export default class Order {
     async updateOrder(params, id) {
         return await this.axios.put(`${this.url}/orders/${id}`, params);
     }
-    async updateOrder(params, id) {
-        return await this.axios.put(`${this.url}/orders/${id}`, params);
-    }
 
     async createCashRegister(params) {
         return await this.axios.post(`${this.url}/cash-registers`, params);

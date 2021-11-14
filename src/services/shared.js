@@ -25,10 +25,9 @@ export default class Shared {
         return await this.axios.get(`${this.url}/employees/${id}`);
     }
 
-    async changeStateOrder(id, total = 0, importe = 0) {
+    async changeStateOrder(id, importe = 0) {
         return await this.axios.put(`${this.url}/orders/${id}/changeState`, {
             importe,
-            total
         });
     }
 

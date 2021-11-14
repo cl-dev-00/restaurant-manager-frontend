@@ -276,34 +276,61 @@
               ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
             >
           </template>
-          <v-dialog
-            v-model="dialog"
-            transition="dialog-top-transition"
-            max-width="90%"
-          >
-            <template>
-              <v-row class="justify-center white" dense>
-                <v-col class="col-12">
-                  <v-btn
-                    color="primary"
-                    block
-                    depressed
-                    large
-                    @click="dialog = false"
-                    >Cerrar</v-btn
-                  >
-                  <orders-form-pay
-                    :createOrder="createOrder"
-                    :order="Order"
-                    :total="total"
-                    :subTotal="subTotal"
-                    :impuestos="impuestos"
-                    
-                  />
-                </v-col>
-              </v-row>
-            </template>
-          </v-dialog>
+          <template>
+            <v-dialog
+              v-model="dialog"
+              transition="dialog-top-transition"
+              max-width="90%"
+            >
+              <template>
+                <v-row class="justify-center white" dense>
+                  <v-col class="col-12">
+                    <v-btn
+                      color="primary"
+                      block
+                      depressed
+                      large
+                      @click="dialog = false"
+                      >Cerrar</v-btn
+                    >
+                    <orders-form-pay
+                      :createOrder="createOrder"
+                      :order="Order"
+                      :total="total"
+                      :subTotal="subTotal"
+                      :impuestos="impuestos"
+                    />
+                  </v-col>
+                </v-row>
+              </template>
+            </v-dialog>
+          </template>
+          <template>
+            <v-dialog
+              v-model="dialogPrint"
+              transition="dialog-top-transition"
+              max-width="600px"
+            >
+              <template>
+                <v-row class="justify-center white" dense>
+                  <v-col class="col-12">
+                    <v-btn
+                      color="primary"
+                      block
+                      depressed
+                      large
+                      @click="dialogPrint = false"
+                      >Cerrar</v-btn
+                    >
+                    <iframe
+                      style="width: 600px; height: 800px"
+                      :src="doc"
+                    ></iframe>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-dialog>
+          </template>
         </v-col>
         <v-col v-else class="col-12">
           <v-btn
@@ -319,7 +346,6 @@
         </v-col>
       </v-row>
     </v-form>
-         
   </v-col>
 </template>
 
@@ -331,7 +357,7 @@ import { rulesText, rulesCantidad } from "../helpers/rules";
 
 import { toastMessage } from "../helpers/messages";
 
-import { print } from "../helpers/printticket"
+import { printTicket } from "../helpers/printticket";
 
 export default {
   name: "OrdersFormData",
@@ -386,6 +412,8 @@ export default {
       isCashier: false,
       isFormValid: false,
       dialog: false,
+      dialogPrint: false,
+      doc: '',
 
       icon1: "mdi-arrow-right-box",
 
@@ -399,9 +427,6 @@ export default {
       mesaSelect: null,
       nombre_valido: false,
       isEdit: false,
-     
-
-     
     };
   },
   watch: {
@@ -425,9 +450,10 @@ export default {
         fechaOrden: new Date().toJSON().slice(0, 19).replace("T", " "),
         idComercial,
         idEmpleado: this.$store.getters.user.idEmpleado,
-        nombreEmpleado: this.$store.getters.user.nombre, 
+        nombreEmpleado: this.$store.getters.user.nombre,
         idMesa: this.mesaSelect,
         order_details,
+        total: this.total
       };
       
       return order;
@@ -522,13 +548,6 @@ export default {
   },
 
   methods: {
-
-
-    pdf(emp, m){
-      
-       print( emp, m);
-    },
-
     increment(cantidad, index) {
       const payload = {
         field: "cantidad",
@@ -605,7 +624,6 @@ export default {
         ...this.Order,
         importe: 0,
       });
-      
     },
 
     createOrder(order) {
@@ -613,16 +631,35 @@ export default {
         .createOrder(order)
         .then((response) => {
           if (response.data.ok) {
-            this.$services.socketioService.sendOrderKitchroom(
-              response.data.order
-            );
-           
+            const orderResponse = response.data.order;
+
+            this.$services.socketioService.sendOrderKitchroom(orderResponse);
+
+            this.dialog = false;
+
+            if (response.data.isCashier) {
+              const numeroMesa = orderResponse.table
+                ? orderResponse.table.numero
+                : "Orden para llevar";
+
+              this.doc = printTicket(
+                orderResponse.employee.nombre,
+                numeroMesa,
+                this.subTotal,
+                this.impuestos,
+                this.total,
+                orderResponse.order_details,
+                this.$store.getters.user.commercial
+              );
+
+              this.dialogPrint = true;
+            }
+
             this.clearFormOrder();
 
             toastMessage("success", "Exito", "Se creo la orden correctamente");
-
-            this.dialog = false;
           }
+
         })
         .catch((error) => {
           console.log(error);

@@ -38,7 +38,6 @@ export default {
           break;
 
         default:
-          console.log('aqui')
           this.$router.push("/");
           break;
       }
