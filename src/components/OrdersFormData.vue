@@ -308,6 +308,7 @@
       </v-row>
     </v-form>
      <v-btn @click="pdf(empleado, mesa)" x-large>pdf</v-btn>
+    
   </v-col>
 </template>
 
@@ -490,9 +491,14 @@ export default {
 
   methods: {
 
+
     pdf(emp, m){
 
-     print(emp, m);
+      
+       print(emp, m);
+     
+    
+      
     },
 
     increment(cantidad, index) {
