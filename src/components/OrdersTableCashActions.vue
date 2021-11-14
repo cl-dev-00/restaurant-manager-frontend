@@ -4,7 +4,7 @@
       <v-col cols="12" class="elevation-3">
         <v-data-table
           :headers="headers"
-          :items="desserts"
+          :items="boxActions.items"
           sort-by="fecha"
           :sort-desc="true"
         >
@@ -25,11 +25,11 @@
               </template>
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">Registrar Accion</span>
+                  <span class="text-h5">Registrar Nueva Accion</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-form v-model="accionEnable" ref="form">
+                    <v-form v-model="accionEnable">
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
@@ -42,12 +42,14 @@
                           <v-select
                             :items="tipos"
                             label="Tipo"
-                            v-model="select"
+                            item-text="title"
+                            item-value="value"
+                            v-model="editedItem.isInput"
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
-                            v-model="monto"
+                            v-model.number="editedItem.monto"
                             label="Monto"
                             prepend-inner-icon="mdi-currency-usd"
                             single-line
@@ -80,9 +82,6 @@
               </v-card>
             </v-dialog>
           </template>
-          <template v-slot:no-data>
-            <v-btn color="primary" @click="initialize"> Resetear </v-btn>
-          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -91,9 +90,20 @@
 
 <script >
 import { Rules } from "../helpers/rules.js";
+import { toastMessage } from "../helpers/messages";
 
 export default {
-  name: "TableCashActions",
+  name: "OrdersTableCashActions",
+  props: {
+    idCashRegister: {
+      type: Number,
+      required: true,
+    },
+    boxActions: {
+      type: Object,
+      required: true,
+    },
+  },
   data: () => ({
     accionEnable: false,
 
@@ -105,120 +115,86 @@ export default {
         sortable: false,
         value: "descripcion",
       },
-      { text: "Entrada", value: "entrada" },
-      { text: "Salida", value: "salida" },
+      { text: "Monto ($ USD)", value: "monto" },
+      { text: "Tipo", value: "tipo" },
       { text: "Fecha", value: "fecha" },
     ],
-    desserts: [],
-    editedIndex: -1,
     editedItem: {
       descripcion: "",
-      entrada: "",
-      salida: "",
-      fecha: "",
+      monto: "",
+      isInput: null,
     },
     defaultItem: {
       descripcion: "",
-      entrada: "",
-      salida: "",
-      fecha: "",
+      monto: "",
+      isInput: null,
     },
 
     rulesCash: Rules.decimal2,
     ruleRequired: Rules.required,
-    tipos: ["Ingreso", "Gasto"],
-    monto: "",
-    select: "",
+    tipos: [
+      {
+        title: "Ingresos",
+        value: true,
+      },
+      {
+        title: "Gastos",
+        value: false,
+      },
+    ],
   }),
-  computed: {
-    
-  },
   watch: {
     dialog(val) {
       val || this.close();
     },
   },
-  created() {
-    this.initialize();
-  },
   methods: {
     reset() {
-      this.$refs.form.reset();
+      this.editedItem = this.defaultItem;
     },
 
-    initialize() {
-      this.desserts = [
-        {
-          descripcion: "Compra de verduras",
-          entrada: 0,
-          salida: 30,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Compra de 2 sartenes",
-          entrada: 0,
-          salida: 40,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Pago de X",
-          entrada: 546,
-          salida: 0,
-          fecha: "11/11/2021 12:55:36",
-        },
-        {
-          descripcion: "Pago de Y",
-          entrada: 65,
-          salida: 0,
-          fecha: "11/11/2021 12:55:36 ",
-        },
-        {
-          descripcion: "PAgo de Z",
-          entrada: 743,
-          salida: 0,
-          fecha: "11/11/2021 12:55:36",
-        },
-      ];
-    },
     close() {
       this.dialog = false;
     },
     save() {
-     
-        var currentDate = new Date();
+      const dateFull = new Date().toISOString().slice(0, 19).replace("T", " ");
 
-        if (this.select === "Ingreso") {
-          this.editedItem.entrada = this.monto;
-          this.editedItem.salida = "";
-        } else {
-          this.editedItem.entrada = "";
-          this.editedItem.salida = this.monto;
-        }
+      const boxAction = {
+        ...this.editedItem,
+        fecha: dateFull,
+        idCashRegister: this.idCashRegister,
+      };
 
-        this.editedItem.fecha = this.getFechaHora();
-        this.desserts.push(this.editedItem);
-        this.editedItem = [];
-      
+      this.$services.orders
+        .createBoxAction(boxAction)
+        .then((response) => {
+          if (response.data.ok) {
+            const { fecha, monto, isInput, ...props } = response.data.boxAction;
+
+            this.$emit("newBoxActionEmit", {
+              ...props,
+              monto,
+              isInput,
+              fecha: fecha.slice(0, 19).replace("T", " "),
+            });
+
+            if (!isInput) {
+              this.$emit("changeExpensesEmit", monto);
+            }
+
+            toastMessage(
+              "success",
+              "Exito",
+              "Se realizo la accion correctamente"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toastMessage("error", "Error :(", "No se pudo realizar la accion");
+        });
 
       this.close();
-    },
-
-    getFechaHora() {
-      var currentDate = new Date();
-      return currentDate.toLocaleString();
-    },
-    getFecha() {
-      var currentDate = new Date();
-      var dias = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
-      return (
-        dias[currentDate.getDay()] +
-        " " +
-        currentDate.getDate() +
-        "/" +
-        currentDate.getMonth() +
-        "/" +
-        currentDate.getFullYear()
-      );
     },
   },
 };

@@ -74,7 +74,7 @@ export default {
         
         { title: "Mi Cuenta", 
           icon: "mdi-account-details",
-          path: routersInfo.account.path, 
+          path: routersInfo.myaccount.path, 
            click: () => {},
         },
         {

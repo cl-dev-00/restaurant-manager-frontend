@@ -1,7 +1,9 @@
 <template>
   <v-card class="ma-3" elevation="10">
     <v-card-title class="pt-8">
-      Pagar Orden <span class="red--text ml-2">{{ orderName }}</span>
+      Cancelar orden de
+      <span class="red--text ml-2">{{ order.nombreCliente }}</span>
+      <br />
     </v-card-title>
     <v-row class="ma-1">
       <v-card-text>
@@ -9,12 +11,12 @@
         <v-row class="overflow-x-auto">
           <v-col cols="12">
             <v-list height="">
-              <template v-for="order in orders">
-                <v-list-item :key="order.nameItem">
+              <template v-for="item in order.order_details">
+                <v-list-item :key="item.OrderDetial">
                   <!-- Cantidad -->
                   <v-list-item-action>
                     <v-list-item-title class="font-weight-bold">
-                      {{ order.nItems }}
+                      {{ item.cantidad }}
                     </v-list-item-title>
                   </v-list-item-action>
 
@@ -28,13 +30,13 @@
                         font-weight: bold;
                       "
                     >
-                      {{ order.nameItem }}
+                      {{ item.nombre_item }}
                     </v-list-item-title>
                   </v-list-item-content>
 
                   <!-- SubTotal -->
                   <v-list-item-action>
-                    <span class="font-weight-bold">$ {{ order.subTotal }}</span>
+                    <span class="font-weight-bold">$ {{ item.importe }}</span>
                   </v-list-item-action>
                 </v-list-item>
               </template>
@@ -43,16 +45,16 @@
         </v-row>
         <v-row class="justify-center ma-2">
           <v-col cols="12" sm="6" md="4">
-            <h2>Sub Total:</h2>
-            <h3>$ 40.00</h3>
+            <h3>Sub Total:</h3>
+            <h4>$ {{ subTotal }}</h4>
           </v-col>
           <v-col cols="12" sm="6" md="4">
-            <h2>Impuestos (13%):</h2>
-            <h3>$ 13.00</h3>
+            <h3>Impuestos (13%):</h3>
+            <h4>$ {{ impuestos }}</h4>
           </v-col>
           <v-col cols="12" sm="12" md="4">
-            <h2>Total:</h2>
-            <h3>$ {{ totalSample }}</h3>
+            <h3>Total:</h3>
+            <h4>$ {{ total }}</h4>
           </v-col>
         </v-row>
 
@@ -103,20 +105,7 @@
                     </v-col>
                   </v-row>
                   <v-row dense class="ma-0 pa-5">
-                    <v-col cols="12" md="6">
-                      <v-subheader class="grey--text text--lighten-1 pl-0"
-                        >NOMBRE DEL CLIENTE</v-subheader
-                      >
-                      <v-text-field
-                        single-line
-                        outlined
-                        label="Juan Rodriguez"
-                        v-model="cardName"
-                        :rules="ruleOnlyAlpha"
-                      />
-                    </v-col>
-
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-subheader class="grey--text text--lighten-1 pl-0"
                         >IMPORTE REALIZADO</v-subheader
                       >
@@ -156,6 +145,7 @@
                     class="white--text"
                     block
                     x-large
+                    @click="save"
                   >
                     <v-icon>mdi-cash-check</v-icon>
                     <span class="hidden-xs-only ml-1">Pagar</span>
@@ -199,7 +189,7 @@
                         outlined
                         v-mask="'#### #### #### ####'"
                         :rules="ruleCard"
-                        v-model="cardNumber"
+                        v-model="cardString"
                         color="blue"
                         placeholder="•••• •••• •••• ••••"
                       />
@@ -258,9 +248,7 @@
                     x-large
                   >
                     <v-icon>mdi-cash-check</v-icon>
-                    <span class="hidden-xs-only ml-1"
-                      >Pagar ${{ totalSample }}</span
-                    >
+                    <span class="hidden-xs-only ml-1">Pagar ${{ total }}</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -276,25 +264,38 @@
 import { Rules } from "../helpers/rules.js";
 
 export default {
-  name: "FormPay",
-
+  name: "OrdersFormPay",
+  props: {
+    order: {
+      type: Object,
+      required: true,
+    },
+    total: {
+      type: String,
+      required: true,
+    },
+    subTotal: {
+      type: String,
+      required: true,
+    },
+    impuestos: {
+      type: String,
+      required: true,
+    },
+    createOrder: {
+      type: Function,
+    },
+    changeState: {
+      type: Function,
+    },
+  },
   data() {
     return {
       btnPayEnable: false,
       btnPayEnableCash: false,
-      orderName: "Nombre de la orden",
-      totalSample: "53.00",
       valid: false,
 
       step: 0,
-
-      orders: [
-        { nItems: "1", nameItem: "Sopa", subTotal: "3.43" },
-        { nItems: "4", nameItem: "Pollo frito", subTotal: "1.43" },
-        { nItems: "5", nameItem: "Papas Fritas", subTotal: "0.99" },
-        { nItems: "4", nameItem: "Tres leches", subTotal: "1.25" },
-        { nItems: "4", nameItem: "Soda", subTotal: "1.30" },
-      ],
 
       years: ["2022", "2021", "2023", "2024", "2025", "2026", "2027", "2028"],
       months: [
@@ -313,7 +314,7 @@ export default {
       ],
 
       cardName: "",
-      cardNumber: "",
+      cardString: "",
       cardMonth: "",
       cardYear: "",
       cardCVV: "",
@@ -324,7 +325,7 @@ export default {
       ruleCVV: Rules.cvvsize,
       ruleDecimal: Rules.decimal,
 
-      ruleTest: "", 
+      ruleTest: "",
 
       //Pago en efectivo
 
@@ -333,16 +334,37 @@ export default {
       cashBack: "",
     };
   },
-  created(){
-   this.setRule(); 
+  created() {
+    this.setRule();
+  },
+  watch: {
+    cashAmount: {
+      handler: function (value, oldVal) {
+        const amount = value - this.total;
+        this.cashBack = amount >= 0 ? amount.toFixed(2) : (amount * -1).toFixed(2);
+      },
+      // return console.log(amount)
+    },
   },
   methods: {
-
-    setRule(){
-      this.ruleTest = Rules.test(this.totalSample);
+    setRule() {
+      this.ruleTest = Rules.test(this.total);
     },
+    save() {
+
+      if (typeof this.createOrder === "function") {
+        const order = {
+          ...this.order,
+          importe: this.cashAmount,
+        };
+        this.createOrder(order);
+      } else if (typeof this.changeState === "function") {
+        this.changeState(this.cashAmount);
+      }
+    },
+
     Calculate() {
-      var value = parseFloat(this.cashAmount) - parseFloat(this.totalSample);
+      const value = parseFloat(this.cashAmount) - parseFloat(this.total);
 
       if (isNaN(value)) {
         this.cashBack = "";
@@ -350,11 +372,9 @@ export default {
         if (value.toFixed(2) < 0) {
           this.valid = true;
           this.cashBack = "";
-         
         } else {
           this.valid = false;
           this.cashBack = value.toFixed(2);
-         
         }
       }
     },

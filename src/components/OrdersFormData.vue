@@ -137,10 +137,14 @@
         align="center"
         justify="center"
       >
-        <v-card class="mb-2" elevation="6" max-width="470px" min-width="200px">
+        <v-card class="mb-5" elevation="6" max-width="470px" min-width="200px">
           <v-card-text>
             <v-row no-gutters align="center" justify="center">
-              <v-col cols="11" sm="11" class="mt-n3 text-h6 font-weight-bold">
+              <v-col
+                cols="11"
+                sm="11"
+                class="mt-n3 pa-2 text-h6 font-weight-bold"
+              >
                 {{ menu.nombre_item }}</v-col
               >
               <v-col
@@ -210,7 +214,7 @@
                 <v-divider class="mt-n1 mb-2"></v-divider>
                 <v-textarea
                   dense
-                  class="ml-3 mr-3 mb-n8"
+                  class="ml-3 mr-3 mb-n8 pb-3"
                   outlined
                   name="input-2-4"
                   label="Comentario (Opcional)"
@@ -230,7 +234,7 @@
       <!-- TOTALES -->
       <v-divider class="mt-5"></v-divider>
       <v-list>
-        <v-list-item class=" mr-n3">
+        <v-list-item class="mr-n3">
           <v-list-item-title class="ml-n5 text-h6">
             Sub Total
           </v-list-item-title>
@@ -251,9 +255,7 @@
           </v-list-item-action-text>
         </v-list-item>
         <v-list-item class="mt-n5 mr-n3">
-          <v-list-item-title class="ml-n5 text-h6">
-            Total
-          </v-list-item-title>
+          <v-list-item-title class="ml-n5 text-h6"> Total </v-list-item-title>
           <v-list-item-action-text>
             <span class="green--text text-h6 font-weight-bold text-no-wrap">
               $ {{ total }}
@@ -264,19 +266,22 @@
       <!-- BOTON COCINA-->
       <v-row v-if="!isEdit">
         <v-col v-if="isCashier" class="col-12">
-          <v-dialog transition="dialog-top-transition" max-width="90%">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="success"
-                v-bind="attrs"
-                v-on="on"
-                block
-                x-large
-                :disabled="!validarEnvio"
-                ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
-              >
-            </template>
-            <template v-slot:default="dialog">
+          <template>
+            <v-btn
+              color="success"
+              block
+              x-large
+              :disabled="!validarEnvio"
+              @click="dialog = true"
+              ><v-icon>mdi-currency-usd</v-icon> Pagar</v-btn
+            >
+          </template>
+          <v-dialog
+            v-model="dialog"
+            transition="dialog-top-transition"
+            max-width="90%"
+          >
+            <template>
               <v-row class="justify-center white" dense>
                 <v-col class="col-12">
                   <v-btn
@@ -284,10 +289,16 @@
                     block
                     depressed
                     large
-                    @click="dialog.value = false"
+                    @click="dialog = false"
                     >Cerrar</v-btn
                   >
-                  <form-pay />
+                  <orders-form-pay
+                    :createOrder="createOrder"
+                    :order="Order"
+                    :total="total"
+                    :subTotal="subTotal"
+                    :impuestos="impuestos"
+                  />
                 </v-col>
               </v-row>
             </template>
@@ -297,7 +308,7 @@
           <v-btn
             x-large
             color="success"
-            @click="addOrder"
+            @click="save"
             block
             class="mb-5"
             :disabled="!validarEnvio"
@@ -315,7 +326,7 @@
 <script>
 import WaiterCardCategory from "./OrdersCardCategory.vue";
 
-import FormPay from "./FormPay.vue";
+import OrdersFormPay from "./OrdersFormPay.vue";
 import { rulesText, rulesCantidad } from "../helpers/rules";
 
 import { toastMessage } from "../helpers/messages";
@@ -326,7 +337,7 @@ export default {
   name: "OrdersFormData",
   components: {
     WaiterCardCategory,
-    FormPay,
+    OrdersFormPay,
   },
   mounted() {
     this.isCashier =
@@ -374,6 +385,7 @@ export default {
       accounts: [],
       isCashier: false,
       isFormValid: false,
+      dialog: false,
 
       icon1: "mdi-arrow-right-box",
 
@@ -400,6 +412,25 @@ export default {
     },
   },
   computed: {
+    Order() {
+      const { idComercial } = this.$store.getters.user;
+
+      const order_details = this.ItemSelects.map(({ precio, ...item }) => ({
+        ...item,
+        importe: item.cantidad * precio,
+      }));
+
+      const order = {
+        nombreCliente: this.nombreCliente,
+        fechaOrden: new Date().toJSON().slice(0, 19).replace("T", " "),
+        idComercial,
+        idEmpleado: this.$store.getters.user.idEmpleado,
+        idMesa: this.mesaSelect,
+        order_details,
+      };
+
+      return order;
+    },
     rulesText,
     rulesCantidad,
     total() {
@@ -572,23 +603,14 @@ export default {
       );
     },
 
-    addOrder() {
-      const { idComercial } = this.$store.getters.user;
+    save() {
+      this.createOrder({
+        ...this.Order,
+        importe: 0,
+      });
+    },
 
-      const order_details = this.ItemSelects.map(({ precio, ...item }) => ({
-        ...item,
-        importe: item.cantidad * precio,
-      }));
-
-      const order = {
-        nombreCliente: this.nombreCliente,
-        fechaOrden: new Date().toJSON().slice(0, 19).replace("T", " "),
-        idComercial,
-        idEmpleado: this.$store.getters.user.idEmpleado,
-        idMesa: this.mesaSelect,
-        order_details,
-      };
-
+    createOrder(order) {
       this.$services.orders
         .createOrder(order)
         .then((response) => {
@@ -600,6 +622,8 @@ export default {
             this.clearFormOrder();
 
             toastMessage("success", "Exito", "Se creo la orden correctamente");
+
+            this.dialog = false;
           }
         })
         .catch((error) => {
@@ -607,6 +631,7 @@ export default {
           toastMessage("error", "Error :(", "No se pudo crear la orden");
         });
     },
+
     clearFormOrder() {
       this.nombreCliente = "";
       this.$store.dispatch("itemsMenuSelectAction", []);

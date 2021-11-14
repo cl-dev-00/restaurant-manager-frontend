@@ -9,10 +9,6 @@ export default class Manager {
         return await this.axios.get(`${this.url}/employees`);
     }
 
-    async getEmployee(id) {
-        return await this.axios.get(`${this.url}/employees/${id}`);
-    }
-
     async createEmployee(payload) {
         
         return await this.axios.post(`${this.url}/employees`, payload);

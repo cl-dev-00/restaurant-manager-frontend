@@ -24,7 +24,7 @@ import AppMenuBarUser from "../components/AppMenuBarUser.vue";
 import routersInfo from "../router/routers-info";
 
 export default {
-  name: "ManagerTopBar",
+  name: "AppTopBar",
   components: {
     AppMenuBarUser,
   },

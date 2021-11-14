@@ -5,8 +5,12 @@ export default class Shared {
         this.url = url;
     }
 
-    async getOrdersUndone() {
-        return await this.axios.get(`${this.url}/orders`);
+    async getOrders() {
+        return await this.axios.get(`${this.url}/orders`, {
+            headers: {
+                'date-current': new Date(2021,10, 13).toJSON().slice(0, 10),
+            }
+        });
     }
 
     async getCategories() {
@@ -17,8 +21,15 @@ export default class Shared {
         return await  this.axios.get(`${this.url}/menu-items`);
     }
 
-    async changeStateOrder(id) {
-        return await this.axios.put(`${this.url}/orders/${id}/changeState`, {});
+    async getEmployee(id) {
+        return await this.axios.get(`${this.url}/employees/${id}`);
+    }
+
+    async changeStateOrder(id, total = 0, importe = 0) {
+        return await this.axios.put(`${this.url}/orders/${id}/changeState`, {
+            importe,
+            total
+        });
     }
 
 }

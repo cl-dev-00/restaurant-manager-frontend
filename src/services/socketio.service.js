@@ -27,6 +27,10 @@ class SocketioService {
       this.socket.emit('/sockets/orders/deliveryOrder', order);
     }
 
+    paidoutOrder(order) {
+      this.socket.emit('/sockets/orders/paidoutOrder', order);
+    }
+
     getSendOrder(callback) {
       this.socket.on('/sockets/orders/sendNewOrder', (payload) => {
         callback(payload);
@@ -41,6 +45,12 @@ class SocketioService {
     
     getDeliveryOrder(callback) {
       this.socket.on('/sockets/orders/sendDeliveryOrder', (payload) => {
+        callback(payload);
+      });
+    }
+
+    getPaidoutOrder(callback) {
+      this.socket.on('/sockets/orders/sendPaidoutOrder', (payload) => {
         callback(payload);
       });
     }

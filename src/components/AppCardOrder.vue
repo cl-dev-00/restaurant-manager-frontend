@@ -87,10 +87,42 @@
         <v-divider></v-divider>
         <br />
         <span class="ml-12 font-weight-bold d-block">
-          Total : $ {{total()}}</span
+          Total : $ {{ total }}</span
         >
       </v-row>
     </v-responsive>
+
+    <!-- modal para pagar -->
+
+    <template>
+      <v-dialog
+        v-model="dialog"
+        transition="dialog-top-transition"
+        max-width="600px"
+      >
+        <template>
+          <v-row class="justify-center white" dense>
+            <v-col class="col-12">
+              <v-btn
+                color="primary"
+                block
+                depressed
+                large
+                @click="dialog = false"
+                >Cerrar</v-btn
+              >
+              <orders-form-pay
+                :changeState="paymentOrderEmit"
+                :order="order"
+                :total="total"
+                :subTotal="subTotal"
+                :impuestos="impuestos"
+              />
+            </v-col>
+          </v-row>
+        </template>
+      </v-dialog>
+    </template>
 
     <!-- Boton Cards -->
 
@@ -183,7 +215,7 @@
         fab
         dark
         color="success"
-        @click="paymentOrderEmit()"
+        @click="dialog = true"
       >
         <v-icon dark> mdi-cash </v-icon>
       </v-btn>
@@ -192,17 +224,22 @@
 </template>
 
 <script>
+
+import OrdersFormPay from '../components/OrdersFormPay.vue';
+
 export default {
   name: "AppCardOrder",
-  components: {},
+  components: {
+    OrdersFormPay
+  },
   data() {
     return {
       color: "black",
       selected: [],
+      dialog: false,
     };
   },
   mounted() {
-     
     switch (this.tipoCard) {
       case "Cocina":
         this.color = "pink";
@@ -242,17 +279,46 @@ export default {
       required: true,
     },
   },
-
+  computed: {
+    subTotal() {
+      return this.order.order_details
+        .reduce((acc, item) => acc + item.menu_item.precio * item.cantidad, 0)
+        .toFixed(2);
+    },
+    impuestos() {
+      return this.order.order_details
+        .reduce(
+          (acc, item) => acc + item.cantidad * (item.menu_item.precio * 0.13),
+          0
+        )
+        .toFixed(2);
+    },
+    total() {
+      return (
+        parseFloat(this.subTotal) + parseFloat(this.impuestos)
+      ).toFixed(2);
+    },
+  },
   methods: {
     doneOrderEmit() {
       // this.toggleClass();
       this.$emit("doneOrderEmit", this.order.idOrden);
     },
-    paymentOrderEmit() {
+    paymentOrderEmit(importe) {
       // this.toggleClass();
-      this.$emit("paymentOrderEmit", this.order.idOrden);
-      
+      this.$services.shareds
+        .changeStateOrder(this.order.idOrden, this.total, importe)
+        .then((response) => {
+          if (response.data.ok) {
+            this.$services.socketioService.paidoutOrder(response.data.order);
+            this.$emit("paymentOrderEmit", this.order.idOrden);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
 
+          toastMessage("error", "Error :(", "No se pudo realizar la orden");
+        });
     },
     deliveryOrderEmit() {
       // this.toggleClass();
@@ -271,18 +337,6 @@ export default {
       if (this.tipoCard === "Cocina") {
         this.$services.socketioService.changeDoneOrderDetail(id);
       }
-    },
-
-    total() {
-      const subTotal = this.order.order_details
-        .reduce((acc, item) => acc + item.menu_item.precio * item.cantidad, 0)
-        .toFixed(2);
-
-      const impuestos = this.order.order_details
-        .reduce((acc, item) => acc + item.cantidad * (item.menu_item.precio * 0.13), 0)
-        .toFixed(2);
-
-      return (parseFloat(subTotal) + parseFloat(impuestos)).toFixed(2);
     },
   },
 };

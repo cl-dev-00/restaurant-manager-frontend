@@ -40,36 +40,12 @@ export default {
       items: [],
       hasItems: false,
     },
-    
   }),
   mounted() {
-     var total = 0;
-     
-    this.$services.shareds.getOrdersUndone().then((response) => {
+    this.$services.shareds.getOrders().then((response) => {
       if (response.data.ok) {
         this.orders = response.data.collection;
-       console.log(response.data.collection);
-
-        var n = 3;
-         console.log("Mesero: " + response.data.collection.items[n].employee.nombre);
-        //console.log("Mesa: " + this.orders.items[n].table.numero);
-        //console.log("Cliente: " + this.orders.items[n].nombreCliente);
-        //  console.log("-------------------------");
-        var size = Object.keys(response.data.collection.items[n].order_details).length;   
-       for (let i = 0; i <= size; i++) {
-          var cantidad = this.orders.items[n].order_details[i].cantidad; 
-          var nombre = this.orders.items[n].order_details[i].menu_item.nombre_item;  
-          var importe = this.orders.items[n].order_details[i].importe;  
-          
-            console.log("Items: " + cantidad +" -- " +nombre +" -- $" +importe); 
-       // total += parseFloat(response.data.collection.items[n].order_details[i].importe);
-        }
-        //  console.log("-------------------------");
-        console.log("Total: " + total);
-        console.log("SubTotal: " + data);
-        console.log("Impuestos: ");
       }
-        
     });
 
     if (this.tipoCard === "Cocina") {
@@ -92,9 +68,7 @@ export default {
         .changeStateOrder(id)
         .then((response) => {
           if (response.data.ok) {
-            if (response.data.isCashier) {
-              this.$services.socketioService.deliveryOrder(response.data.order);
-            } else {
+            if (!response.data.isCashier) {
               this.$services.socketioService.doneOrder(response.data.order);
             }
 
@@ -117,26 +91,14 @@ export default {
     },
 
     paymentOrder(id) {
-      this.$services.shareds
-        .changeStateOrder(id)
-        .then((response) => {
-          if (response.data.ok) {
-            this.orders.items = this.orders.items.filter(
-              (order) => order.idOrden !== id
-            );
-
-            toastMessage(
-              "success",
-              "Exito",
-              "Se realizo la orden correctamente"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-
-          toastMessage("error", "Error :(", "No se pudo realizar la orden");
-        });
+      this.orders.items = this.orders.items.filter(
+        (order) => order.idOrden !== id
+      );
+      toastMessage(
+        "success",
+        "Exito",
+        "El pago de la orden se realizo correctamente"
+      );
     },
     deliveryOrder(id) {
       this.$services.shareds
@@ -151,7 +113,7 @@ export default {
             toastMessage(
               "success",
               "Exito",
-              "Se realizo la orden correctamente"
+              "Se entrego la orden correctamente"
             );
           }
         })

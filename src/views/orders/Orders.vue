@@ -49,14 +49,7 @@
           </v-window-item>
 
           <v-window-item :value="1">
-            <v-row
-              class="
-                pa-8
-                fill-height
-                align-center
-                justify-center
-              "
-            >
+            <v-row class="pa-8 fill-height align-center justify-center">
               <v-col v-if="isCashier" class="col-12">
                 <app-container-cards-orders :tipoCard="'CajeroPay'" />
               </v-col>
@@ -72,7 +65,7 @@
           <v-window-item v-if="isCashier" :value="2">
             <v-row justify="center" align="center" no-gutters>
               <v-col cols="12">
-<cash-register/>
+                <cash-register />
               </v-col>
             </v-row>
           </v-window-item>
@@ -88,8 +81,8 @@ import OrdersCreateOrEdit from "../../components/OrdersCreateOrEdit.vue";
 
 import AppContainerCardsOrders from "../../components/AppContainerCardsOrders.vue";
 
-import FormPay from "../../components/FormPay.vue";
-import CashRegister from "../../components/CashRegister.vue"
+import OrdersFormPay from "../../components/OrdersFormPay.vue";
+import CashRegister from "../../components/CashRegister.vue";
 
 export default {
   name: "Orders",
@@ -97,8 +90,8 @@ export default {
     AppLayout,
     OrdersCreateOrEdit,
     AppContainerCardsOrders,
-    FormPay,
-    CashRegister, 
+    OrdersFormPay,
+    CashRegister,
   },
 
   mounted() {
@@ -127,8 +120,6 @@ export default {
       tMesero: "Mesero",
       tCajero: "Cajero",
       tCajeroPay: "CajeroPay",
-
-  
     };
   },
   watch: {
