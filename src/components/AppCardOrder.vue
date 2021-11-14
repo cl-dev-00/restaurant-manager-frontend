@@ -202,6 +202,7 @@ export default {
     };
   },
   mounted() {
+     
     switch (this.tipoCard) {
       case "Cocina":
         this.color = "pink";
@@ -250,6 +251,8 @@ export default {
     paymentOrderEmit() {
       // this.toggleClass();
       this.$emit("paymentOrderEmit", this.order.idOrden);
+      
+
     },
     deliveryOrderEmit() {
       // this.toggleClass();

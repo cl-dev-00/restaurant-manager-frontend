@@ -16,6 +16,7 @@
                   Cambiar Imagen</v-btn
                 >
                 <div class="text-muted">{{ message }}</div>
+              <!--
                 <avatar-cropper
                   @uploading="handleUploading"
                   @uploaded="handleUploaded"
@@ -24,6 +25,7 @@
                   v-model="trigger"
                   upload-url="/files/upload"
                 />
+                -->
               </v-col>
               <v-col cols="2" sm="4"></v-col>
             </v-row>

@@ -307,6 +307,7 @@
         </v-col>
       </v-row>
     </v-form>
+     <v-btn @click="pdf(empleado, mesa)" x-large>pdf</v-btn>
   </v-col>
 </template>
 
@@ -317,6 +318,8 @@ import FormPay from "./FormPay.vue";
 import { rulesText, rulesCantidad } from "../helpers/rules";
 
 import { toastMessage } from "../helpers/messages";
+
+import { print } from "../helpers/printticket"
 
 export default {
   name: "OrdersFormData",
@@ -383,6 +386,9 @@ export default {
       mesaSelect: null,
       nombre_valido: false,
       isEdit: false,
+
+      empleado: "Chele Pajero",
+      mesa: "19",
     };
   },
   watch: {
@@ -483,6 +489,12 @@ export default {
   },
 
   methods: {
+
+    pdf(emp, m){
+
+     print(emp, m);
+    },
+
     increment(cantidad, index) {
       const payload = {
         field: "cantidad",
@@ -578,6 +590,7 @@ export default {
             this.$services.socketioService.sendOrderKitchroom(
               response.data.order
             );
+           
             this.clearFormOrder();
 
             toastMessage("success", "Exito", "Se creo la orden correctamente");
