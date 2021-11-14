@@ -11,14 +11,12 @@ import MenuItems from '../views/manager/menu-items/MenuItems.vue'
 import MenuItemAddOrEdit from '../views/manager/menu-items/MenuItemAddOrEdit.vue'
 import Tables from '../views/manager/tables/Tables.vue'
 import TableAddOrEdit from '../views/manager/tables/TableAddOrEdit.vue'
-import Taxes from '../views/manager/taxes/Taxes.vue'
-import TaxeAddOrEdit from '../views/manager/taxes/TaxeAddOrEdit.vue'
 
 
 import { authorization, loggedIn } from '../middlewares/authorization'
 
 
-import Account from '../views/account/Account.vue'
+import MyAccount from '../views/MyAccount.vue'
 
 //import { component } from 'vue/types/umd'
 
@@ -145,35 +143,11 @@ const routersInfo = {
         title: "Editar información de la mesa",
 
     },
-    taxes: {
-        path: '/manager/taxes',
-        name: 'Taxes',
-        component: Taxes,
-        beforeEnter: authorization,
-        title: "Lista de los impuestos",
-
-    },
-    taxeCreate: {
-        path: '/manager/taxes/create',
-        name: 'TaxeAdd',
-        component: TaxeAddOrEdit,
-        beforeEnter: authorization,
-        title: "Agregar nuevo impuesto",
-
-    },
-    taxeEdit: {
-        path: '/manager/taxes/:id/edit',
-        name: 'TaxeEdit',
-        component: TaxeAddOrEdit,
-        beforeEnter: authorization,
-        title: "Editar información del impuestos",
-
-    },
-    account: {
-        path: '/account',
-        name: 'Account',
-        component: Account,
-        title: 'Cuenta'
+    myaccount: {
+        path: '/my-account',
+        name: 'MyAccount',
+        component: MyAccount,
+        title: 'Mi Cuenta'
     }, 
 
 };

@@ -12,7 +12,13 @@
               <v-col cols="2" sm="4"></v-col>
               <v-col cols="8" sm="4" class="">
                 <img :src="avatar" class="avatar d-flex justify-center" />
-                <v-btn color="success" small block class="mt-1 mb-5" @click="changeTrigger()">
+                <v-btn
+                  color="success"
+                  small
+                  block
+                  class="mt-1 mb-5"
+                  @click="changeTrigger()"
+                >
                   Cambiar Imagen</v-btn
                 >
                 <div class="text-muted">{{ message }}</div>
@@ -69,59 +75,8 @@
                       v-model="editedItem.username"
                       label="Nombre de usuario"
                       :rules="ruleRequired"
-                       :disabled="notvalid"                                            
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      v-if="!$route.params.id"
-                      type="password"
-                      outlined
-                      v-model="editedItem.password"
-                      label="Contraseña"
-                      :rules="rulePass"
-                      @change="setRule()"
-                    ></v-text-field>
-                    <v-text-field
-                      v-else
-                      type="password"
-                      outlined
-                      v-model="editedItem.password"
-                      label="Contraseña"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      v-if="!$route.params.id"
-                      type="password"
-                      outlined
-                      v-model="editedItem.passwordVerify"
-                      label="Verificar Contraseña"
-                      :rules="ruleVePass"
-                    ></v-text-field>
-                    <v-text-field
-                      v-else
-                      type="password"
-                      outlined
-                      v-model="editedItem.passwordVerify"
-                      label="Verificar Contraseña"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="5" md="5">
-                    <v-select
-                      :items="SelectRol.items"
-                      label="Rol"
-                      outlined
-                      item-text="nombreRol"
-                      item-value="idRol"
-                      v-model.number="editedItem.idRol"
-                      :rules="ruleRequired"
-                      single-line
                       :disabled="notvalid"
-                    ></v-select>
+                    ></v-text-field>
                   </v-col>
 
                   <v-col cols="12" sm="4" md="4">
@@ -131,7 +86,6 @@
                       label="Telefono"
                       v-mask="'####-####'"
                       :rules="rulePhoneS"
-                      
                     ></v-text-field>
                   </v-col>
 
@@ -142,7 +96,6 @@
                       label="Edad"
                       :rules="ruleAge"
                       v-mask="'##'"
-                      
                     ></v-text-field>
                   </v-col>
 
@@ -153,7 +106,6 @@
                       v-model="editedItem.direccion"
                       label="Dirección"
                       :rules="ruleRequired"
-                      
                     ></v-textarea>
                   </v-col>
 
@@ -162,10 +114,7 @@
                       x-large
                       block
                       depressed
-                      :disabled="
-                        !isFormValid ||
-                        editedItem.password !== editedItem.passwordVerify
-                      "
+                      :disabled="!isFormValid"
                       color="primary"
                       @click="save"
                     >
@@ -183,36 +132,32 @@
 </template>
 
 <script>
-import ManagerLayout from "../../layout/ManagerLayout.vue";
-import { Rules } from "../../helpers/rules";
-import { toastMessage } from "../../helpers/messages";
+import ManagerLayout from "../layout/ManagerLayout.vue";
+import { Rules } from "../helpers/rules";
+import { toastMessage } from "../helpers/messages";
 
 export default {
-  name: "Account",
+  name: "MyAccount",
 
   components: {
     ManagerLayout,
   },
   mounted() {
-    const { id } = this.$route.params;
+    // console.log(this.$store.getters.user);
 
-    if (id) {
-      this.$services.manager
-        .getEmployee(id)
-        .then((response) => {
-          this.editedItem = response.data.employee;
-          this.editedItem.password = "";
-          this.editedItem.passwordVerify = "";
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-
-    this.$services.manager
-      .getRoles()
+    this.$services.shareds
+      .getEmployee(this.$store.getters.user.idEmpleado)
       .then((response) => {
-        this.SelectRol = response.data.collection;
+        if (response.data.ok) {
+          const employee = response.data.employee;
+          this.editedItem.nombre = employee.nombre;
+          this.editedItem.apellido = employee.apellido;
+          this.editedItem.username = employee.username;
+          this.editedItem.edad = employee.edad;
+          this.editedItem.telefono = employee.telefono;
+          this.editedItem.direccion = employee.direccion;
+          this.editedItem.email = employee.email;
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -224,24 +169,16 @@ export default {
     editedItem: {
       nombre: "",
       apellido: "",
-      idRol: "",
       username: "",
-      password: "",
-      passwordVerify: "",
       edad: "",
       telefono: "",
       direccion: "",
       email: "",
     },
-    SelectRol: {
-      items: [],
-      hasItems: false,
-    },
 
     ruleRequired: Rules.required,
     ruleAge: Rules.integer,
     ruleOnlyAlpha: Rules.alpha,
-    rulePass: Rules.password,
     ruleEmail: Rules.email,
     rulePhoneS: Rules.phonesize,
     ruleVePass: [],
@@ -251,8 +188,8 @@ export default {
 
     notvalid: true,
 
-    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPNbOneenDa9mbmD7tjFZgsWnd1BhhAPA5GUwBvtAm9ANMe-_PN1lQL3W2FSPq7J2iXDU&usqp=CAU",
-    
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPNbOneenDa9mbmD7tjFZgsWnd1BhhAPA5GUwBvtAm9ANMe-_PN1lQL3W2FSPq7J2iXDU&usqp=CAU",
   }),
 
   //created(){
@@ -283,69 +220,36 @@ export default {
 
     //************************************************************** */
 
-    setRule() {
-      this.ruleVePass = Rules.verificarpass(this.editedItem.password);
-      // console.log(this.editedItem.password);
-    },
-
     save() {
-      if (!this.$route.params.id) {
-        const { passwordVerify, ...props } = this.editedItem;
+      const { ...props } = this.editedItem;
 
-        const employee = { ...props };
+      const employee = { ...props };
 
-        employee.idComercial = this.$store.getters.user.idComercial;
+      employee.idComercial = this.$store.getters.user.idComercial;
 
-        this.$services.manager
-          .createEmployee(employee)
-          .then((response) => {
-            if (response.data.ok) {
-              toastMessage(
-                "success",
-                "Exito",
-                "Se creo el empleado correctamente"
-              );
+      return console.log(employee);
 
-              this.$router.push("/manager/employees");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            toastMessage("error", "Error :(", "No se pudo crear el empleado");
-          });
-      } else {
-        const { passwordVerify, role, ...props } = this.editedItem;
-
-        const employee = { ...props };
-
-        employee.idComercial = this.$store.getters.user.idComercial;
-
-        if (employee.password.trim() === "") {
-          delete employee.password;
-        }
-
-        this.$services.manager
-          .updateEmployee(this.$route.params.id, employee)
-          .then((response) => {
-            if (response.data.ok) {
-              toastMessage(
-                "success",
-                "Exito",
-                "Se actualizo el empleado correctamente"
-              );
-
-              this.$router.push("/manager/employees");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
+      this.$services.manager
+        .updateEmployee(this.$route.params.id, employee)
+        .then((response) => {
+          if (response.data.ok) {
             toastMessage(
-              "error",
-              "Error :(",
-              "No se pudo actualizar el empleado"
+              "success",
+              "Exito",
+              "Se actualizo el empleado correctamente"
             );
-          });
-      }
+
+            this.$router.push("/manager/employees");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toastMessage(
+            "error",
+            "Error :(",
+            "No se pudo actualizar el empleado"
+          );
+        });
     },
   },
 };

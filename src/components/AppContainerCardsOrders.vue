@@ -42,7 +42,7 @@ export default {
     },
   }),
   mounted() {
-    this.$services.shareds.getOrdersUndone().then((response) => {
+    this.$services.shareds.getOrders().then((response) => {
       if (response.data.ok) {
         this.orders = response.data.collection;
       }
@@ -68,9 +68,7 @@ export default {
         .changeStateOrder(id)
         .then((response) => {
           if (response.data.ok) {
-            if (response.data.isCashier) {
-              this.$services.socketioService.deliveryOrder(response.data.order);
-            } else {
+            if (!response.data.isCashier) {
               this.$services.socketioService.doneOrder(response.data.order);
             }
 
@@ -93,26 +91,14 @@ export default {
     },
 
     paymentOrder(id) {
-      this.$services.shareds
-        .changeStateOrder(id)
-        .then((response) => {
-          if (response.data.ok) {
-            this.orders.items = this.orders.items.filter(
-              (order) => order.idOrden !== id
-            );
-
-            toastMessage(
-              "success",
-              "Exito",
-              "Se realizo la orden correctamente"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-
-          toastMessage("error", "Error :(", "No se pudo realizar la orden");
-        });
+      this.orders.items = this.orders.items.filter(
+        (order) => order.idOrden !== id
+      );
+      toastMessage(
+        "success",
+        "Exito",
+        "El pago de la orden se realizo correctamente"
+      );
     },
     deliveryOrder(id) {
       this.$services.shareds
@@ -127,7 +113,7 @@ export default {
             toastMessage(
               "success",
               "Exito",
-              "Se realizo la orden correctamente"
+              "Se entrego la orden correctamente"
             );
           }
         })

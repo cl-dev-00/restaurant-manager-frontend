@@ -163,7 +163,7 @@ export default {
     const { id } = this.$route.params;
 
     if (id) {
-      this.$services.manager
+      this.$services.shareds
         .getEmployee(id)
         .then((response) => {
           this.editedItem = response.data.employee;

@@ -18,7 +18,7 @@
             <span><v-icon color="black" size="32">mdi-history</v-icon></span>
             Historial de Arqueo de Caja
           </h2>
-          <cash-history />
+          <orders-cash-history :cashRegisters="cashRegisters" />
         </v-row>
       </v-col>
 
@@ -42,16 +42,20 @@
         <v-row :class="estado === 'Cerrada' ? 'd-none' : ''">
           <v-col cols="4">
             Efectivo: <br />
-            <span class="font-weight-bold text-body-1">${{ efectivo }}</span>
+            <span class="font-weight-bold text-body-1"
+              >${{ efectivo.toFixed(2) }}</span
+            >
           </v-col>
           <v-col cols="4">
             Tarjetas de Crédito: <br />
-            <span class="font-weight-bold text-body-1">${{ credito }}</span>
+            <span class="font-weight-bold text-body-1"
+              >${{ credito.toFixed(2) }}</span
+            >
           </v-col>
           <v-col cols="4">
             Retiros: <br />
             <span class="font-weight-bold text-body-1 red--text"
-              >${{ retiros }}</span
+              >${{ retiros.toFixed(2) }}</span
             >
           </v-col>
 
@@ -88,10 +92,15 @@
           <v-col cols="12">
             <v-window v-model="step">
               <v-window-item :value="0">
-                <table-cash-orders />
+                <orders-table-cash-orders @totalOrdersEmit="changeCash" />
               </v-window-item>
               <v-window-item :value="1">
-                <table-cash-actions />
+                <orders-table-cash-actions
+                  @changeExpensesEmit="changeExpenses"
+                  @newBoxActionEmit="newBoxAction"
+                  :idCashRegister="IdCashRegister"
+                  :boxActions="BoxActions"
+                />
               </v-window-item>
             </v-window>
           </v-col>
@@ -135,7 +144,7 @@
                         <h3>Informe de saldo final en caja</h3>
                         <v-text-field
                           prepend-inner-icon="mdi-currency-usd"
-                          v-model="dinerofisico"
+                          v-model.number="dinerofisico"
                           outlined
                           dense
                           type="number"
@@ -145,12 +154,12 @@
                       <v-col cols="12">
                         <h3>Saldo totalizado en el sistema</h3>
                         <h4 class="font-weight-bold">
-                          $ {{ saldodelsistema }}
+                          $ {{ saldodelsistema.toFixed(2) }}
                         </h4>
                       </v-col>
                       <v-col cols="12">
                         <h3>Diferencia de saldo (faltante)</h3>
-                        <h4 class="font-weight-bold">$ {{ diferencia }}</h4>
+                        <h4 class="font-weight-bold">$ {{ diferencia.toFixed(2) }}</h4>
                       </v-col>
                       <v-col cols="12">
                         <h3>Detalles y Obsevaciones</h3>
@@ -215,7 +224,7 @@
                     <v-row>
                       <v-col cols="12" sm="8" md="8">
                         <v-text-field
-                          v-model="monto"
+                          v-model.number="monto"
                           label="Monto"
                           prepend-inner-icon="mdi-currency-usd"
                           single-line
@@ -256,22 +265,90 @@
 
 <script >
 import { Rules } from "../helpers/rules.js";
-import TableCashOrders from "../components/TableCashOrders.vue";
-import TableCashActions from "../components/TableCashActions.vue";
-import CashHistory from "../components/CashHistory.vue";
+import OrdersTableCashOrders from "./OrdersTableCashOrders.vue";
+import OrdersTableCashActions from "./OrdersTableCashActions.vue";
+import OrdersCashHistory from "./OrdersCashHistory.vue";
+
+import { toastMessage } from "../helpers/messages";
 
 export default {
   name: "CashRegister",
   components: {
-    TableCashOrders,
-    TableCashActions,
-    CashHistory,
+    OrdersTableCashOrders,
+    OrdersTableCashActions,
+    OrdersCashHistory,
+  },
+  mounted() {
+    this.$services.orders
+      .getCashRegister()
+      .then((response) => {
+        if (response.data.ok) {
+
+          if(!response.data.cashRegister) {
+            return;
+          }
+
+          this.estado = "Abierta";
+          this.dialogCaja = false;
+          this.idCashRegister = response.data.cashRegister.idCashRegister;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    this.$services.orders
+      .getBoxActions()
+      .then((response) => {
+        if (response.data.ok) {
+          this.boxActions = response.data.collection;
+
+          this.boxActions.items = this.boxActions.items.map(
+            ({ isInput, fecha, ...props }) => ({
+              ...props,
+              isInput,
+              tipo: isInput ? "Ingreso" : "Gasto",
+              fecha: fecha.slice(0, 19).replace("T", " "),
+            })
+          );
+
+          const expenses = this.boxActions.items.filter(
+            (boxAction) => !boxAction.isInput
+          );
+
+          const totales = expenses.reduce(
+            (acc, boxAction) => boxAction.monto + acc,
+            0
+          );
+
+          this.retiros = totales;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toastMessage(
+          "error",
+          "Error :(",
+          "No se pudieron cargar las acciones registradas"
+        );
+      });
+
+    this.$services.orders
+      .getCashRegisters()
+      .then((response) => {
+        if (response.data.ok) {
+          this.cashRegisters = response.data.collection;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   data: () => ({
     estado: "Cerrada", //Abierta, Cerrada
-    efectivo: "200.00",
-    credito: "70.25",
-    retiros: "80.00",
+    efectivo: 0,
+    credito: 0,
+    retiros: 0,
     step: 0,
     dialog: false,
     accionEnable: false,
@@ -280,17 +357,42 @@ export default {
     cerrar: false,
     dinerofisico: "",
     descripcion: "",
-    diferencia: "00.00",
-    saldodelsistema: "00.00",
+    diferencia: 0,
+    saldodelsistema: 0,
     dialogCaja: false,
     cerrarEnable: false,
 
     verhistorial: false,
+    idCashRegister: -1,
+    boxActions: {
+      items: [],
+      hasItems: false,
+    },
+    cashRegisters: {
+      hasItems: false,
+      items: [],
+    },
   }),
 
-  computed: {},
+  computed: {
+    IdCashRegister() {
+      return this.idCashRegister;
+    },
+    BoxActions() {
+      return this.boxActions;
+    },
+    CashRegisters() {
+      return this.cashRegisters;
+    },
+  },
   watch: {
-     dialog(val) {
+    dinerofisico(value) {
+        const saldo_final = this.efectivo + this.credito - this.retiros;
+        
+        this.saldodelsistema = saldo_final;
+        this.diferencia = saldo_final - value;
+    },
+    dialog(val) {
       val || this.close();
     },
     dialogCaja(val) {
@@ -299,46 +401,128 @@ export default {
   },
 
   methods: {
+    changeCash(cantidad) {
+      this.efectivo += parseFloat(cantidad);
+    },
+
+    changeExpenses(cantidad) {
+      this.retiros += parseFloat(cantidad);
+    },
+
+    newBoxAction(boxAction) {
+      this.boxActions.items = [...this.boxActions.items, { ...boxAction }];
+    },
+
     historial() {
-      if (this.verhistorial === false) {
-        this.verhistorial = true;
-      } else {
-        this.verhistorial = false;
-      }
+      this.verhistorial = !this.verhistorial;
     },
     close() {
       this.dialog = false;
     },
     save() {
-      /*
-     if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        var currentDate = new Date();
-        this.editedItem.fecha = this.getFechaHora();
-        this.desserts.push(this.editedItem);
-      }
-      */
-      this.estado = "Abierta";
-      this.dialogCaja = false;
-      this.close();
+      const dateFull = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")
+        .split(" ");
+      const fecha = dateFull[0];
+      const hora_inicio = dateFull[1];
+
+      const { idComercial } = this.$store.getters.user;
+
+      this.$services.orders
+        .createCashRegister({
+          idComercial,
+          fecha,
+          hora_inicio,
+          saldo_inicial: this.monto,
+        })
+        .then((response) => {
+          if (response.data.ok) {
+            this.idCashRegister = response.data.cashRegister.idCashRegister;
+            this.estado = "Abierta";
+            this.dialogCaja = false;
+            this.close();
+
+            toastMessage(
+              "success",
+              "Exito",
+              "Se abrio el arqueo de caja correctamente"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toastMessage(
+            "error",
+            "Error :(",
+            "No se pudo abrir el arqueo de caja"
+          );
+        });
     },
 
     closeCierre() {
       this.dialogCaja = false;
     },
     cerrarCaja() {
-      this.dialog = false;
-      this.estado = "Cerrada";
-      this.close();
+      const saldo_final = this.efectivo + this.credito - this.retiros;
+      const dateFull = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")
+        .split(" ");
+
+      const hora_final = dateFull[1];
+
+      const cashRegister = {
+        estado: false,
+        efectivo: this.efectivo,
+        saldo_final,
+        dinero_real: this.dinerofisico,
+        faltante: saldo_final - this.dinerofisico,
+        hora_final,
+      };
+
+      this.$services.orders
+        .updateCashRegister(this.idCashRegister, cashRegister)
+        .then((response) => {
+          if (response.data.ok) {
+            this.cashRegisters.items = [
+              ...this.cashRegisters.items,
+              response.data.cashRegister,
+            ];
+
+            this.estado = "Cerrada";
+            this.efectivo = 0;
+            this.dinerofisico = 0;
+            this.retiros = 0;
+            this.credito = 0;
+            this.idCashRegister = -1;
+            this.close();
+
+            toastMessage(
+              "success",
+              "Exito",
+              "Se cerro el arqueo de caja correctamente"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toastMessage(
+            "error",
+            "Error :(",
+            "No se pudo cerrar el arqueo de caja"
+          );
+        });
     },
     getFechaHora() {
-      var currentDate = new Date();
+      let currentDate = new Date();
       return currentDate.toLocaleString();
     },
     getFecha() {
-      var currentDate = new Date();
-      var dias = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
+      let currentDate = new Date();
+      let dias = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
       return (
         dias[currentDate.getDay()] +
         " " +
