@@ -356,8 +356,12 @@ export default {
           importe: this.cashAmount,
         };
         this.createOrder(order);
+
+
       } else if (typeof this.changeState === "function") {
         this.changeState(this.cashAmount);
+
+
       }
     },
 

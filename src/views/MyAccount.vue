@@ -1,5 +1,4 @@
 <template>
-  <manager-layout>
     <v-row class="fill-height justify-center align-center">
       <v-col>
         <v-card>
@@ -129,12 +128,11 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
-  </manager-layout>
+    </v-row> 
 </template>
 
 <script>
-import ManagerLayout from "../layout/ManagerLayout.vue";
+
 import { Rules } from "../helpers/rules";
 import { toastMessage } from "../helpers/messages";
 
@@ -142,7 +140,6 @@ export default {
   name: "MyAccount",
 
   components: {
-    ManagerLayout,
   },
   mounted() {
     // console.log(this.$store.getters.user);
