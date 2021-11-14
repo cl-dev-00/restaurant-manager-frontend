@@ -8,9 +8,9 @@
     <v-row class="ma-1">
       <v-card-text>
         <!-- ITEMS SELECCIONADOS -->
-        <v-row class="overflow-x-auto " align="center" justify="center">
+        <v-row class="overflow-x-auto" align="center" justify="center">
           <v-col cols="12" sm="10" md="8" class="pa-5 grey lighten-3">
-            <h3>Items: </h3>
+            <h3>Items:</h3>
             <v-list class="grey lighten-3">
               <template v-for="item in order.order_details">
                 <v-list-item :key="item.OrderDetial">
@@ -24,6 +24,7 @@
                   <!-- Titulo -->
                   <v-list-item-content >
                     <v-list-item-title
+                      :v-if="order.order_details[0].menu_item === undefined"
                       style="
                         white-space: normal;
                         word-wrap: break-word;
@@ -31,11 +32,10 @@
                         font-weight: bold;
                       "
                     >
-                      {{ item.nombre_item }}
+                      {{ item.menu_item.nombre_item }}
                     </v-list-item-title>
+                    
                   </v-list-item-content>
-
-
 
                   <!-- SubTotal -->
                   <v-list-item-action>
@@ -44,6 +44,7 @@
                 </v-list-item>
               </template>
             </v-list>
+
           </v-col>
         </v-row>
         <v-row class="justify-center ma-2 pa-5">
@@ -255,14 +256,13 @@ export default {
     changeState: {
       type: Function,
     },
-    
   },
   data() {
     return {
       empleado: "",
       mesa: "",
 
-      form:true, //true Form, false Card
+      form: true, //true Form, false Card
 
       btnPayEnable: false,
       btnPayEnableCash: false,
@@ -305,20 +305,21 @@ export default {
       cashName: "",
       cashAmount: "",
       cashBack: "",
+      card: null,
     };
   },
   created() {
     this.setRule();
-    console.log(this.order); 
-  },
-  mounted(){
-
-    if(this.deDonde ==="from"){
-      this.form = true; 
-    }else{
-      this.form = false; 
+    console.log(this.order);
+    if (this.order.order_details[0].menu_item !== undefined) {
+      console - console.log(" De card");
+      this.card = true;
+    } else {
+      console - console.log(" De form");
+      this.card = false;
     }
-  }, 
+  },
+  
   watch: {
     cashAmount: {
       handler: function (value, oldVal) {
@@ -331,18 +332,17 @@ export default {
   },
   methods: {
     a() {
-     
-     if(this.order.idMesa===null){
-       this.mesa = "Para Llevar"
-     }else{
-       this.mesa = this.order.idMesa; 
-     }
+      if (this.order.idMesa === null) {
+        this.mesa = "Para Llevar";
+      } else {
+        this.mesa = this.order.idMesa;
+      }
       print(
         this.order.nombreEmpleado,
         this.mesa,
         this.subTotal,
         this.impuestos,
-        this.total, 
+        this.total,
         this.order.order_details
       );
     },
@@ -356,12 +356,8 @@ export default {
           importe: this.cashAmount,
         };
         this.createOrder(order);
-
-
       } else if (typeof this.changeState === "function") {
         this.changeState(this.cashAmount);
-
-
       }
     },
 

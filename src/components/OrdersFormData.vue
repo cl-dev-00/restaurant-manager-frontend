@@ -429,7 +429,7 @@ export default {
         idMesa: this.mesaSelect,
         order_details,
       };
-
+      
       return order;
     },
     rulesText,

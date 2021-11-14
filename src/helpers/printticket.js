@@ -1,7 +1,6 @@
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 
-
 export function print(empleado, mesa, subtotal, impuestos, total, items) {
 
     var body = [];
@@ -60,11 +59,8 @@ export function print(empleado, mesa, subtotal, impuestos, total, items) {
 
 
     doc.text(3, fila += 10, " ***  Gracias por su visita   ***");
-
-
-
+    
     window.open(URL.createObjectURL(doc.output("blob")))
-
 
 
     //doc.output('/ticket');
