@@ -2,37 +2,28 @@ import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 
 
-export function print(empleado, mesa, subtotal, impuestos, total, items) {
+export function printTicket(empleado, mesa, subtotal, impuestos, total, items, comercial) {
 
-    var body = [];
+    const body = items.map(({ menu_item, importe, ...props }) => ({
+        ...props,
+        nombre: menu_item.nombre_item,
+        importe: importe.toFixed(2)
+    }));
 
-    Object.keys(items).forEach(i => {
-        let cantidad = items[i].cantidad;
-        let nombre = items[i].nombre_item;
-        let importe = parseFloat(items[i].importe).toFixed(2);
-        //  console.log("Item: " + cantidad + " | " + nombre + " | " + importe);
-        body.push({
-            cant: cantidad,
-            nom: nombre,
-            imp: importe
-        });
-    });
+    const espacio = body.length;
 
-    let espacio = Object.keys(body).length; 
-    
-    
-    const doc = new jsPDF("p", "mm", [80, 100+(espacio*9)]);
-    
-    var fila = 0;
+    const doc = new jsPDF("p", "mm", [80, 100 + (espacio * 9)]);
+
+    let fila = 0;
     doc.setFont("courier", "bold");
     doc.setFontSize(14);
     doc.text(17, fila += 10, "POS Restaurante");
 
     doc.setFont("courier", "normal");
     doc.setFontSize(10);
-    doc.text(3, fila += 7, "Alameda Roosevelt, Centro Comercial ");
-    doc.text(8, fila += 4, "Granada S.S RBD SALVADOR MUNDO");
-    doc.text(24, fila += 4, "Tel: 1234-5678");
+    doc.text(3, fila += 7, comercial.nombre);
+    doc.text(8, fila += 4, comercial.ubicacion);
+    doc.text(24, fila += 4, "Tel: " + comercial.telefono);
 
     doc.text(3, fila += 8, "Atendido por: " + empleado);
     doc.text(3, fila += 4, "Mesa: " + mesa);
@@ -43,14 +34,14 @@ export function print(empleado, mesa, subtotal, impuestos, total, items) {
         theme: 'plain',
         styles: { font: 'courier' },
         rowPageBreak: 'auto',
-        margin: { top: 5, right: 3, left: 3, bottom: 10},
+        margin: { top: 5, right: 3, left: 3, bottom: 10 },
         startY: 42,
-        head: [{ cant: 'Cant.', nom:'Item', imp:'Importe'},],
-        body: body,
-    }); 
-    
-    fila += (espacio+1)*9; 
-    
+        head: [{ cantidad: 'Cant.', nombre: 'Item', importe: 'Importe' },],
+        body,
+    });
+
+    fila += (espacio + 1) * 9;
+
     doc.text(3, fila += 4, "----------------------------------");
     doc.text(3, fila += 8, "Sub Total:               $" + parseFloat(subtotal).toFixed(2));
     doc.text(3, fila += 4, "Impuestos:               $" + parseFloat(impuestos).toFixed(2));
@@ -61,13 +52,5 @@ export function print(empleado, mesa, subtotal, impuestos, total, items) {
 
     doc.text(3, fila += 10, " ***  Gracias por su visita   ***");
 
-
-
-    window.open(URL.createObjectURL(doc.output("blob")))
-
-
-
-    //doc.output('/ticket');
-    // doc.save("a5.pdf");
-
+    return doc.output('bloburl');
 }

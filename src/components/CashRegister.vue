@@ -159,7 +159,9 @@
                       </v-col>
                       <v-col cols="12">
                         <h3>Diferencia de saldo (faltante)</h3>
-                        <h4 class="font-weight-bold">$ {{ diferencia.toFixed(2) }}</h4>
+                        <h4 class="font-weight-bold">
+                          $ {{ diferencia.toFixed(2) }}
+                        </h4>
                       </v-col>
                       <v-col cols="12">
                         <h3>Detalles y Obsevaciones</h3>
@@ -283,61 +285,16 @@ export default {
       .getCashRegister()
       .then((response) => {
         if (response.data.ok) {
-
-          if(!response.data.cashRegister) {
+          if (!response.data.cashRegister) {
             return;
           }
+
+          this.getOrders();
+          this.getCashRegisters();
 
           this.estado = "Abierta";
           this.dialogCaja = false;
           this.idCashRegister = response.data.cashRegister.idCashRegister;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    this.$services.orders
-      .getBoxActions()
-      .then((response) => {
-        if (response.data.ok) {
-          this.boxActions = response.data.collection;
-
-          this.boxActions.items = this.boxActions.items.map(
-            ({ isInput, fecha, ...props }) => ({
-              ...props,
-              isInput,
-              tipo: isInput ? "Ingreso" : "Gasto",
-              fecha: fecha.slice(0, 19).replace("T", " "),
-            })
-          );
-
-          const expenses = this.boxActions.items.filter(
-            (boxAction) => !boxAction.isInput
-          );
-
-          const totales = expenses.reduce(
-            (acc, boxAction) => boxAction.monto + acc,
-            0
-          );
-
-          this.retiros = totales;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toastMessage(
-          "error",
-          "Error :(",
-          "No se pudieron cargar las acciones registradas"
-        );
-      });
-
-    this.$services.orders
-      .getCashRegisters()
-      .then((response) => {
-        if (response.data.ok) {
-          this.cashRegisters = response.data.collection;
         }
       })
       .catch((error) => {
@@ -387,10 +344,10 @@ export default {
   },
   watch: {
     dinerofisico(value) {
-        const saldo_final = this.efectivo + this.credito - this.retiros;
-        
-        this.saldodelsistema = saldo_final;
-        this.diferencia = saldo_final - value;
+      const saldo_final = this.efectivo + this.credito - this.retiros;
+
+      this.saldodelsistema = saldo_final;
+      this.diferencia = saldo_final - value;
     },
     dialog(val) {
       val || this.close();
@@ -401,6 +358,57 @@ export default {
   },
 
   methods: {
+    getOrders() {
+      this.$services.orders
+        .getBoxActions()
+        .then((response) => {
+          if (response.data.ok) {
+            this.boxActions = response.data.collection;
+
+            this.boxActions.items = this.boxActions.items.map(
+              ({ isInput, fecha, ...props }) => ({
+                ...props,
+                isInput,
+                tipo: isInput ? "Ingreso" : "Gasto",
+                fecha: fecha.slice(0, 19).replace("T", " "),
+              })
+            );
+
+            const expenses = this.boxActions.items.filter(
+              (boxAction) => !boxAction.isInput
+            );
+
+            const totales = expenses.reduce(
+              (acc, boxAction) => boxAction.monto + acc,
+              0
+            );
+
+            this.retiros = totales;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toastMessage(
+            "error",
+            "Error :(",
+            "No se pudieron cargar las acciones registradas"
+          );
+        });
+    },
+
+    getCashRegisters() {
+      this.$services.orders
+        .getCashRegisters()
+        .then((response) => {
+          if (response.data.ok) {
+            this.cashRegisters = response.data.collection;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
     changeCash(cantidad) {
       this.efectivo += parseFloat(cantidad);
     },

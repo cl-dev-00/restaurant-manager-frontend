@@ -220,7 +220,6 @@
            
           </v-window> -->
         </v-row>
-        <v-btn x-large @click="a()"> pdf</v-btn>
       </v-card-text>
     </v-row>
   </v-card>
@@ -228,7 +227,6 @@
 
 <script>
 import { Rules } from "../helpers/rules.js";
-import { print } from "../helpers/printticket";
 
 export default {
   name: "OrdersFormPay",
@@ -309,7 +307,6 @@ export default {
   },
   created() {
     this.setRule();
-    console.log(this.order); 
   },
   mounted(){
 
@@ -326,26 +323,9 @@ export default {
         this.cashBack =
           amount >= 0 ? amount.toFixed(2) : (amount * -1).toFixed(2);
       },
-      // return console.log(amount)
     },
   },
   methods: {
-    a() {
-     
-     if(this.order.idMesa===null){
-       this.mesa = "Para Llevar"
-     }else{
-       this.mesa = this.order.idMesa; 
-     }
-      print(
-        this.order.nombreEmpleado,
-        this.mesa,
-        this.subTotal,
-        this.impuestos,
-        this.total, 
-        this.order.order_details
-      );
-    },
     setRule() {
       this.ruleTest = Rules.test(this.total);
     },

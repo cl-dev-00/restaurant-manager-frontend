@@ -30,7 +30,7 @@
 <script>
 import OrdersCreateOrEdit from "../../components/OrdersCreateOrEdit.vue";
 import equalObjet from "../../helpers/equal-objet";
-import { toastMessage } from '../../helpers/messages';
+import { toastMessage } from "../../helpers/messages";
 
 export default {
   name: "OrderEdit",
@@ -45,7 +45,7 @@ export default {
     }
 
     this.dialog = true;
-    this.$store.dispatch('setIsValidEditFormAction', false);
+    this.$store.dispatch("setIsValidEditFormAction", false);
 
     this.$store.dispatch("itemsMenuSelectAction", []);
     this.$store.dispatch("setItemsMenuSelectEditAction", []);
@@ -201,8 +201,18 @@ export default {
         })
       );
 
+
+      const subTotal = newMenuItems.reduce( (acc, item) => acc + item.precio * item.cantidad, 0) + 
+      itemsMenuEdit.reduce( (acc, item) => acc + item.precio * item.cantidad, 0);
+
+      const impuestos = newMenuItems.reduce((acc, item) => acc + item.cantidad * (item.precio * 0.13), 0) +
+      itemsMenuEdit.reduce((acc, item) => acc + item.cantidad * (item.precio * 0.13), 0);
+      
+      const total = subTotal + impuestos;
+
       orderUpdate = {
         ...orderUpdate,
+        total,
         newMenuItems,
         itemsMenuEdit,
         itemsMenuRemove,
@@ -224,13 +234,17 @@ export default {
               idMesa: null,
             });
 
-            toastMessage('success', 'Exito', 'Se actualizo la orden correctamente');  
+            toastMessage(
+              "success",
+              "Exito",
+              "Se actualizo la orden correctamente"
+            );
 
             this.$router.push("/orders");
           }
         })
         .catch((error) => {
-          toastMessage('error', 'Error :(', 'No se pudo actualizar la orden');
+          toastMessage("error", "Error :(", "No se pudo actualizar la orden");
           console.log(error);
         });
     },

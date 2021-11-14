@@ -93,7 +93,7 @@ export default {
 
             this.$store.dispatch("setUserAction", employee);
             this.$store.dispatch("setLoginSignAction", true);
-            console.log();
+            
             switch (this.$store.getters.user.role.user_level.nivel_usuario) {
               case 2:
                 this.$router.push("/manager");

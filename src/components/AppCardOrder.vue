@@ -117,7 +117,6 @@
                 :total="total"
                 :subTotal="subTotal"
                 :impuestos="impuestos"
-               
               />
             </v-col>
           </v-row>
@@ -225,20 +224,18 @@
 </template>
 
 <script>
-
-import OrdersFormPay from '../components/OrdersFormPay.vue';
+import OrdersFormPay from "../components/OrdersFormPay.vue";
 
 export default {
   name: "AppCardOrder",
   components: {
-    OrdersFormPay
+    OrdersFormPay,
   },
   data() {
     return {
       color: "black",
       selected: [],
       dialog: false,
-      
     };
   },
   mounted() {
@@ -296,9 +293,9 @@ export default {
         .toFixed(2);
     },
     total() {
-      return (
-        parseFloat(this.subTotal) + parseFloat(this.impuestos)
-      ).toFixed(2);
+      return (parseFloat(this.subTotal) + parseFloat(this.impuestos)).toFixed(
+        2
+      );
     },
   },
   methods: {
@@ -309,11 +306,10 @@ export default {
     paymentOrderEmit(importe) {
       // this.toggleClass();
       this.$services.shareds
-        .changeStateOrder(this.order.idOrden, this.total, importe)
+        .changeStateOrder(this.order.idOrden, importe)
         .then((response) => {
           if (response.data.ok) {
-            this.$services.socketioService.paidoutOrder(response.data.order);
-            this.$emit("paymentOrderEmit", this.order.idOrden);
+            this.$emit("paymentOrderEmit", this.order.idOrden, response.data.order);
           }
         })
         .catch((error) => {
