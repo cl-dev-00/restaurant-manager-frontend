@@ -524,12 +524,8 @@ export default {
 
 
     pdf(emp, m){
-
       
-       print(emp, m);
-     
-    
-      
+       print( emp, m);
     },
 
     increment(cantidad, index) {

@@ -1,11 +1,6 @@
 import { jsPDF } from "jspdf";
 
-var img = new Image()
-img.src = '../assets/logo.jpeg'
-img.width = 60; 
-img.height = 25; 
-
-export function print( empleado, mesa) {
+export function print(empleado, mesa) {
         
   const doc = new jsPDF("p", "mm", [80, 130]);
 
@@ -37,12 +32,6 @@ export function print( empleado, mesa) {
 
   
   doc.text(3, 90, " ***  Gracias por su visita   ***");
-
-  doc.addImage(img, 'JPEG', 3, 100, 180, 160);
-
-  console.log(img); 
-
-
 
   window.open(URL.createObjectURL(doc.output("blob")))
 
