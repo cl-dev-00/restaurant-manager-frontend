@@ -298,6 +298,7 @@
                     :total="total"
                     :subTotal="subTotal"
                     :impuestos="impuestos"
+                    
                   />
                 </v-col>
               </v-row>
@@ -318,8 +319,7 @@
         </v-col>
       </v-row>
     </v-form>
-     <v-btn @click="pdf(empleado, mesa)" x-large>pdf</v-btn>
-    
+         
   </v-col>
 </template>
 
@@ -399,9 +399,9 @@ export default {
       mesaSelect: null,
       nombre_valido: false,
       isEdit: false,
+     
 
-      empleado: "Chele Pajero",
-      mesa: "19",
+     
     };
   },
   watch: {
@@ -425,6 +425,7 @@ export default {
         fechaOrden: new Date().toJSON().slice(0, 19).replace("T", " "),
         idComercial,
         idEmpleado: this.$store.getters.user.idEmpleado,
+        nombreEmpleado: this.$store.getters.user.nombre, 
         idMesa: this.mesaSelect,
         order_details,
       };
@@ -604,6 +605,7 @@ export default {
         ...this.Order,
         importe: 0,
       });
+      
     },
 
     createOrder(order) {

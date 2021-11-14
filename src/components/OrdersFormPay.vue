@@ -1,16 +1,17 @@
 <template>
   <v-card class="ma-3" elevation="10">
     <v-card-title class="pt-8">
-      Cancelar orden de
+      Pagar orden de
       <span class="red--text ml-2">{{ order.nombreCliente }}</span>
       <br />
     </v-card-title>
     <v-row class="ma-1">
       <v-card-text>
         <!-- ITEMS SELECCIONADOS -->
-        <v-row class="overflow-x-auto">
-          <v-col cols="12">
-            <v-list height="">
+        <v-row class="overflow-x-auto " align="center" justify="center">
+          <v-col cols="12" sm="10" md="8" class="pa-5 grey lighten-3">
+            <h3>Items: </h3>
+            <v-list class="grey lighten-3">
               <template v-for="item in order.order_details">
                 <v-list-item :key="item.OrderDetial">
                   <!-- Cantidad -->
@@ -21,7 +22,7 @@
                   </v-list-item-action>
 
                   <!-- Titulo -->
-                  <v-list-item-content>
+                  <v-list-item-content >
                     <v-list-item-title
                       style="
                         white-space: normal;
@@ -34,6 +35,8 @@
                     </v-list-item-title>
                   </v-list-item-content>
 
+
+
                   <!-- SubTotal -->
                   <v-list-item-action>
                     <span class="font-weight-bold">$ {{ item.importe }}</span>
@@ -43,7 +46,7 @@
             </v-list>
           </v-col>
         </v-row>
-        <v-row class="justify-center ma-2">
+        <v-row class="justify-center ma-2 pa-5">
           <v-col cols="12" sm="6" md="4">
             <h3>Sub Total:</h3>
             <h4>$ {{ subTotal }}</h4>
@@ -58,102 +61,63 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col cols="12">
-            <v-btn-toggle
-              v-model="step"
-              borderless
-              mandatory
-              id="toggle1"
-              class="justify-center mr-0 pr-0 pl-0 ml-0"
-            >
-              <v-btn
-                class="ma-1"
-                :class="this.step === 0 ? 'green--text' : 'grey--text'"
-              >
-                <v-icon
-                  size="28"
-                  class="mr-1"
-                  :class="this.step === 0 ? 'green--text' : 'grey--text'"
-                  >mdi-cash</v-icon
-                >
-                <span class="text-h6 hidden-xs-only">Efectivo</span>
-              </v-btn>
-              <v-btn
-                class="ma-1"
-                :class="this.step === 1 ? 'orange--text' : 'grey--text'"
-              >
-                <v-icon
-                  size="28"
-                  class="mr-1"
-                  :class="this.step === 1 ? 'orange--text' : 'grey--text'"
-                  >mdi-credit-card</v-icon
-                >
-                <span class="text-h6 hidden-xs-only">Tarjeta</span>
-              </v-btn>
-            </v-btn-toggle>
-          </v-col>
-        </v-row>
         <v-row class="align-center justify-center">
-          <v-window v-model="step" class="col-12">
-            <v-window-item :value="0">
-              <v-row class="">
-                <v-form v-model="btnPayEnableCash" class="col-12">
-                  <v-row dense class="ma-0 pa-0">
-                    <v-col cols="12" class="green white--text title py-4 pl-5">
-                      Detalles del Pago en Efectivo <br />
-                    </v-col>
-                  </v-row>
-                  <v-row dense class="ma-0 pa-5">
-                    <v-col cols="12">
-                      <v-subheader class="grey--text text--lighten-1 pl-0"
-                        >IMPORTE REALIZADO</v-subheader
-                      >
-                      <v-text-field
-                        prepend-inner-icon="mdi-currency-usd"
-                        single-line
-                        outlined
-                        :rules="ruleTest"
-                        v-model="cashAmount"
-                        placeholder="##.##"
-                        @keypress.enter="Calculate()"
-                      />
-                    </v-col>
-                    <v-col cols="12">
-                      <p :hidden="!valid" class="red--text">
-                        Monto insuficiente
-                      </p>
-                      <v-subheader class="grey--text text--lighten-1 pl-0"
-                        >CAMBIO</v-subheader
-                      >
-                      <v-text-field
-                        single-line
-                        outlined
-                        v-model="cashBack"
-                        placeholder="##.##"
-                        disabled
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-btn
-                    :disabled="!btnPayEnableCash"
-                    color="green"
-                    class="white--text"
-                    block
-                    x-large
-                    @click="save"
-                  >
-                    <v-icon>mdi-cash-check</v-icon>
-                    <span class="hidden-xs-only ml-1">Pagar</span>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-window-item>
-
+          <v-col cols="12">
+            <v-row class="">
+              <v-form v-model="btnPayEnableCash" class="col-12">
+                <v-row dense class="ma-0 pa-0">
+                  <v-col cols="12" class="green white--text title py-4 pl-5">
+                    Detalles del Pago en Efectivo <br />
+                  </v-col>
+                </v-row>
+                <v-row dense class="ma-0 pa-5">
+                  <v-col cols="12">
+                    <v-subheader class="grey--text text--lighten-1 pl-0"
+                      >IMPORTE REALIZADO</v-subheader
+                    >
+                    <v-text-field
+                      prepend-inner-icon="mdi-currency-usd"
+                      single-line
+                      outlined
+                      :rules="ruleTest"
+                      v-model="cashAmount"
+                      placeholder="##.##"
+                      @keypress.enter="Calculate()"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <p :hidden="!valid" class="red--text">Monto insuficiente</p>
+                    <v-subheader class="grey--text text--lighten-1 pl-0"
+                      >CAMBIO</v-subheader
+                    >
+                    <v-text-field
+                      single-line
+                      outlined
+                      v-model="cashBack"
+                      placeholder="##.##"
+                      disabled
+                    />
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  :disabled="!btnPayEnableCash"
+                  color="green"
+                  class="white--text"
+                  block
+                  x-large
+                  @click="save"
+                >
+                  <v-icon>mdi-cash-check</v-icon>
+                  <span class="hidden-xs-only ml-1">Pagar</span>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-col>
+          <!--
             <v-window-item :value="1">
               <v-row class="">
                 <v-form v-model="btnPayEnable" class="col-12">
@@ -253,8 +217,10 @@
                 </v-col>
               </v-row>
             </v-window-item>
-          </v-window>
+           
+          </v-window> -->
         </v-row>
+        <v-btn x-large @click="a()"> pdf</v-btn>
       </v-card-text>
     </v-row>
   </v-card>
@@ -262,6 +228,7 @@
 
 <script>
 import { Rules } from "../helpers/rules.js";
+import { print } from "../helpers/printticket";
 
 export default {
   name: "OrdersFormPay",
@@ -288,9 +255,15 @@ export default {
     changeState: {
       type: Function,
     },
+    
   },
   data() {
     return {
+      empleado: "",
+      mesa: "",
+
+      form:true, //true Form, false Card
+
       btnPayEnable: false,
       btnPayEnableCash: false,
       valid: false,
@@ -336,22 +309,47 @@ export default {
   },
   created() {
     this.setRule();
+    console.log(this.order); 
   },
+  mounted(){
+
+    if(this.deDonde ==="from"){
+      this.form = true; 
+    }else{
+      this.form = false; 
+    }
+  }, 
   watch: {
     cashAmount: {
       handler: function (value, oldVal) {
         const amount = value - this.total;
-        this.cashBack = amount >= 0 ? amount.toFixed(2) : (amount * -1).toFixed(2);
+        this.cashBack =
+          amount >= 0 ? amount.toFixed(2) : (amount * -1).toFixed(2);
       },
       // return console.log(amount)
     },
   },
   methods: {
+    a() {
+     
+     if(this.order.idMesa===null){
+       this.mesa = "Para Llevar"
+     }else{
+       this.mesa = this.order.idMesa; 
+     }
+      print(
+        this.order.nombreEmpleado,
+        this.mesa,
+        this.subTotal,
+        this.impuestos,
+        this.total, 
+        this.order.order_details
+      );
+    },
     setRule() {
       this.ruleTest = Rules.test(this.total);
     },
     save() {
-
       if (typeof this.createOrder === "function") {
         const order = {
           ...this.order,

@@ -117,6 +117,7 @@
                 :total="total"
                 :subTotal="subTotal"
                 :impuestos="impuestos"
+               
               />
             </v-col>
           </v-row>
@@ -237,6 +238,7 @@ export default {
       color: "black",
       selected: [],
       dialog: false,
+      
     };
   },
   mounted() {
