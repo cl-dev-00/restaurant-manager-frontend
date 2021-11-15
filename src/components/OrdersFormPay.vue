@@ -68,7 +68,7 @@
                     Detalles del Pago en Efectivo <br />
                   </v-col>
                 </v-row>
-                <v-row dense class="ma-0 pa-5">
+                <v-row dense class="ma-0 pa-5" no-gutters>
                   <v-col cols="12">
                     <v-subheader class="grey--text text--lighten-1 pl-0"
                       >IMPORTE REALIZADO</v-subheader
@@ -89,13 +89,14 @@
                     <v-subheader class="grey--text text--lighten-1 pl-0"
                       >CAMBIO</v-subheader
                     >
-                    <v-text-field
+                    <h3 class="mt-n3">$ {{cashBack}}</h3>
+                   <!-- <v-text-field
                       single-line
                       outlined
                       v-model="cashBack"
                       placeholder="##.##"
                       disabled
-                    />
+                    />-->
                   </v-col>
                 </v-row>
               </v-form>
@@ -180,7 +181,8 @@ export default {
   },
   created() {
     this.setRule();
-    //  console.log(this.order);
+    console.log("form");
+    console.log(this.order);
   },
 
   watch: {

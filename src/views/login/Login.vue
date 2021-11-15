@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="bg">
-    <v-row align="center" justify="center">
+  <v-container fill-heigth fluid class="bg">
+    <v-row align="center" justify="center" >
  
       <v-col cols="12" sm="11" md="10" xl="6">
         <v-card class="elevation-6 mt-10 ">
