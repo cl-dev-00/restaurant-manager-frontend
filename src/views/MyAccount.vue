@@ -100,6 +100,16 @@
                   ></v-text-field>
                 </v-col>
 
+                <v-col cols="12" sm="5" md="5">
+                  <v-text-field
+                    outlined
+                    v-model.number="editedItem.rol"
+                    label="Edad"
+                    :rules="ruleRequired"
+                    :disabled="notvalid"
+                  ></v-text-field>
+                </v-col>
+
                 <v-col cols="12">
                   <v-textarea
                     rows="2"
@@ -146,13 +156,8 @@ export default {
       .then((response) => {
         if (response.data.ok) {
           const employee = response.data.employee;
-          this.editedItem.nombre = employee.nombre;
-          this.editedItem.apellido = employee.apellido;
-          this.editedItem.username = employee.username;
-          this.editedItem.edad = employee.edad;
-          this.editedItem.telefono = employee.telefono;
-          this.editedItem.direccion = employee.direccion;
-          this.editedItem.email = employee.email;
+
+          this.llenarEditedItem(employee);
         }
       })
       .catch((error) => {
@@ -170,6 +175,8 @@ export default {
       telefono: "",
       direccion: "",
       email: "",
+      rol: "",
+      idRol: -1,
     },
 
     ruleRequired: Rules.required,
@@ -217,25 +224,23 @@ export default {
     //************************************************************** */
 
     save() {
-      const { ...props } = this.editedItem;
+      const { nombreRol, ...props } = this.editedItem;
 
       const employee = { ...props };
 
       employee.idComercial = this.$store.getters.user.idComercial;
-
-      return console.log(employee);
-
+      
       this.$services.manager
-        .updateEmployee(this.$route.params.id, employee)
+        .updateEmployee(this.$store.getters.user.idEmpleado, employee)
         .then((response) => {
           if (response.data.ok) {
+            this.llenarEditedItem(response.data.employee);
+
             toastMessage(
               "success",
               "Exito",
               "Se actualizo el empleado correctamente"
             );
-
-            this.$router.push("/manager/employees");
           }
         })
         .catch((error) => {
@@ -246,6 +251,18 @@ export default {
             "No se pudo actualizar el empleado"
           );
         });
+    },
+
+    llenarEditedItem(employee) {
+      this.editedItem.nombre = employee.nombre;
+      this.editedItem.apellido = employee.apellido;
+      this.editedItem.username = employee.username;
+      this.editedItem.edad = employee.edad;
+      this.editedItem.telefono = employee.telefono;
+      this.editedItem.direccion = employee.direccion;
+      this.editedItem.email = employee.email;
+      this.editedItem.rol = employee.role.nombreRol;
+      this.editedItem.idRol = employee.role.idRol;
     },
   },
 };

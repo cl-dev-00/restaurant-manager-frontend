@@ -22,7 +22,6 @@ export default {
   },
     
   mounted() {
-    // console.log(this.$store.getters.user);
     this.$services.shareds
       .getEmployee(this.$store.getters.user.idEmpleado)
       .then((response) => {

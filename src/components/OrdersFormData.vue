@@ -660,8 +660,6 @@ export default {
                 this.$store.getters.user.commercial
               );
 
-              console.log(orderResponse);
-
               this.dialogPrint = true;
             }
 

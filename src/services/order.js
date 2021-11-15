@@ -20,7 +20,7 @@ export default class Order {
     async getOrdersPaidout() {
         return await this.axios.get(`${this.url}/orders/paidout`, {
             headers: {
-                'date-current': new Date(2021, 10, 13).toJSON().slice(0, 10),
+                'date-current': new Date().toJSON().slice(0, 10),
             }
         });
     }
@@ -48,7 +48,7 @@ export default class Order {
     async getCashRegister() {
         return await this.axios.get(`${this.url}/cash-registers/`, {
             headers: {
-                'date-current': new Date(2021, 10, 13).toISOString().slice(0, 10)
+                'date-current': new Date().toISOString().slice(0, 10)
             }
         });
     }
@@ -60,7 +60,7 @@ export default class Order {
     async getBoxActions() {
         return await this.axios.get(`${this.url}/box-actions`, {
             headers: {
-                'date-current': new Date(2021, 10, 13).toISOString().slice(0, 10)
+                'date-current': new Date().toISOString().slice(0, 10)
             }
         });
     }

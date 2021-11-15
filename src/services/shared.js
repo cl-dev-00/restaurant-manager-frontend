@@ -8,7 +8,7 @@ export default class Shared {
     async getOrders() {
         return await this.axios.get(`${this.url}/orders`, {
             headers: {
-                'date-current': new Date(2021,10, 13).toJSON().slice(0, 10),
+                'date-current': new Date().toJSON().slice(0, 10),
             }
         });
     }

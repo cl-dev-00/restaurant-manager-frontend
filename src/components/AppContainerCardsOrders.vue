@@ -82,7 +82,6 @@ export default {
     this.$services.shareds.getOrders().then((response) => {
       if (response.data.ok) {
         this.orders = response.data.collection;
-        console.log(this.orders.items);
       }
     });
 
