@@ -22,8 +22,9 @@
                   </v-list-item-action>
 
                   <!-- Titulo -->
-                  <v-list-item-content>
+                  <v-list-item-content >
                     <v-list-item-title
+                      :v-if="order.order_details[0].menu_item === undefined"
                       style="
                         white-space: normal;
                         word-wrap: break-word;
@@ -31,8 +32,9 @@
                         font-weight: bold;
                       "
                     >
-                      {{ item.nombre_item }}
+                      {{ item.menu_item.nombre_item }}
                     </v-list-item-title>
+                    
                   </v-list-item-content>
 
                   <!-- SubTotal -->
@@ -42,6 +44,7 @@
                 </v-list-item>
               </template>
             </v-list>
+
           </v-col>
         </v-row>
         <v-row class="justify-center ma-2 pa-5">
@@ -116,7 +119,7 @@
               </v-col>
             </v-row>
           </v-col>
-        </v-row>
+        </v-row>       
       </v-card-text>
     </v-row>
   </v-card>
@@ -124,10 +127,10 @@
 
 <script>
 import { Rules } from "../helpers/rules.js";
-import { print } from "../helpers/printticket";
+import { printCard } from "../helpers/printticket";
 
 export default {
-  name: "OrdersFormPay",
+  name: "OrdersFormPayCard",
   props: {
     order: {
       type: Object,
@@ -176,13 +179,15 @@ export default {
       cashName: "",
       cashAmount: "",
       cashBack: "",
+      card: null,
     };
   },
   created() {
     this.setRule();
-    //  console.log(this.order);
+   // console.log(this.order);
+    
   },
-
+  
   watch: {
     cashAmount: {
       handler: function (value, oldVal) {
@@ -195,14 +200,14 @@ export default {
   },
   methods: {
     a() {
-      if (this.order.idMesa === null) {
+      if (this.order.table === null) {
         this.mesa = "Para Llevar";
       } else {
-        this.mesa = this.order.idMesa;
+        this.mesa = this.order.table;
       }
-      print(
-        this.order.nombreCliente,
-        this.order.nombreEmpleado,
+      printCard(
+        this.order.nombreCliente, 
+        this.order.employee.nombre,
         this.mesa,
         this.subTotal,
         this.impuestos,
@@ -223,7 +228,7 @@ export default {
       } else if (typeof this.changeState === "function") {
         this.changeState(this.cashAmount);
       }
-      this.a();
+       this.a();
     },
 
     Calculate() {

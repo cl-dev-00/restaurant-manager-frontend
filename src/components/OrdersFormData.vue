@@ -286,10 +286,11 @@
                 <v-row class="justify-center white" dense>
                   <v-col class="col-12">
                     <v-btn
-                      color="primary"
+                      color="red"
                       block
                       depressed
-                      large
+                      x-large
+                      class=" white--text"
                       @click="dialog = false"
                       >Cerrar</v-btn
                     >

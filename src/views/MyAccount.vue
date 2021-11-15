@@ -7,7 +7,7 @@
           </v-card-title>
 
           <v-card-text>
-            <v-row align="center" justify="center">
+            <!--<v-row align="center" justify="center">
               <v-col cols="2" sm="4"></v-col>
               <v-col cols="8" sm="4" class="">
                 <img :src="avatar" class="avatar d-flex justify-center" />
@@ -21,7 +21,7 @@
                   Cambiar Imagen</v-btn
                 >
                 <div class="text-muted">{{ message }}</div>
-              <!--
+              
                 <avatar-cropper
                   @uploading="handleUploading"
                   @uploaded="handleUploaded"
@@ -30,11 +30,11 @@
                   v-model="trigger"
                   upload-url="/files/upload"
                 />
-                -->
+               
               </v-col>
               <v-col cols="2" sm="4"></v-col>
             </v-row>
-
+ -->
             <v-container>
               <v-form
                 v-model="isFormValid"
