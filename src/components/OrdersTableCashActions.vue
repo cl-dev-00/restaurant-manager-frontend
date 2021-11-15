@@ -174,7 +174,7 @@ export default {
             this.$emit("newBoxActionEmit", {
               ...props,
               monto,
-              isInput,
+              tipo: isInput? 'Ingresos' : 'Gastos',
               fecha: fecha.slice(0, 19).replace("T", " "),
             });
 
