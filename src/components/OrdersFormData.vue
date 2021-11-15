@@ -281,18 +281,21 @@
               v-model="dialog"
               transition="dialog-top-transition"
               max-width="90%"
+              persistent
             >
               <template>
-                <v-row class="justify-center white" dense>
-                  <v-col class="col-12">
-                    <v-btn
-                      color="primary"
-                      block
-                      depressed
-                      large
-                      @click="dialog = false"
-                      >Cerrar</v-btn
-                    >
+                <v-row class="white" justify="center" dense>
+                  <v-btn
+                    depressed
+                    color="grey lighten-4"
+                    class="red--text mt-2"
+                    width="100%"
+                    @click="dialog = false"
+                    ><v-icon style="margin-left: 95%" size="35"
+                      >mdi-close</v-icon
+                    ></v-btn
+                  >
+                  <v-col cols="12" sm="10" md="8">
                     <orders-form-pay
                       :createOrder="createOrder"
                       :order="Order"
@@ -310,20 +313,24 @@
               v-model="dialogPrint"
               transition="dialog-top-transition"
               max-width="600px"
+              persistent
             >
               <template>
-                <v-row class="justify-center white" dense>
-                  <v-col class="col-12">
-                    <v-btn
-                      color="primary"
-                      block
-                      depressed
-                      large
-                      @click="dialogPrint = false"
-                      >Cerrar</v-btn
-                    >
+                <v-row class="justify-center grey darken-4" dense>
+                  <v-btn
+                    depressed
+                    color="grey darken-4"
+                    class="white--text my-3"
+                    width="100%"
+                    @click="dialogPrint = false"
+                    ><v-icon style="margin-left: 95%" size="35">mdi-close</v-icon></v-btn
+                  >
+                  <v-col class="col-12 grey darken-4">
                     <iframe
-                      style="width: 600px; height: 800px"
+                      title="Ticket"
+                      type="application/pdf"
+                      style="width: 100%; height: 800px"
+                      class="grey darken-4"
                       :src="doc"
                     ></iframe>
                   </v-col>
@@ -413,7 +420,7 @@ export default {
       isFormValid: false,
       dialog: false,
       dialogPrint: false,
-      doc: '',
+      doc: "",
 
       icon1: "mdi-arrow-right-box",
 
@@ -453,7 +460,7 @@ export default {
         nombreEmpleado: this.$store.getters.user.nombre,
         idMesa: this.mesaSelect,
         order_details,
-        total: this.total
+        total: this.total,
       };
 
       return order;
@@ -643,6 +650,7 @@ export default {
                 : "Orden para llevar";
 
               this.doc = printTicket(
+                orderResponse.nombreCliente,
                 orderResponse.employee.nombre,
                 numeroMesa,
                 this.subTotal,
@@ -652,6 +660,8 @@ export default {
                 this.$store.getters.user.commercial
               );
 
+              console.log(orderResponse);
+
               this.dialogPrint = true;
             }
 
@@ -659,7 +669,6 @@ export default {
 
             toastMessage("success", "Exito", "Se creo la orden correctamente");
           }
-
         })
         .catch((error) => {
           console.log(error);

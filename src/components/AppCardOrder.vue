@@ -99,18 +99,20 @@
         v-model="dialog"
         transition="dialog-top-transition"
         max-width="600px"
+        persistent
       >
         <template>
           <v-row class="justify-center white" dense>
+            <v-btn depressed
+                    color="grey lighten-4"
+                    class="red--text mt-2"
+                    width="100%"
+                    @click="dialog = false"
+              ><v-icon style="margin-left: 95%" size="35"
+                      >mdi-close</v-icon
+                    ></v-btn
+            >
             <v-col class="col-12">
-              <v-btn
-                color="primary"
-                block
-                depressed
-                large
-                @click="dialog = false"
-                >Cerrar</v-btn
-              >
               <orders-form-pay
                 :changeState="paymentOrderEmit"
                 :order="order"
@@ -309,7 +311,14 @@ export default {
         .changeStateOrder(this.order.idOrden, importe)
         .then((response) => {
           if (response.data.ok) {
-            this.$emit("paymentOrderEmit", this.order.idOrden, response.data.order, this.subTotal, this.impuestos, this.total);
+            this.$emit(
+              "paymentOrderEmit",
+              this.order.idOrden,
+              response.data.order,
+              this.subTotal,
+              this.impuestos,
+              this.total
+            );
           }
         })
         .catch((error) => {

@@ -24,19 +24,28 @@
         v-model="dialogPrint"
         transition="dialog-top-transition"
         max-width="600px"
+        persistent
       >
         <template>
-          <v-row class="justify-center white" dense>
-            <v-col class="col-12">
-              <v-btn
-                color="primary"
-                block
-                depressed
-                large
-                @click="dialogPrint = false"
-                >Cerrar</v-btn
-              >
-              <iframe style="width: 600px; height: 800px" :src="doc"></iframe>
+          <v-row class="justify-center grey darken-4" dense>
+            <v-btn
+              depressed
+              color="grey darken-4"
+              class="white--text my-3"
+              width="100%"
+              @click="dialogPrint = false"
+              ><v-icon style="margin-left: 95%" size="35"
+                >mdi-close</v-icon
+              ></v-btn
+            >
+            <v-col class="col-12 grey darken-4">
+              <iframe
+                title="Ticket"
+                type="application/pdf"
+                style="width: 100%; height: 800px"
+                class="grey darken-4"
+                :src="doc"
+              ></iframe>
             </v-col>
           </v-row>
         </template>
@@ -73,7 +82,7 @@ export default {
     this.$services.shareds.getOrders().then((response) => {
       if (response.data.ok) {
         this.orders = response.data.collection;
-        console.log(this.orders.items)
+        console.log(this.orders.items);
       }
     });
 
@@ -127,6 +136,7 @@ export default {
       const numeroMesa = order.table ? order.table.numero : "Orden para llevar";
 
       this.doc = printTicket(
+        order.nombreCliente, 
         order.employee.nombre,
         numeroMesa,
         subTotal,

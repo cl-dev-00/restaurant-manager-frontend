@@ -1,14 +1,13 @@
 <template>
-  <manager-layout>
-    <v-row class="fill-height justify-center align-center">
-      <v-col>
-        <v-card>
-          <v-card-title class="justify-center">
-            <span class="text-h4 pt-10">Cuenta de Usuario</span>
-          </v-card-title>
+  <v-row class="fill-height justify-center align-center">
+    <v-col>
+      <v-card>
+        <v-card-title class="justify-center">
+          <span class="text-h4 pt-10">Cuenta de Usuario</span>
+        </v-card-title>
 
-          <v-card-text>
-            <v-row align="center" justify="center">
+        <v-card-text>
+          <!-- <v-row align="center" justify="center">
               <v-col cols="2" sm="4"></v-col>
               <v-col cols="8" sm="4" class="">
                 <img :src="avatar" class="avatar d-flex justify-center" />
@@ -22,7 +21,7 @@
                   Cambiar Imagen</v-btn
                 >
                 <div class="text-muted">{{ message }}</div>
-              <!--
+             
                 <avatar-cropper
                   @uploading="handleUploading"
                   @uploaded="handleUploaded"
@@ -31,119 +30,114 @@
                   v-model="trigger"
                   upload-url="/files/upload"
                 />
-                -->
+               
               </v-col>
               <v-col cols="2" sm="4"></v-col>
             </v-row>
+ -->
+          <v-container>
+            <v-form
+              v-model="isFormValid"
+              class="mx-auto"
+              style="max-width: 600px"
+            >
+              <v-row>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    outlined
+                    v-model="editedItem.nombre"
+                    label="Nombres"
+                    :rules="ruleOnlyAlpha"
+                    :disabled="notvalid"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    outlined
+                    v-model="editedItem.apellido"
+                    label="Apellidos"
+                    :rules="ruleOnlyAlpha"
+                    :disabled="notvalid"
+                  ></v-text-field>
+                </v-col>
 
-            <v-container>
-              <v-form
-                v-model="isFormValid"
-                class="mx-auto"
-                style="max-width: 600px"
-              >
-                <v-row>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      outlined
-                      v-model="editedItem.nombre"
-                      label="Nombres"
-                      :rules="ruleOnlyAlpha"
-                      :disabled="notvalid"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      outlined
-                      v-model="editedItem.apellido"
-                      label="Apellidos"
-                      :rules="ruleOnlyAlpha"
-                      :disabled="notvalid"
-                    ></v-text-field>
-                  </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    outlined
+                    v-model="editedItem.email"
+                    label="Email"
+                    :rules="ruleEmail"
+                  ></v-text-field>
+                </v-col>
 
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      outlined
-                      v-model="editedItem.email"
-                      label="Email"
-                      :rules="ruleEmail"
-                    ></v-text-field>
-                  </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    outlined
+                    v-model="editedItem.username"
+                    label="Nombre de usuario"
+                    :rules="ruleRequired"
+                    :disabled="notvalid"
+                  ></v-text-field>
+                </v-col>
 
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      outlined
-                      v-model="editedItem.username"
-                      label="Nombre de usuario"
-                      :rules="ruleRequired"
-                      :disabled="notvalid"
-                    ></v-text-field>
-                  </v-col>
+                <v-col cols="12" sm="4" md="4">
+                  <v-text-field
+                    outlined
+                    v-model="editedItem.telefono"
+                    label="Telefono"
+                    v-mask="'####-####'"
+                    :rules="rulePhoneS"
+                  ></v-text-field>
+                </v-col>
 
-                  <v-col cols="12" sm="4" md="4">
-                    <v-text-field
-                      outlined
-                      v-model="editedItem.telefono"
-                      label="Telefono"
-                      v-mask="'####-####'"
-                      :rules="rulePhoneS"
-                    ></v-text-field>
-                  </v-col>
+                <v-col cols="12" sm="3" md="3">
+                  <v-text-field
+                    outlined
+                    v-model.number="editedItem.edad"
+                    label="Edad"
+                    :rules="ruleAge"
+                    v-mask="'##'"
+                  ></v-text-field>
+                </v-col>
 
-                  <v-col cols="12" sm="3" md="3">
-                    <v-text-field
-                      outlined
-                      v-model.number="editedItem.edad"
-                      label="Edad"
-                      :rules="ruleAge"
-                      v-mask="'##'"
-                    ></v-text-field>
-                  </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    rows="2"
+                    outlined
+                    v-model="editedItem.direccion"
+                    label="Dirección"
+                    :rules="ruleRequired"
+                  ></v-textarea>
+                </v-col>
 
-                  <v-col cols="12">
-                    <v-textarea
-                      rows="2"
-                      outlined
-                      v-model="editedItem.direccion"
-                      label="Dirección"
-                      :rules="ruleRequired"
-                    ></v-textarea>
-                  </v-col>
-
-                  <v-col cols="12" sm="12" md="12">
-                    <v-btn
-                      x-large
-                      block
-                      depressed
-                      :disabled="!isFormValid"
-                      color="primary"
-                      @click="save"
-                    >
-                      Guardar
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </manager-layout>
+                <v-col cols="12" sm="12" md="12">
+                  <v-btn
+                    x-large
+                    block
+                    depressed
+                    :disabled="!isFormValid"
+                    color="primary"
+                    @click="save"
+                  >
+                    Guardar
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import ManagerLayout from "../layout/ManagerLayout.vue";
 import { Rules } from "../helpers/rules";
 import { toastMessage } from "../helpers/messages";
 
 export default {
   name: "MyAccount",
 
-  components: {
-    ManagerLayout,
-  },
   mounted() {
     // console.log(this.$store.getters.user);
 
@@ -259,9 +253,4 @@ export default {
 
 
 <style scoped>
-.avatar {
-  width: 80%;
-  border-radius: 50%;
-  margin: 0 auto;
-}
 </style>

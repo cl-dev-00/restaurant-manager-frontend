@@ -2,7 +2,7 @@ import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 
 
-export function printTicket(empleado, mesa, subtotal, impuestos, total, items, comercial) {
+export function printTicket(cliente, empleado, mesa, subtotal, impuestos, total, items, comercial) {
 
     const body = items.map(({ menu_item, importe, ...props }) => ({
         ...props,
@@ -21,28 +21,40 @@ export function printTicket(empleado, mesa, subtotal, impuestos, total, items, c
 
     doc.setFont("courier", "normal");
     doc.setFontSize(10);
-    doc.text(3, fila += 7, comercial.nombre);
-    doc.text(8, fila += 4, comercial.ubicacion);
-    doc.text(24, fila += 4, "Tel: " + comercial.telefono);
-
-    doc.text(3, fila += 8, "Atendido por: " + empleado);
+    // doc.text(3, fila += 7, comercial.nombre);
+    // doc.text(8, fila += 4, comercial.ubicacion);
+    // doc.text(24, fila += 4, "Tel: " + comercial.telefono);
+    doc.autoTable({
+        theme: 'plain',
+        styles: { font: 'courier', halign:'center' },
+        rowPageBreak: 'auto',
+        margin: { right: 3, left: 3 },
+        startY: 17,
+        body:[
+            [comercial.nombre +" " + comercial.ubicacion],
+            ['Tel: '+ comercial.telefono],
+        ], 
+    });
+     
+    doc.text(3, fila += 30, "Cliente: " + cliente);
+    doc.text(3, fila += 4, "Atendido por: " + empleado);
     doc.text(3, fila += 4, "Mesa: " + mesa);
 
     doc.text(3, fila += 5, "----------------------------------");
 
     doc.autoTable({
         theme: 'plain',
-        styles: { font: 'courier' },
+        styles: { font: 'courier'},
         rowPageBreak: 'auto',
-        margin: { top: 5, right: 3, left: 3, bottom: 10 },
-        startY: 42,
+        margin: { top: 3, right: 3, left: 3, bottom: 5 },
+        startY: fila+=2,
         head: [{ cantidad: 'Cant.', nombre: 'Item', importe: 'Importe' },],
         body,
     });
 
     fila += (espacio + 1) * 9;
 
-    doc.text(3, fila += 4, "----------------------------------");
+    doc.text(3, fila += 2, "----------------------------------");
     doc.text(3, fila += 8, "Sub Total:               $" + parseFloat(subtotal).toFixed(2));
     doc.text(3, fila += 4, "Impuestos:               $" + parseFloat(impuestos).toFixed(2));
     doc.setFont("courier", "bold");

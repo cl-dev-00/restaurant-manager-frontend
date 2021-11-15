@@ -16,7 +16,7 @@ import TableAddOrEdit from '../views/manager/tables/TableAddOrEdit.vue'
 import { authorization, loggedIn } from '../middlewares/authorization'
 
 
-import MyAccount from '../views/MyAccount.vue'
+import MyAccountSetLayout from "../views/MyAccountSetLayout.vue"
 
 //import { component } from 'vue/types/umd'
 
@@ -145,8 +145,8 @@ const routersInfo = {
     },
     myaccount: {
         path: '/my-account',
-        name: 'MyAccount',
-        component: MyAccount,
+        name: 'MyAccountSetLayout',
+        component: MyAccountSetLayout,
         title: 'Mi Cuenta'
     }, 
 
