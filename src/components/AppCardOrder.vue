@@ -309,7 +309,7 @@ export default {
         .changeStateOrder(this.order.idOrden, importe)
         .then((response) => {
           if (response.data.ok) {
-            this.$emit("paymentOrderEmit", this.order.idOrden, response.data.order);
+            this.$emit("paymentOrderEmit", this.order.idOrden, response.data.order, this.subTotal, this.impuestos, this.total);
           }
         })
         .catch((error) => {

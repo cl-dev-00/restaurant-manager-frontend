@@ -73,6 +73,7 @@ export default {
     this.$services.shareds.getOrders().then((response) => {
       if (response.data.ok) {
         this.orders = response.data.collection;
+        console.log(this.orders.items)
       }
     });
 
@@ -120,7 +121,7 @@ export default {
         });
     },
 
-    paymentOrder(id, order) {
+    paymentOrder(id, order, subTotal, impuestos, total) {
       this.$services.socketioService.paidoutOrder(order);
 
       const numeroMesa = order.table ? order.table.numero : "Orden para llevar";
@@ -128,9 +129,9 @@ export default {
       this.doc = printTicket(
         order.employee.nombre,
         numeroMesa,
-        this.subTotal,
-        this.impuestos,
-        this.total,
+        subTotal,
+        impuestos,
+        total,
         order.order_details,
         this.$store.getters.user.commercial
       );

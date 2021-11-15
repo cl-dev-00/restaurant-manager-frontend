@@ -31,7 +31,7 @@
                         font-weight: bold;
                       "
                     >
-                      {{ item.nombre_item }}
+                      {{ item.menu_item? item.menu_item.nombre_item : item.nombre_item }}
                     </v-list-item-title>
                   </v-list-item-content>
 
