@@ -1,14 +1,14 @@
 <template>
   <v-row align="center" justify="center" class="bg">
-    <v-col class="col-12 mt-5  no-gutters" align="center" justify="center">
+    <v-col class="col-12" align="center" justify="center">
      <!--  AQUI PONER EL LOGO -->
-      <v-img max-height="300" max-width="300" class="no-gutters" width="30%" src="../assets/favico.png" contain ></v-img>
-      <v-img max-height="400" max-width="1200" class="no-gutters" src="../assets/logoext.png" contain ></v-img>
+      <v-img max-height="150" max-width="150" class="no-gutters" width="30%" src="../assets/favico.png" contain ></v-img>
+      <v-img max-height="400" max-width="1200" class="no-gutters"  width="80%" src="../assets/logoext.png" contain ></v-img>
     </v-col>
 
    <!-- BOTONES--> 
     <v-col
-      class="mx-auto zoomInDown btn_home"
+      class="mx-auto zoomInDown btn_home my-auto"
       cols="12"
       align="center"
       

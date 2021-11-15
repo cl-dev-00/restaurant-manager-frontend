@@ -94,7 +94,7 @@ export default {
         { title: "Mi Cuenta", 
           icon: "mdi-account-details",
           path: routersInfo.myaccount.path, 
-           click: () => {},
+          click: () => {},
         },
         {
           title: "Salir",

@@ -134,6 +134,7 @@
 <script>
 import { Rules } from "../helpers/rules";
 import { toastMessage } from "../helpers/messages";
+import routersInfo from "../router/routers-info";
 
 export default {
   name: "MyAccount",
@@ -191,31 +192,7 @@ export default {
   //created(){
   //},
   methods: {
-    //metodos para la imagen ***************************************
-    changeTrigger() {
-      this.trigger = true;
-    },
-    handleUploading(form, xhr) {
-      this.message = "Subiendo...";
-    },
-    handleUploaded(response) {
-      if (response.status === "success") {
-        this.user.avatar = response.url;
-        // Maybe you need call vuex action to
-        // update user avatar, for example:
-        // this.$dispatch('updateUser', {avatar: response.url})
-        this.message = "Imagen de perfil cambiada";
-      }
-    },
-    handleCompleted(response, form, xhr) {
-      this.message = "Se completó la subida";
-    },
-    handlerError(message, type, xhr) {
-      this.message = "Oops! Un error ocurrió...";
-    },
-
-    //************************************************************** */
-
+  
     save() {
       const { ...props } = this.editedItem;
 
