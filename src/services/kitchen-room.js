@@ -1,9 +1,8 @@
 export default class KitchenRoom {
 
-    constructor(Axios, urlBase) {
+    constructor(Axios, url) {
         this.axios = Axios;
-        this.urlBase = urlBase;
-        this.url = '';
+        this.url = url;
     }
 
 }
