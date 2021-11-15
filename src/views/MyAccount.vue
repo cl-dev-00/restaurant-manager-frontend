@@ -2,6 +2,16 @@
   <v-row class="fill-height justify-center align-center">
     <v-col>
       <v-card>
+        <v-col cols="12" class="ml-3">
+          <v-row justify="start">
+            <v-btn 
+            class="mt-3 white--text"
+            color="red"
+            :to="back"
+              ><v-icon size="25">mdi-arrow-left</v-icon> Regresar</v-btn
+            >
+          </v-row>
+        </v-col>
         <v-card-title class="justify-center">
           <span class="text-h4 pt-10">Cuenta de Usuario</span>
         </v-card-title>
@@ -104,7 +114,7 @@
                   <v-text-field
                     outlined
                     v-model.number="editedItem.rol"
-                    label="Edad"
+                    label="Rol"
                     :rules="ruleRequired"
                     :disabled="notvalid"
                   ></v-text-field>
@@ -157,13 +167,42 @@ export default {
       .then((response) => {
         if (response.data.ok) {
           const employee = response.data.employee;
-
           this.llenarEditedItem(employee);
+         // console.log(this.editedItem.rol);
+
+
+switch (this.editedItem.rol) {
+      case "Administrador":
+        // console.log(routersInfo.myaccount.path);
+         this.back = routersInfo.manager.path; 
+        break;
+      case "Gerente":
+      //  console.log(this.editedItem.rol);
+       this.back = routersInfo.manager.path; 
+        break;
+      case "Personal de cocina":
+       // console.log(this.editedItem.rol);
+        this.back = routersInfo.kitchenroom.path; 
+        break;
+      case "Cajero":
+        this.back = routersInfo.orders.path; 
+       // console.log(routersInfo.orders.path);
+        break;
+      case "Mesero":
+      //  console.log(this.editedItem.rol);
+       this.back = routersInfo.orders.path; 
+        break;
+    }
+
+
         }
       })
       .catch((error) => {
         console.log(error);
       });
+
+      
+
   },
 
   data: () => ({
@@ -190,6 +229,7 @@ export default {
     trigger: false,
     message: "",
 
+    back:"", 
     notvalid: true,
 
     avatar:
@@ -199,14 +239,13 @@ export default {
   //created(){
   //},
   methods: {
-  
     save() {
       const { nombreRol, ...props } = this.editedItem;
 
       const employee = { ...props };
 
       employee.idComercial = this.$store.getters.user.idComercial;
-      
+
       this.$services.manager
         .updateEmployee(this.$store.getters.user.idEmpleado, employee)
         .then((response) => {

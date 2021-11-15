@@ -28,7 +28,7 @@ export default {
         if (response.data.ok) {
           const employee = response.data.employee;
           this.tipo = employee.role.nombreRol;
-          console.log(employee.role.nombreRol);
+         // console.log(employee.role.nombreRol);
         }
       })
       .catch((error) => {
