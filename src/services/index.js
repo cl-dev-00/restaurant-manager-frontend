@@ -38,7 +38,16 @@ Axios.interceptors.request.use(
 );
 
 
-const url = 'http://localhost:4000/api';
+let url = '';
+
+if(process.env.NODE_ENV === 'development') {
+    url = 'http://localhost:4000/api';
+} else {
+    url = 'https://restaurant-manager-cl.herokuapp.com/api';
+}
+
+console.log(url)
+
 
 export default {
     auth: new Auth(Axios, url),
@@ -46,5 +55,5 @@ export default {
     orders: new Orders(Axios, url),
     kitchenRoom: new KitchenRoom(Axios, url),
     shareds: new Shared(Axios, url),
-    socketioService: new SocketioService('http://localhost:4000')
+    socketioService: new SocketioService(url)
 }

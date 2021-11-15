@@ -1,19 +1,18 @@
 <template>
   <v-container fill-heigth fluid class="bg">
-    <v-row align="center" justify="center" style="margin-top:5%; ">
- 
+    <v-row align="center" justify="center" style="margin-top: 10%">
       <v-col cols="12" sm="11" md="10" lg="8" xl="6">
         <v-card class="elevation-6 mt-10">
           <v-form v-model="isFormValid">
-            <v-row justify="center" >    
+            <v-row justify="center">
               <v-col cols="11" sm="6" class="back rounded-bl-xl pa-5">
-                   <v-img
-                    min-height="100px"
-                    max-height="100%"
-                    max-width="290px"
-                    src="../../assets/posrelogopng.png"
-                    class=" mt-sm-10 "
-                  ></v-img>
+                <v-img
+                  min-height="100px"
+                  max-height="100%"
+                  max-width="290px"
+                  src="../../assets/posrelogopng.png"
+                  class="mt-sm-10"
+                ></v-img>
               </v-col>
               <v-col cols="12" sm="6">
                 <v-card-text class="mt-5">
@@ -57,13 +56,19 @@
                       </v-btn>
                     </v-col>
                   </v-row>
+                  <v-row v-if="messageError" align="center" justify="center">
+                    <v-col cols="12" sm="11">
+                      <v-alert shaped type="error">
+                        {{messageError}}
+                      </v-alert>
+                    </v-col>
+                  </v-row>
                 </v-card-text>
               </v-col>
             </v-row>
           </v-form>
         </v-card>
       </v-col>
-    
     </v-row>
   </v-container>
 </template>
@@ -78,6 +83,7 @@ export default {
     user: { username: "", password: "" },
     userRules: [(v) => !!v || "Ingresa tu nombre de usuario"],
     passwordRules: [(v) => !!v || "Ingrese tu clave"],
+    messageError: null,
   }),
   methods: {
     login() {
@@ -93,7 +99,7 @@ export default {
 
             this.$store.dispatch("setUserAction", employee);
             this.$store.dispatch("setLoginSignAction", true);
-            
+
             switch (this.$store.getters.user.role.user_level.nivel_usuario) {
               case 2:
                 this.$router.push("/manager");
@@ -116,6 +122,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+          this.messageError = "Las credenciales son incorrectas";
         });
     },
   },
@@ -127,7 +134,7 @@ export default {
   border-bottom-right-radius: 50% !important;
   border-bottom-left-radius: 10px !important;
   border-top-left-radius: 10px !important;
- 
+
   /*max-height: 320px;*/
 }
 
@@ -140,16 +147,17 @@ export default {
   );
 }
 .bg {
-  background: url("../../assets/background2.png") repeat-y center center fixed ;
+  background: url("../../assets/background2.png") repeat-y center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
   min-height: 100vh;
- 
- #app{
-  background: url('../../assets/background2.png') no-repeat center center fixed !important;
-  background-size: cover;
-}
+
+  #app {
+    background: url("../../assets/background2.png") no-repeat center center
+      fixed !important;
+    background-size: cover;
+  }
 }
 </style>

@@ -461,11 +461,6 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          toastMessage(
-            "error",
-            "Error :(",
-            "No se pudo abrir el arqueo de caja"
-          );
         });
     },
 
