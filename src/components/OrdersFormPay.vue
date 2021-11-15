@@ -39,7 +39,7 @@
 
                   <!-- SubTotal -->
                   <v-list-item-action>
-                    <span class="font-weight-bold">$ {{ item.importe }}</span>
+                    <span class="font-weight-bold">$ {{ parseFloat(item.importe).toFixed(2)}}</span>
                   </v-list-item-action>
                 </v-list-item>
               </template>

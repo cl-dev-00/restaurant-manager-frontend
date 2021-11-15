@@ -47,7 +47,7 @@
             >
           </v-col>
           <v-col cols="4">
-            Tarjetas de Crédito: <br />
+            Ingresos: <br />
             <span class="font-weight-bold text-body-1"
               >${{ credito.toFixed(2) }}</span
             >
